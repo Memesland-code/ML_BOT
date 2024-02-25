@@ -24,14 +24,5 @@ client.on('ready', () => {
   })
 })
 
-client.on("interactionCreate", (interaction) => {
-  const member = interaction.member as GuildMember
-  if (!member.permissions.has("Administrator") && interaction.isCommand()) {
-    interaction.reply({ content: "Ce bot n'est pas ouvert au public, vous n'avez pas l'autorisation d'exécuter de commandes", ephemeral: true })
-  } else {
-    return
-  }
-})
-
 client.login(process.env.TOKEN)
 console.log(colors.green(`Bot successfully connected to Discord`))
