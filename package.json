@@ -6,7 +6,7 @@
     "wokcommands": "^2.1.9"
   },
   "name": "ml_bot",
-  "version": "0.0.1 (REV-7)",
+  "version": "0.0.1 (REV-8)",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

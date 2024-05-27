@@ -1,5 +1,9 @@
-import { ApplicationCommandOptionType, Embed, EmbedBuilder, PermissionFlagsBits } from "discord.js"
+import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
+
+function timeout(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default {
   description: "Lance une partie d'imposteurs Phasmophobia",
@@ -32,26 +36,26 @@ export default {
       type: ApplicationCommandOptionType.User
     },
     {
-      name: "includemediummaps",
+      name: "include_medium_maps",
       description: "Si les maps moyennes doivent être incluses dans la liste",
-      required: false,
+      required: true,
       type: ApplicationCommandOptionType.Boolean
     },
     {
-      name: "includesunnymeadows",
+      name: "include_sunny_meadows",
       description: "Si Sunny Meadows doit être incluse dans la liste",
-      required: false,
+      required: true,
       type: ApplicationCommandOptionType.Boolean
     },
     {
-      name: "includerulesreminder",
+      name: "include_rules_reminder",
       description: "Si un embed contenant un rappel des points doit être envoyé dans le channel",
-      required: false,
+      required: true,
       type: ApplicationCommandOptionType.Boolean
     }
   ],
 
-  callback: ({interaction, args}) => {
+  callback: async ({interaction, args}) => {
 
     //* Points reminder
     const pointsReminder = new EmbedBuilder()
@@ -88,6 +92,7 @@ export default {
       {name: "Fin de partie (= après les 15 minutes)", value: "La phase de vote commence alors. Celle-ci dure __maximum__ 10 minutes"},
       {name: "Fin de partie, phase de vote", value: "Les personnes __en vie__ discutent et soumettent leur vote contre celui qu'ils pensent être l'imposteur. Les personnes mortes n'ont pas le droit de parler aux vivants, ni de voter"},
       {name: "Fin de partie, phase de vote", value: "Si les 10 minutes sont écoulées et que les personnes sont toujours en partie, elles doivent impérativement donner leur choix de vote final et quitter la partie"},
+      {name: "Fin de partie", value: "Si toutes les personnes sont mortes, la phase de vote est skip"},
 
       {name: "‎", value: "‎"},
 
@@ -102,20 +107,29 @@ export default {
     .setTitle("Pré game - Choix des joueurs")
     .setColor("Yellow")
     .setFields(
-      {name: "Joueur 1", value: `${args[0]}`},
-      {name: "Joueur 2", value: `${args[1]}`},
-      {name: "Joueur 3", value: `${args[2]}`},
-      {name: "Joueur 4", value: `${args[3]}`}
+      {name: "Joueur 1", value: `<@${args[0]}>`},
+      {name: "Joueur 2", value: `<@${args[1]}>`},
+      {name: "Joueur 3", value: `<@${args[2]}>`},
+      {name: "Joueur 4", value: `<@${args[3]}>`}
     )
     .setFooter({text: "Tips: Attention au son des notifs !"})
+
+    const step1_button = new ButtonBuilder()
+    .setCustomId("choosemap")
+    .setLabel("Choix de la map")
+    .setStyle(ButtonStyle.Success)
+
+    const step1_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step1_button)
 
 
 
     //* Step 2 - Map setup
     var mapList = ["10 Ridgeview Court", "13 Willow Street", "42 Edgefield Road", "6 Tanglewood Drive", "Bleasdale Farmhouse", "Camp Woodwind", "Grafton Farmhouse"]
-    if (args[4]) mapList.push("Brownstone High School", "Maple Lodge Campsite", "Prison")
-    if (args[5]) mapList.push("Sunny Meadows Mental Institution")
+    if (args[4] == "true") mapList.push("Brownstone High School", "Maple Lodge Campsite", "Prison")
+    if (args[5] == "true") mapList.push("Sunny Meadows Mental Institution")
     var chosenMap = mapList[Math.floor(Math.random() * mapList.length -1)]
+  if (chosenMap == undefined) chosenMap = mapList[0]
     
     const step2 = new EmbedBuilder()
     .setTitle("Pré game - Choix de la map")
@@ -123,21 +137,46 @@ export default {
     .setFields({name: "Map choisie", value: `${chosenMap}`})
     .setFooter({text: "Tips: Apprenez la position des cachettes, objets maudits et autres qui pourraient vous aider durant les parties !"})
 
+    const step2_button = new ButtonBuilder()
+    .setCustomId("chooseimpostor")
+    .setLabel("Choix de l'imposteur")
+    .setStyle(ButtonStyle.Success)
+
+    const step2_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step2_button)
+
 
 
     //* Step 3 - Impostor setup
-    var impostor = args[Math.floor(Math.random() * 4)]
+    var impostor = interaction?.client.users.cache.get(args[Math.floor(Math.random() * 4)])
     const step3 = new EmbedBuilder()
     .setTitle("Pré game - Choix de l'imposteur")
     .setColor("Orange")
     .setDescription("Un message a été envoyé à l'imposteur sélectionné\nVérifiez vos MP !")
 
-    //* Step 3_1 - Impostor message
+    //* Step 3.1 - Impostor message
     const step3_1 = new EmbedBuilder()
     .setTitle("Bonjour, imposteur !")
     .setColor("Purple")
     .setDescription("Vous avez été désigné imposteur pour cette partie.\nVeuillez cliquer sur le bouton pour informer que vous avez vu le message et passer à l'étape suivante.\nBonne chance à vous !")
     .setFooter({text: "Tips: Ne vous faites pas remarquer !"})
+
+    const step3_1_button = new ButtonBuilder()
+    .setCustomId("impostorconfirm")
+    .setLabel("Valider")
+    .setStyle(ButtonStyle.Success)
+
+    const step3_1_button_confirmed = new ButtonBuilder()
+    .setCustomId("impostorconfirmed")
+    .setLabel("Validé")
+    .setStyle(ButtonStyle.Success)
+    .setDisabled(true)
+
+    const step3_1_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step3_1_button)
+
+    const step3_1_confirmed_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step3_1_button_confirmed)
 
 
 
@@ -145,17 +184,33 @@ export default {
     const step4 = new EmbedBuilder()
     .setTitle("Pré game - Attente du démarrage")
     .setColor("#98FB98")
-    .setDescription("Préparez-vous, la partie va bientôt commencer !\nRappel de la map : " + chosenMap)
+    .setDescription("L'imposteur a été vérifié.\nPréparez-vous, la partie va bientôt commencer !\nRappel de la map : " + chosenMap)
+
+    const step4_button = new ButtonBuilder()
+    .setCustomId("startgame")
+    .setLabel("Commencer")
+    .setStyle(ButtonStyle.Success)
+
+    const step4_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step4_button)
 
 
 
     //* Step 5 - In game embed
-    var gameTime = 15 // Remaining time before game ends
-    var isInGame = false // Check if players are in game to chose wether the bot should continue updating the remaining time or not
-    const step5 = new EmbedBuilder()
+    var gameTime = 15 // Remaining time before game ends in seconds
+    var isInGame = true // Check if players are in game to chose wether the bot should continue updating the remaining time or not
+    var step5 = new EmbedBuilder()
     .setTitle("En game")
     .setColor("DarkBlue")
-    .setFields({name: "Temps restant", value: `${gameTime} minute(s)`})
+    .setFields({name: "Temps restant", value: `‎`})
+
+    const step5_button = new ButtonBuilder()
+    .setCustomId("endgame")
+    .setLabel("Finir la partie")
+    .setStyle(ButtonStyle.Secondary)
+
+    const step5_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step5_button)
 
 
 
@@ -164,6 +219,19 @@ export default {
     .setTitle("Post game - Phase de vote")
     .setColor("#964b00")
     .setDescription("Vous avez 10 minutes maximum pour discuter entre vivants et voter chacun pour une personne.\nA l'issu de votre vote, sélectionnez une entité si ce n'est pas déjà fait et quittez la partie.\n\nRestez en game pendant cette phase !")
+
+    const step6_1 = new EmbedBuilder()
+    .setTitle("Post game - Phase de vote")
+    .setColor("#964b00")
+    .setDescription("La phase de vote est terminée !\nVous devez immédiatement annoncer votre vote final et quitter la partie !")
+
+    const step6_button = new ButtonBuilder()
+    .setCustomId("endvotes")
+    .setLabel("Finir les votes")
+    .setStyle(ButtonStyle.Success)
+
+    const step6_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step6_button)
 
 
 
@@ -178,8 +246,25 @@ export default {
     .setColor("#000000")
     .setFields({name: "L'imposteur était", value: `${impostor}`})
 
+    const step7_button = new ButtonBuilder()
+    .setCustomId("revealimpostor")
+    .setLabel("Révéler l'imposteur")
+    .setStyle(ButtonStyle.Danger)
+
+    const step7_1_button = new ButtonBuilder()
+    .setCustomId("impostorrevealed")
+    .setLabel("Imposteur révélé")
+    .setStyle(ButtonStyle.Danger)
+    .setDisabled(true)
+
+    const step7_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step7_button)
+
+    const step7_1_row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(step7_1_button)
 
 
+    //* Misc embeds
     const timeoutError = new EmbedBuilder()
     .setTitle("Partie annulée")
     .setColor("Red")
@@ -191,5 +276,98 @@ export default {
     .setTitle("Partie annulée")
     .setColor("Red")
     .setDescription(`La partie a été annulée car l'imposteur choisi ${impostor} n'a pas autorisé l'envoe de MP sur ce serveur`)
+
+
+
+
+
+    if (args[6] == "true") await interaction?.channel?.send({embeds: [pointsReminder]})
+    
+    const response1 = await interaction?.reply({embeds: [step1], components: [step1_row]})
+
+    const collectorFilter = (i: any) => i.user.id === interaction?.user.id
+
+    //* Step 1 confirmation
+    try {
+      const confirmation = await response1?.awaitMessageComponent({ filter: collectorFilter, time: 300_000})
+
+      if (confirmation?.customId === "choosemap") {
+        const response2 = await confirmation.update({embeds: [step2], components: [step2_row]})
+
+        //* Step 2 confirmation
+        try {
+          const confirmation2 = await response2.awaitMessageComponent({ filter: collectorFilter, time: 300_000})
+
+          if (confirmation2.customId === "chooseimpostor") {
+            const confirmation3 = await confirmation2.update({embeds: [step3], components: []})
+
+            //* Impostor confirmation
+            try {
+              const impostorResponse = await impostor?.send({embeds: [step3_1], components: [step3_1_row]})
+
+              try {
+                const impostorConfirmation = await impostorResponse?.awaitMessageComponent({time: 300_00})
+
+                if (impostorConfirmation?.customId === "impostorconfirm") {
+                  await impostorResponse?.edit({embeds: [step3_1], components: [step3_1_confirmed_row]})
+
+                  const response4 = await confirmation3.edit({embeds: [step4], components: [step4_row]})
+
+                  try {
+                    const confirmation4 = await response4.awaitMessageComponent({ filter: collectorFilter, time: 300_000})
+
+                    if (confirmation4.customId === "startgame") {
+                      const response5 = await confirmation4.update({embeds: [step5], components: [step5_row]})
+
+                      try {
+                        step5.setFields({name: "Temps restant", value: `<t:${Math.floor(Date.now() / 1000) + 900}:R>`})
+                        console.log(Date.now())
+                        confirmation4.editReply({embeds: [step5], components: [step5_row]})
+                        const confirmation5 = await response5.awaitMessageComponent({filter: collectorFilter, time: 1_200_000})
+
+                        if (confirmation5.customId === "endgame") { //! Obligation d'une activation manuelle pour l'instant
+                          const response6 = await response5.edit({embeds: [step6], components: [step6_row]})
+                        }
+                        
+
+
+
+                      } catch (e) {
+                        await interaction?.editReply({embeds: [timeoutError], components: []})
+                      }
+                    }
+
+
+
+                  } catch (e) {
+                    await interaction?.editReply({embeds: [timeoutError], components: []})
+                  }
+                }
+
+
+
+              } catch (error) {
+                await interaction?.editReply({embeds: [timeoutError], components: []})
+              }
+
+
+
+            } catch (e) {
+              await confirmation3.edit({embeds: [dmError], components: []})
+            }
+          }
+
+
+
+        } catch (e) {
+          await interaction?.editReply({embeds: [timeoutError], components: []})
+        }
+      }
+
+
+
+    } catch (e) {
+      await interaction?.editReply({embeds: [timeoutError], components: []})
+    }
   }
 } as CommandObject
