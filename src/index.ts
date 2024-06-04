@@ -20,7 +20,7 @@ client.on('ready', () => {
     if (err) throw err
     const obj = JSON.parse(data)
     const clientVersion = obj.version
-    client.user?.setActivity(`v${clientVersion}`, {type: ActivityType.Custom})
+    client.user?.setActivity(`v${clientVersion} - by Memes_land`, {type: ActivityType.Custom})
   })
 })
 
