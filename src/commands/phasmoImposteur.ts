@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits } from "discord.js"
+import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
 
 //? Constants - Constants - Constants - Constants - Constants - Constants - Constants - Constants - Constants - Constants ?\\
@@ -130,8 +130,6 @@ const step4_row = new ActionRowBuilder<ButtonBuilder>()
 
 
 //* Step 5 - In game embed
-var gameTime = 15 // Remaining time before game ends in seconds
-var isInGame = true // Check if players are in game to chose wether the bot should continue updating the remaining time or not
 var step5 = new EmbedBuilder()
 .setTitle("En game")
 .setColor("DarkBlue")
@@ -163,8 +161,16 @@ const step6_button = new ButtonBuilder()
 .setLabel("Finir les votes")
 .setStyle(ButtonStyle.Success)
 
+const step6_1_button = new ButtonBuilder()
+.setCustomId("gotostep7")
+.setLabel("Passer à la révélation de l'imposteur")
+.setStyle(ButtonStyle.Success)
+
 const step6_row = new ActionRowBuilder<ButtonBuilder>()
 .addComponents(step6_button)
+
+const step6_1_row = new ActionRowBuilder<ButtonBuilder>()
+.addComponents(step6_1_button)
 
 
 
@@ -211,11 +217,6 @@ const dmError = new EmbedBuilder()
 
 //? functions - functions - functions - functions - functions - functions - functions - functions - functions - functions ?\\
 
-
-function timeout(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function func_step6(interaction: any, confirmation5: any, response5: any, isError: boolean, collectorFilter: any) {
   var response6
   if (isError) {
@@ -231,6 +232,8 @@ async function func_step6(interaction: any, confirmation5: any, response5: any, 
     const confirmation6 = await response6.awaitMessageComponent({filter: collectorFilter, time: 600_000}) // 600_000
 
     if (confirmation6.customId === "endvotes") {
+      //const response6_1 = await confirmation6.update({embeds: [step6_1], components: [step6_1_row]})
+      //const confirmation6_1 = await response6.awaitMessageComponent({filter: collectorFilter, time: 600_000}) // 600_000
       func_step7(interaction, confirmation6, response6, false, collectorFilter)
     }
 
@@ -238,6 +241,28 @@ async function func_step6(interaction: any, confirmation5: any, response5: any, 
     func_step7(interaction, undefined, response6, true, collectorFilter)
   }
 }
+
+/*
+async function func_step6_1(interaction: any, confirmation6_1: any, response6_1: any, isError: boolean, collectorFilter: any) {
+  var response6_1
+  if (isError) {
+    response6_1 = await response6_1.edit({embeds: [step7], components: [step7_row]})
+  } else {
+    response6_1 = await confirmation6_1.update({embeds: [step7], components: [step7_row]})
+  }
+
+  try { //* Step 6_1 confirmation - end vote
+    const confirmation6_1 = await response6_1?.awaitMessageComponent({ filter: collectorFilter, time: 600_000})
+
+    if (confirmation6_1.customId === "revealimpostor") {
+      const response7 = await confirmation6_1.update({embeds: [step7_1], components: [step7_1_row]})
+    }
+
+  } catch (error) {
+    await interaction?.editReply({embeds: [timeoutError], components: []})
+  }
+}
+  */
 
 
 async function func_step7(interaction: any, confirmation6: any, response6: any, isError: boolean, collectorFilter: any) {
@@ -333,19 +358,21 @@ export default {
       {name: "Joueur 4", value: `<@${args[3]}>`}
     )
 
-    var impostor = interaction?.client.users.cache.get(args[Math.floor(Math.random() * 4)])
+    var impostor: any = interaction?.client.users.cache.get(args[Math.floor(Math.random() * 4)])
 
-    if (args[6] == "true") await interaction?.channel?.send({embeds: [pointsReminder]})
+    if (args[6] == "true" && interaction?.channel?.type === ChannelType.GuildText) {
+      await interaction.channel.send({embeds: [pointsReminder]})
+    }
 
     step4.setDescription("L'imposteur a été vérifié.\nPréparez-vous, la partie va bientôt commencer !\nRappel de la map : " + chosenMap)
 
     step7_1.setFields({name: "L'imposteur était", value: `${impostor}`})
 
     dmError.setDescription(`La partie a été annulée car l'imposteur choisi ${impostor} n'a pas autorisé l'envoi de MP sur ce serveur`)
-    
+
     const response1 = await interaction?.reply({embeds: [step1], components: [step1_row]})
 
-    const collectorFilter = (i: any) => i.user.id === interaction?.user.id
+    const collectorFilter = undefined //? (i: any) => i.user.id === interaction?.user.id
 
     //* Step 1 confirmation - players
     try {
