@@ -29,7 +29,7 @@ export default async(message: Message, instance: WOK) => {
 
     const messageChannel = message.channel as TextChannel
 
-    console.log(colors.blue(`EVENT\nMessage supprimé\n`) + colors.blue(`De l'utilisateur : `) + (`${message.author?.username}\n`) + colors.blue(`ID : `) + (`${message.author?.id}\n`) + colors.blue(`Contenu : `) + (`${message.content}\n`) + colors.blue(`Pièce(s) jointe(s) si existante(s) : `) + (`${attachmentsLink}\n`) + colors.blue(`Channel name : `) + (`#${messageChannel.name}\n`) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n`) + colors.magenta(`Par : `) + (`${executor?.username}\n`) + colors.magenta(`ID : `) + (`${executor?.id}\n`) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    console.log(colors.blue(`EVENT\nMessage deleted\n`) + colors.blue(`From user : `) + (`${message.author?.username}\n`) + colors.blue(`User ID : `) + (`${message.author?.id}\n`) + colors.blue(`Content : `) + (`${message.content}\n`) + colors.blue(`Attachments : `) + (`${attachmentsLink}\n`) + colors.blue(`Channel name : `) + (`#${messageChannel.name}\n`) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n`) + colors.magenta(`Executor : `) + (`${executor?.username}\n`) + colors.magenta(`Executor ID : `) + (`${executor?.id}\n`) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     let messageContent
     if (message.content!.length < 900) {
