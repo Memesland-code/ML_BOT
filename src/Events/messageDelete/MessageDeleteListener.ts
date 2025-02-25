@@ -33,16 +33,16 @@ export default async(message: Message) => {
     let messageContent
     if (message.content!.length < 900) {
         messageContent = message.content
-    } else messageContent = "Deleted message too long for Discord. Please check the console for full details"
+    } else messageContent = "Old message was too long to be in an embeded message. Please check the console for full details"
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${message.author!.username}`, iconURL: `${message.author!.avatarURL()}`})
+    .setAuthor({name: `${message.author!.username}`, iconURL: `${message.author.avatarURL()}`})
     .setTitle("Message deleted")
     .setColor("DarkGold")
     .addFields([
         {name: `User's message infos`, value: `\nUser : <@${message.author?.id}> \nUser ID : ${message.author?.id}\nChannel name : <#${messageChannel.id}>\nChannel ID : ${messageChannel.id}\n`},
         {name: `Message content`, value: `\`\`\`fix\n${messageContent}\n\`\`\``},
-        {name: `Attachements`, value: `\`\`\`md\n${attachmentsLink}\n\`\`\``},
+        {name: `Attachements`, value: `\n${attachmentsLink}\n`},
         {name: `Executor`, value: `\nUser : <@${executor?.id}>\nID : ${executor?.id}\n`},
         ])
     .setFooter({text: `${new Date().toLocaleString()}`})
@@ -58,6 +58,6 @@ export default async(message: Message) => {
             });
         }
     } else {
-        logsChannel!.send({embeds: [embed]})
+        logsChannel.send({embeds: [embed]})
     }
 }
