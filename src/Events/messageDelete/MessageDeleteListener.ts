@@ -1,14 +1,13 @@
-import { EmbedBuilder, Client, TextChannel } from "discord.js";
+import { EmbedBuilder, Client, TextChannel, Message } from "discord.js";
 import WOK from "wokcommands"
 import { getLogChannel } from "../../functions";
 import colors from "colors"
 import { client } from "../../index"
 
-export default async(instance: WOK) => {
-    client.on('messageDelete', async (message) => {
+export default async(message: Message, instance: WOK) => {
 
     var guild = client!.guilds.cache.get(message.guild!.id)
-    
+
     var guildLogsChannelID = await getLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
@@ -42,13 +41,12 @@ export default async(instance: WOK) => {
     .setTitle("Message deleted")
     .setColor("DarkGold")
     .addFields([
-        {name: `Message infos`, value: `\`\`\`md\n[Posting user][${message.author?.username}]\n[Posting user ID][${message.author?.id}]\n[Posting channel name][#${messageChannel.name}]\n[Posting channel ID][${messageChannel.id}]\n\`\`\``},
-        {name: `Message content`, value: `\`\`\`md\n[Content][${messageContent}]\n\`\`\``},
-        {name: `Attachements`, value: `\`\`\`md\n[Attachments if valid][${attachmentsLink}]\n\`\`\``},
-        {name: `Executor`, value: `\`\`\`md\n[User][${executor?.username}]\n[ID][${executor?.id}]\n\`\`\``},
-      ])
+        {name: `User's message infos`, value: `\nUser : <@${message.author?.id}> \nUser ID : ${message.author?.id}\nChannel name : <#${messageChannel.id}>\nChannel ID : ${messageChannel.id}\n`},
+        {name: `Message content`, value: `\`\`\`fix\n${messageContent}\n\`\`\``},
+        {name: `Attachements`, value: `\`\`\`md\n${attachmentsLink}\n\`\`\``},
+        {name: `Executor`, value: `\nUser : <@${executor?.id}>\nID : ${executor?.id}\n`},
+        ])
     .setFooter({text: `${new Date().toLocaleString()}`})
 
     logsChannel!.send({embeds: [embed]})
-    })
 }
