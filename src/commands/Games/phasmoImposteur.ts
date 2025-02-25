@@ -1,7 +1,17 @@
 import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
+import { IsBotPerformingMaintenance } from "../../functions"
+import { botAdmins } from "../../index"
+
+
+
+
 
 //? Constants - Constants - Constants - Constants - Constants - Constants - Constants - Constants - Constants - Constants ?\\
+
+
+
+
 
 //* Points reminder
 const pointsReminder = new EmbedBuilder()
@@ -215,7 +225,14 @@ const dmError = new EmbedBuilder()
 .setColor("Red")
 
 
+
+
+
 //? functions - functions - functions - functions - functions - functions - functions - functions - functions - functions ?\\
+
+
+
+
 
 async function func_step6(interaction: any, confirmation5: any, response5: any, isError: boolean, collectorFilter: any) {
   var response6
@@ -286,7 +303,13 @@ async function func_step7(interaction: any, confirmation6: any, response6: any, 
 }
 
 
+
+
+
 //? command - command - command - command - command - command - command - command - command - command ?\\
+
+
+
 
 
 export default {
@@ -340,6 +363,12 @@ export default {
   ],
 
   callback: async ({interaction, args}) => {
+
+    let interactor:string = interaction?.user.id!
+    if (await IsBotPerformingMaintenance() && !botAdmins.includes(interactor)) {
+      interaction?.reply({content: "Vous ne pouvez pas effectuer de commandes pour l'instant, maintenance du bot en cours...", flags: ['Ephemeral']})
+      return
+    }
 
     var mapList = ["10 Ridgeview Court", "13 Willow Street", "42 Edgefield Road", "6 Tanglewood Drive", "Bleasdale Farmhouse", "Camp Woodwind", "Grafton Farmhouse"]
 
