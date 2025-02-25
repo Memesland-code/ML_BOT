@@ -1,10 +1,9 @@
-import { EmbedBuilder, Client, TextChannel, Message } from "discord.js";
-import WOK from "wokcommands"
+import { EmbedBuilder, Client, TextChannel, Message, User } from "discord.js";
 import { getLogChannel } from "../../functions";
 import colors from "colors"
-import { client } from "../../index"
+import { botAdmins, client } from "../../index"
 
-export default async(message: Message, instance: WOK) => {
+export default async(message: Message) => {
 
     var guild = client!.guilds.cache.get(message.guild!.id)
 
@@ -48,5 +47,17 @@ export default async(message: Message, instance: WOK) => {
         ])
     .setFooter({text: `${new Date().toLocaleString()}`})
 
-    logsChannel!.send({embeds: [embed]})
+    if (message.channel.id == guildLogsChannelID && message.author.id == client.user!.id) {
+        if (message.embeds[0] != undefined) {
+            botAdmins.forEach(admin => {
+                try {
+                    client.users.cache.find((user) => user.id === admin)?.send({content: `:warning: <@${admin}>!\nUser ${executor.username} tried to delete a logged message!`, embeds: [message.embeds[0]]})
+                } catch (error) {
+                    console.log(error)
+                }
+            });
+        }
+    } else {
+        logsChannel!.send({embeds: [embed]})
+    }
 }
