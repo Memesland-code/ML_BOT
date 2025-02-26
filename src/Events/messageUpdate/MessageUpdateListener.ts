@@ -33,7 +33,7 @@ export default async(oldMessage: Message, newMessage: Message) => {
     const messageChannel = oldMessage.channel as TextChannel
 
     console.log(colors.blue(`EVENT\nMessage modified\n\
-    `) + colors.blue(`By `) + (`${oldMessage.author?.username}\n\
+    `) + colors.blue(`By : `) + (`${oldMessage.author?.username}\n\
     `) + colors.blue(`ID : `) + (`${oldMessage.author?.id}\n\
     `) + colors.blue(`Old message : `) + (`${oldMessage.content}\n\
     `) + colors.blue(`===> `) + (`${newMessage.content}\n\
