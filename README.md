@@ -7,7 +7,9 @@ Versionning commit message syntax:
 
 
 Liste des listeners :
-- messageDelete
+- MessageDelete
+- MessageUpdate
+- VoiceStateUpdate
 
 
 

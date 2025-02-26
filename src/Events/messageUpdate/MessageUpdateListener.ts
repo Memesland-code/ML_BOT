@@ -32,7 +32,17 @@ export default async(oldMessage: Message, newMessage: Message) => {
 
     const messageChannel = oldMessage.channel as TextChannel
 
-    console.log(colors.blue(`EVENT\nMessage modified\n`) + colors.blue(`By `) + (`${oldMessage.author?.username}\n`) + colors.blue(`ID : `) + (`${oldMessage.author?.id}\n`) + colors.blue(`Old message : `) + (`${oldMessage.content}\n`) + colors.blue(`===> `) + (`${newMessage.content}\n`) + colors.blue(`Attachments if modified : `) + (`${isAttachmentStillThere}\n`) + colors.blue(`Current attachments : `) + (`${isAttachment}\n`) + colors.blue(`Channel name : `) + (`${messageChannel.name}\n`) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n`) + colors.blue(`Message initially sent : `) + (`${oldMessage.createdAt.toLocaleString()}\n`) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    console.log(colors.blue(`EVENT\nMessage modified\n\
+    `) + colors.blue(`By `) + (`${oldMessage.author?.username}\n\
+    `) + colors.blue(`ID : `) + (`${oldMessage.author?.id}\n\
+    `) + colors.blue(`Old message : `) + (`${oldMessage.content}\n\
+    `) + colors.blue(`===> `) + (`${newMessage.content}\n\
+    `) + colors.blue(`Attachments if modified : `) + (`${isAttachmentStillThere}\n\
+    `) + colors.blue(`Current attachments : `) + (`${isAttachment}\n\
+    `) + colors.blue(`Channel name : `) + (`${messageChannel.name}\n\
+    `) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n\
+    `) + colors.blue(`Message initially sent : `) + (`${oldMessage.createdAt.toLocaleString()}\n\
+    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     let oldMessageContent
     if (oldMessage.content.length < 900) {
@@ -44,14 +54,15 @@ export default async(oldMessage: Message, newMessage: Message) => {
         newMessageContent = newMessage.content
     } else newMessageContent = "New message was too long to be in an embeded message. Please check the console for full details"
 
+
     const embed = new EmbedBuilder()
     .setAuthor({name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.avatarURL()}`})
     .setTitle("Message modified")
     .setColor("Gold")
     .addFields([
         {name: "User's message infos", value: `\nUser : <@${oldMessage.author.id}>\nUser ID : ${oldMessage.author.id}\nChannel name : <#${messageChannel.id}>\nChannel ID : ${messageChannel.id}`},
-        {name: "Old message content", value: `\`\`\`fix${oldMessageContent}\`\`\``},
-        {name: "New message content", value: `\`\`\`fix${newMessageContent}\`\`\``},
+        {name: "Old message content", value: `\`\`\`fix\n${oldMessageContent}\n\`\`\``},
+        {name: "New message content", value: `\`\`\`fix\n${newMessageContent}\n\`\`\``},
         {name: "Old message attachments if removed", value: `${isAttachmentStillThere}`},
         {name: "Current attachments", value: `${isAttachment}`},
         {name: "Message initially sent", value: `${oldMessage.createdAt.toLocaleString()}`}
