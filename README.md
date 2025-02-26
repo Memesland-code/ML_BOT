@@ -7,6 +7,8 @@ Versionning commit message syntax:
 
 
 Liste des listeners :
+- GuildMemberAdd
+- GuildMemberRemove
 - MessageDelete
 - MessageUpdate
 - VoiceStateUpdate

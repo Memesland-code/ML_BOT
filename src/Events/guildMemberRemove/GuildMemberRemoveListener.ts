@@ -24,7 +24,8 @@ export default async(member: GuildMember) => {
         {name: "User username", value: `<@${member.user.id}>`},
         {name: "User ID", value: `${member.user.id}`},
         {name: "Account age", value: `${Math.floor((new Date().getTime() - member.user.createdAt.getTime()) / 86400000)} days`},
-        {name: "Account creation date", value: `${member.user.createdAt.toLocaleString()}`}
+        {name: "Account creation date", value: `${member.user.createdAt.toLocaleString()}`},
+        {name : "Server members number : ", value: `${guild?.memberCount}`}
     ])
     .setFooter({text: `Quitted on ${new Date().toLocaleString()}`})
 
