@@ -1,5 +1,5 @@
-import { APIEmbedField, CategoryChannel, EmbedBuilder, TextChannel, User, VoiceBasedChannel, VoiceState } from "discord.js";
-import { client } from "../../index"
+import { APIEmbedField, AuditLogEvent, CategoryChannel, EmbedBuilder, TextChannel, User, VoiceBasedChannel, VoiceState } from "discord.js";
+import { botAdmins, client } from "../../index"
 import { getLogChannel } from "../../functions";
 import colors from "colors"
 
@@ -10,32 +10,139 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     var guildLogsChannelID = await getLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    var voiceChannelInteraction: String = ""
-    var voiceChannelUser: User
-    var voiceChannel: VoiceBasedChannel
-    var voiceChannelCategory: CategoryChannel
+    const AuditLogFetchMemberUpdate = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberUpdate})
+    const EntryMemberUpdate = AuditLogFetchMemberUpdate.entries.first()
 
-    if (oldVoiceState.channel == undefined) {
-        voiceChannelInteraction = "User connected to voice channel"
-        voiceChannelUser = newVoiceState.member?.user!
-        voiceChannel = newVoiceState.channel!
-        voiceChannelCategory = newVoiceState.channel?.parent!
-    } else if (newVoiceState.channel == undefined) {
-        voiceChannelInteraction = "User disconnected from voice channel"
-        voiceChannelUser = oldVoiceState.member?.user!
-        voiceChannel = oldVoiceState.channel!
-        voiceChannelCategory = oldVoiceState.channel?.parent!
+    const AuditLogFetchMemberDisconnect = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberDisconnect})
+    const EntryMemberDisconnect = AuditLogFetchMemberDisconnect.entries.first()
+
+    var Entry
+    var memberUpdate
+    var memberMove
+    var memberDisconnect
+
+    if (oldVoiceState.channel?.id != newVoiceState.channel?.id && newVoiceState.channel != null && oldVoiceState.channel != null) {
+        Entry = EntryMemberUpdate
+        memberMove = true
+    } else if (oldVoiceState.channel != null && newVoiceState.channel == undefined) {
+        Entry = EntryMemberUpdate
+        memberDisconnect = true
     } else {
-        voiceChannelInteraction = "Vocal state of user changed"
-        voiceChannelUser = oldVoiceState.member?.user!
-        voiceChannel = oldVoiceState.channel!
-        voiceChannelCategory = oldVoiceState.channel?.parent!
+        Entry = EntryMemberUpdate
+        memberUpdate = true
     }
 
-    console.log(colors.blue(`EVENT\nVocal state of user changed\n\
+    const embed = new EmbedBuilder()
+
+    if (memberMove)
+        {
+        console.log(colors.blue(`EVENT\nUser was moved of its voice channel\n\
+    `) + colors.blue(`Modified user username : `) + (`${oldVoiceState.member?.user.username}\n\
+    `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
+    `) + colors.blue(`Previous channel name : `) + (`${oldVoiceState.channel?.name}\n\
+    `) + colors.blue(`Previous channel ID : `) + (`${oldVoiceState.channel?.id}\n\
+    `) + colors.blue(`Previous channel users count : `) + (`${oldVoiceState.channel?.members.size}\n\
+    `) + colors.blue(`Previous category name : `) + (`${oldVoiceState.channel?.parent?.name}\n\
+    `) + colors.blue(`Previous category ID : `) + (`${oldVoiceState.channel?.parent?.id}\n\
+    `) + colors.blue(`New channel name : `) + (`${newVoiceState.channel?.name}\n\
+    `) + colors.blue(`New channel ID : `) + (`${newVoiceState.channel?.id}\n\
+    `) + colors.blue(`New channel users count : `) + (`${newVoiceState.channel?.members.size}\n\
+    `) + colors.blue(`New category name : `) + (`${newVoiceState.channel?.parent?.name}\n\
+    `) + colors.blue(`New category ID : `) + (`${newVoiceState.channel?.parent?.id}\n\
+    `) + colors.magenta(`Executor username : `) + (`${Entry?.executor?.username}\n\
+    `) + colors.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
+    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    
+    
+        embed
+        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.avatarURL()}`})
+        .setTitle("User was moved of its voice channel")
+        .setColor("DarkGold")
+        .addFields([
+            {name: "Target's infos", value: `\n\
+            User : <@${oldVoiceState.member?.user.id}>\n\
+            User ID : ${oldVoiceState.member?.user.id}`},
+            {name: "Previous channel infos", value: `\n\
+            Name : <#${oldVoiceState.channel?.id}>\n\
+            ID : ${oldVoiceState.channel?.id}\n\
+            Users count : ${oldVoiceState.channel?.members.size}\n\
+            Category name : ${oldVoiceState.channel?.parent?.name}\n\
+            Category ID : ${oldVoiceState.channel?.parent?.id}`},
+            {name: "New channel infos", value: `\n\
+            Name : <#${newVoiceState.channel?.id}>\n\
+            ID : ${newVoiceState.channel?.id}\n\
+            Users count : ${newVoiceState.channel?.members.size}\n\
+            Category name : ${newVoiceState.channel?.parent?.name}\n\
+            Category ID : ${newVoiceState.channel?.parent?.id}`},
+            {name: "Executor", value: `\n\
+            User : <@${Entry.executor.id}>\n\
+            ID : ${Entry.executor.id}`}
+        ])
+    }
+    else if (memberDisconnect)
+    {
+        console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
+    `) + colors.blue(`User username : `) + (`${oldVoiceState.member?.user.username}\n\
+    `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
+    `) + colors.blue(`Previous channel name : `) + (`${oldVoiceState.channel?.name}\n\
+    `) + colors.blue(`Previous channel ID : `) + (`${oldVoiceState.channel?.id}\n\
+    `) + colors.blue(`Previous channel users count : `) + (`${oldVoiceState.channel?.members.size}\n\
+    `) + colors.blue(`Previous category name : `) + (`${oldVoiceState.channel?.parent?.name}\n\
+    `) + colors.blue(`Previous category ID : `) + (`${oldVoiceState.channel?.parent?.id}\n\
+    `) + colors.magenta(`Executor username : `) + (`${EntryMemberDisconnect?.executor?.username}\n\
+    `) + colors.magenta(`Executor ID : `) + (`${EntryMemberDisconnect?.executor?.id}\n\
+    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+
+
+        embed
+        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.avatarURL()}`})
+        .setTitle("User was disconnected from voice channel")
+        .setColor("DarkGold")
+        .addFields([
+            {name: "User's infos", value: `\n\
+            User : <@${oldVoiceState.member?.user.id}>\n\
+            User ID : ${oldVoiceState.member?.user.id}`},
+            {name: "Previous channel infos", value: `\n\
+            Name : <#${oldVoiceState.channel?.id}>\n\
+            ID : ${oldVoiceState.channel?.id}\n\
+            Users count : ${oldVoiceState.channel?.members.size}`},
+            {name: "Previous category infos", value: `\n\
+            Name : <#${oldVoiceState.channel?.parent?.name}>\n\
+            ID : ${oldVoiceState.channel?.parent?.id}`},
+            {name: "Executor", value: `\n\
+            User : <@${EntryMemberDisconnect?.executor?.id}>\n\
+            ID : ${EntryMemberDisconnect?.executor?.id}`}
+        ])
+    }
+    else if (memberUpdate)
+    {
+        var voiceChannelInteraction: String = ""
+        var voiceChannelUser: User
+        var voiceChannel: VoiceBasedChannel
+        var voiceChannelCategory: CategoryChannel
+
+        if (oldVoiceState.channel == undefined) {
+            voiceChannelInteraction = "User connected to voice channel"
+            voiceChannelUser = newVoiceState.member?.user!
+            voiceChannel = newVoiceState.channel!
+            voiceChannelCategory = newVoiceState.channel?.parent!
+        } else if (newVoiceState.channel == undefined) {
+            voiceChannelInteraction = "User disconnected from voice channel"
+            voiceChannelUser = oldVoiceState.member?.user!
+            voiceChannel = oldVoiceState.channel!
+            voiceChannelCategory = oldVoiceState.channel?.parent!
+        } else {
+            voiceChannelInteraction = "Vocal state of user changed"
+            voiceChannelUser = oldVoiceState.member?.user!
+            voiceChannel = oldVoiceState.channel!
+            voiceChannelCategory = oldVoiceState.channel?.parent!
+        }
+
+
+
+        console.log(colors.blue(`EVENT\n${voiceChannelInteraction}\n\
     `) + colors.blue(`Modified user : `) + (`${voiceChannelUser.username}\n\
     `) + colors.blue(`User ID : `) + (`${voiceChannelUser.id}\n\
-    `) + colors.magenta(`${voiceChannelInteraction}\n\
     `) + colors.blue(`Channel name : `) + (`${voiceChannel.name}\n\
     `) + colors.blue(`Channel ID : `) + (`${voiceChannel.id}\n\
     `) + colors.blue(`Category name : `) + (`${voiceChannelCategory.name}\n\
@@ -52,56 +159,64 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     `) + colors.blue(`New camera share state : `) + (`${newVoiceState.selfVideo}\n\
     `) + colors.blue(`Old stream state : `) + (`${oldVoiceState.streaming}\n\
     `) + colors.blue(`New stream state : `) + (`${newVoiceState.streaming}\n\
+    `) + colors.magenta(`Executor username : `) + (`${Entry?.executor?.username}\n\
+    `) + colors.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+
+
+
+        const embedFieldServerMute: APIEmbedField[] = [{name: "Server muted?", value: `\`\`\`md\n# Old ==> ${oldVoiceState.serverMute}\n> New ==> ${newVoiceState.serverMute}\`\`\``}]
+
+        const embedFieldServerDeaf: APIEmbedField[] = [{name: "Server deaf?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.serverDeaf}\n> New ==> ${newVoiceState.serverDeaf}\`\`\``}]
     
-
-
-    const serverMuteField: APIEmbedField[] = [{name: "Server muted?", value: `\`\`\`md\n# Old ==> ${oldVoiceState.serverMute}\n> New ==> ${newVoiceState.serverMute}\`\`\``}]
-
-    const serverDeafField: APIEmbedField[] = [{name: "Server deaf?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.serverDeaf}\n> New ==> ${newVoiceState.serverDeaf}\`\`\``}]
-
-    const selfMuteField: APIEmbedField[] = [{name: "Self muted?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.selfMute}\n> New ==> ${newVoiceState.selfMute}\`\`\``}]
-
-    const selfDeafField: APIEmbedField[] = [{name: "Self deaf?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.selfDeaf}\n> New ==> ${newVoiceState.selfDeaf}\`\`\``}]
-
-    const cameraShareField: APIEmbedField[] = [{name: "Camera share?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.selfVideo}\n> New ==> ${newVoiceState.selfVideo}\`\`\``}]
-
-    const streamingField: APIEmbedField[] = [{name: "Streaming?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.streaming}\n> New ==> ${newVoiceState.streaming}\`\`\``}]
-
-    const usersInVoiceChannelField: APIEmbedField[] = [{name: "Connected members count", value: `\`\`\`fix\n${voiceChannel.members.size}\n\`\`\``}]
-
-
-
-    const embed = new EmbedBuilder()
-    .setAuthor({name: `${voiceChannelUser.username}`, iconURL: `${voiceChannelUser.avatarURL()}`})
-    .setTitle(`${voiceChannelInteraction}`)
-    .setColor("DarkGold")
-    .addFields([
-        {name: "General infos", value: `\n\
-        User : <@${voiceChannelUser.id}>\n\
-        User ID : ${voiceChannelUser.id}\n\
-        Channel name : <#${voiceChannel.id}>\n\
-        Channel ID : ${voiceChannel.id}\n\
-        Category name : ${voiceChannelCategory.name}\n\
-        Category ID : ${voiceChannelCategory.id}`},
-    ])
-    .setFooter({text: `${new Date().toLocaleString()}`})
-
-    console.log(oldVoiceState.serverMute, newVoiceState.serverMute)
-
-    if (oldVoiceState.serverMute != newVoiceState.serverMute) embed.addFields(serverMuteField)
-
-    if (oldVoiceState.serverDeaf != newVoiceState.serverDeaf) embed.addFields(serverDeafField)
-
-    if (oldVoiceState.selfMute != newVoiceState.selfMute) embed.addFields(selfMuteField)
-
-    if (oldVoiceState.selfDeaf != newVoiceState.selfDeaf) embed.addFields(selfDeafField)
-
-    if (oldVoiceState.selfVideo != newVoiceState.selfVideo) embed.addFields(cameraShareField)
-
-    if (oldVoiceState.streaming != newVoiceState.streaming) embed.addFields(streamingField)
-
-    embed.addFields(usersInVoiceChannelField)
+        const embedFieldSelfMute: APIEmbedField[] = [{name: "Self muted?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.selfMute}\n> New ==> ${newVoiceState.selfMute}\`\`\``}]
+    
+        const embedFieldSelfDeaf: APIEmbedField[] = [{name: "Self deaf?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.selfDeaf}\n> New ==> ${newVoiceState.selfDeaf}\`\`\``}]
+    
+        const embedFieldCameraShare: APIEmbedField[] = [{name: "Camera share?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.selfVideo}\n> New ==> ${newVoiceState.selfVideo}\`\`\``}]
+    
+        const embedFieldStreaming: APIEmbedField[] = [{name: "Streaming?", value: `\n\`\`\`md\n# Old ==> ${oldVoiceState.streaming}\n> New ==> ${newVoiceState.streaming}\`\`\``}]
+    
+        const embedFieldVoiceChannelUsersCount: APIEmbedField[] = [{name: "Connected members count", value: `\`\`\`fix\n${voiceChannel.members.size}\n\`\`\``}]
+    
+        const embedFieldEventExecutor: APIEmbedField[] = [{name: "Executor", value: `\nUser : <@${Entry?.executor?.id}>\nID : ${Entry?.executor?.id}`}]
+    
+    
+    
+        embed
+        .setAuthor({name: `${voiceChannelUser.username}`, iconURL: `${voiceChannelUser.avatarURL()}`})
+        .setTitle(`${voiceChannelInteraction}`)
+        .setColor("DarkGold")
+        .addFields([
+            {name: "General infos", value: `\n\
+            User : <@${voiceChannelUser.id}>\n\
+            User ID : ${voiceChannelUser.id}\n\
+            Channel name : <#${voiceChannel.id}>\n\
+            Channel ID : ${voiceChannel.id}\n\
+            Category name : ${voiceChannelCategory.name}\n\
+            Category ID : ${voiceChannelCategory.id}`},
+        ])
+        .setFooter({text: `${new Date().toLocaleString()}`})
+    
+        if (oldVoiceState.serverMute != newVoiceState.serverMute) embed.addFields(embedFieldServerMute)
+    
+        if (oldVoiceState.serverDeaf != newVoiceState.serverDeaf) embed.addFields(embedFieldServerDeaf)
+    
+        if (oldVoiceState.selfMute != newVoiceState.selfMute) embed.addFields(embedFieldSelfMute)
+    
+        if (oldVoiceState.selfDeaf != newVoiceState.selfDeaf) embed.addFields(embedFieldSelfDeaf)
+    
+        if (oldVoiceState.selfVideo != newVoiceState.selfVideo) embed.addFields(embedFieldCameraShare)
+    
+        if (oldVoiceState.streaming != newVoiceState.streaming) embed.addFields(embedFieldStreaming)
+    
+        embed.addFields(embedFieldVoiceChannelUsersCount)
+        embed.addFields(embedFieldEventExecutor)
+    } else {
+        console.error(colors.red(`An error occured while creating parsing the 3 possible states of VoiceUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Planned Bounds`)) //* VSUT_LogBuildFail
+        logsChannel.send({content: `<@${botAdmins[0]}> An error occured while parsing the 3 possible states of VoiceStateUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Planned Bounds`})
+        return
+    }
 
     logsChannel.send({embeds: [embed]})
 }

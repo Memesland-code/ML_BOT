@@ -1,4 +1,4 @@
-import { EmbedBuilder, TextChannel, Message } from "discord.js";
+import { EmbedBuilder, TextChannel, Message, AuditLogEvent } from "discord.js";
 import { getLogChannel } from "../../functions";
 import colors from "colors"
 import { botAdmins, client } from "../../index"
@@ -10,7 +10,7 @@ export default async(message: Message) => {
     var guildLogsChannelID = await getLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: 72})
+    const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MessageDelete})
     const Entry = AuditLogFetch.entries.first()
 
     let attachmentsLink
@@ -35,14 +35,14 @@ export default async(message: Message) => {
     `) + colors.blue(`Attachments : `) + (`${attachmentsLink}\n\
     `) + colors.blue(`Channel name : `) + (`#${messageChannel.name}\n\
     `) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n\
-    `) + colors.magenta(`Executor username : `) + (`${executor?.username}\n\
+    `) + colors.magenta(`Executor : `) + (`${executor?.username}\n\
     `) + colors.magenta(`Executor ID : `) + (`${executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     let messageContent
     if (message.content!.length < 900) {
         messageContent = message.content
-    } else messageContent = "Old message was too long to be in an embeded message. Please check the console for full details"
+    } else messageContent = "Deleted message was too long to be in an embeded message. Please check the console for full details"
 
 
     const embed = new EmbedBuilder()
@@ -50,7 +50,7 @@ export default async(message: Message) => {
     .setTitle("Message deleted")
     .setColor("DarkGold")
     .addFields([
-        {name: `User's message infos`, value: `\n\
+        {name: `Target's message infos`, value: `\n\
         User : <@${message.author?.id}> \n\
         User ID : ${message.author?.id}\n\
         Channel name : <#${messageChannel.id}>\n\
