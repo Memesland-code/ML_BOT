@@ -15,6 +15,8 @@ export default async(role: Role) => {
 
     console.log(colors.yellow(`EVENT\nNew role created\n\
     `) + colors.yellow(`ID : `) + (`${role.id}\n\
+    `) + colors.red(`In server : `) + (`${role.guild.name}\n\
+    `) + colors.red(`Server ID : `) + (`${role.guild.id}\n\
     `) + colors.magenta(`Créé par : `) + (`${Entry?.executor?.tag}\n\
     `) + colors.magenta(`ID : `) + (`${Entry?.executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))

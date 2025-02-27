@@ -15,6 +15,8 @@ export default async(oldRole: Role, newRole: Role) => {
     console.log(colors.yellow(`EVENT\nA role was updated\n\
     `) + colors.yellow(`Role name : `) + (`${newRole.name}\n\
     `) + colors.yellow(`Role ID : `) + (`${newRole.id}\n\
+    `) + colors.red(`In server : `) + (`${newRole.guild.name}\n\
+    `) + colors.red(`Server ID : `) + (`${newRole.guild.id}\n\
     `) + colors.magenta(`Updated by user : `) + (`${Entry?.executor?.username}\n\
     `) + colors.magenta(`User ID : `) + (`${Entry?.executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))

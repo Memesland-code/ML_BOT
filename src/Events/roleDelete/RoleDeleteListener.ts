@@ -18,6 +18,8 @@ export default async(role: Role) => {
     `) + colors.yellow(`Hex color : `) + (`${role.hexColor}\n\
     `) + colors.yellow(`Shown separated from other roles : `) + (`${role.hoist}\n\
     `) + colors.yellow(`List position : `) + (`${role.rawPosition}\n\
+    `) + colors.red(`In server : `) + (`${role.guild.name}\n\
+    `) + colors.red(`Server ID : `) + (`${role.guild.id}\n\
     `) + colors.magenta(`Deleted by : `) + (`${Entry?.executor?.username}\n\
     `) + colors.magenta(`ID : `) + (`${Entry?.executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))

@@ -7,12 +7,17 @@ Versionning commit message syntax:
 
 
 Liste des listeners :
+- GuildBanAdd
+- GuildBanRemove
 - GuildMemberAdd
 - GuildMemberRemove
 - GuildMemberUpdate
 - InteractionCreate
 - MessageDelete
 - MessageUpdate
+- RoleCreate
+- RoleDelete
+- RoleUpdate
 - VoiceStateUpdate
 
 
