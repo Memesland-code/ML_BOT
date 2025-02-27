@@ -37,6 +37,7 @@ export default async(message: Message) => {
     `) + colors.blue(`Attachments : `) + (`${attachmentsLink}\n\
     `) + colors.blue(`Channel name : `) + (`#${messageChannel.name}\n\
     `) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n\
+    `) + colors.blue(`Message initially sent on : `) + (`${message.createdAt.toLocaleString()}\n\
     `) + colors.magenta(`Executor : `) + (`${executor?.username}\n\
     `) + colors.magenta(`Executor ID : `) + (`${executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
@@ -69,6 +70,7 @@ export default async(message: Message) => {
         Channel ID : ${messageChannel.id}\n`},
         {name: `Message content`, value: `\`\`\`fix\n${messageContent}\n\`\`\``},
         {name: `Attachements`, value: `\n${attachmentsLink}\n`},
+        {name: "Message initially sent on", value: `${message.createdAt.toLocaleString()}`},
         {name: `Executor`, value: `\nUser : <@${executor?.id}>\nID : ${executor?.id}\n`},
         ])
     .setFooter({text: `${new Date().toLocaleString()}`})
