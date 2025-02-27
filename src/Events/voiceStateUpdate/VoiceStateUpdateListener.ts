@@ -39,6 +39,8 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         console.log(colors.blue(`EVENT\nUser was moved of its voice channel\n\
     `) + colors.blue(`Modified user username : `) + (`${oldVoiceState.member?.user.username}\n\
     `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
+    `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${oldVoiceState.guild?.id}\n\
     `) + colors.blue(`Previous channel name : `) + (`${oldVoiceState.channel?.name}\n\
     `) + colors.blue(`Previous channel ID : `) + (`${oldVoiceState.channel?.id}\n\
     `) + colors.blue(`Previous channel users count : `) + (`${oldVoiceState.channel?.members.size}\n\
@@ -76,7 +78,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             Category ID : ${newVoiceState.channel?.parent?.id}`},
             {name: "Executor", value: `\n\
             User : <@${Entry.executor.id}>\n\
-            ID : ${Entry.executor.id}`}
+            ID : ${Entry.executor.id}\n`}
         ])
     }
     else if (memberDisconnect)
@@ -84,6 +86,8 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
     `) + colors.blue(`User username : `) + (`${oldVoiceState.member?.user.username}\n\
     `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
+    `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${oldVoiceState.guild?.id}\n\
     `) + colors.blue(`Previous channel name : `) + (`${oldVoiceState.channel?.name}\n\
     `) + colors.blue(`Previous channel ID : `) + (`${oldVoiceState.channel?.id}\n\
     `) + colors.blue(`Previous channel users count : `) + (`${oldVoiceState.channel?.members.size}\n\
@@ -111,7 +115,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             ID : ${oldVoiceState.channel?.parent?.id}`},
             {name: "Executor", value: `\n\
             User : <@${EntryMemberDisconnect?.executor?.id}>\n\
-            ID : ${EntryMemberDisconnect?.executor?.id}`}
+            ID : ${EntryMemberDisconnect?.executor?.id}\n`}
         ])
     }
     else if (memberUpdate)
@@ -143,6 +147,8 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         console.log(colors.blue(`EVENT\n${voiceChannelInteraction}\n\
     `) + colors.blue(`Modified user : `) + (`${voiceChannelUser.username}\n\
     `) + colors.blue(`User ID : `) + (`${voiceChannelUser.id}\n\
+    `) + colors.blue(`In guild : `) + (`${voiceChannel.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${voiceChannel.guild?.id}\n\
     `) + colors.blue(`Channel name : `) + (`${voiceChannel.name}\n\
     `) + colors.blue(`Channel ID : `) + (`${voiceChannel.id}\n\
     `) + colors.blue(`Category name : `) + (`${voiceChannelCategory.name}\n\

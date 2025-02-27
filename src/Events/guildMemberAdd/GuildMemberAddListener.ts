@@ -13,6 +13,8 @@ export default async(member: GuildMember) => {
     console.log(colors.blue(`EVENT\nNew member joined server\n\
     `) + colors.blue("User username : ") + (`${member.user.username}\n\
     `) + colors.blue("User ID : ") + (`${member.user.id}\n\
+    `) + colors.blue(`In guild : `) + (`${member.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${member.guild?.id}\n\
     `) + colors.blue("Server members number : ") + (`${guild?.members.cache.size}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
     

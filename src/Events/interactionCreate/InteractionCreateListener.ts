@@ -23,7 +23,7 @@ export default async(interaction: BaseInteraction) => {
     `) + colors.blue(`Channel ID :`) + (`${channel.id}\n\
     `) + colors.blue(`In category : `) + (`${channel.parent?.name}\n\
     `) + colors.blue(`Category ID : `) + (`${channel.parent?.id}\n\
-    `) + colors.blue(`Interaction infos : `) + (`${interaction}`))
+    `) + colors.blue(`Interaction infos : `) + (`${interaction}\n`))
 
     const embed = new EmbedBuilder()
     .setAuthor({name: `${interaction.user.username}`, iconURL: `${interaction.user.avatarURL()}`})

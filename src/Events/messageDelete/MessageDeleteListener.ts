@@ -31,6 +31,8 @@ export default async(message: Message) => {
     console.log(colors.blue(`EVENT\nMessage deleted\n\
     `) + colors.blue(`From user : `) + (`${message.author?.username}\n\
     `) + colors.blue(`User ID : `) + (`${message.author?.id}\n\
+    `) + colors.blue(`In guild : `) + (`${message.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${message.guild?.id}\n\
     `) + colors.blue(`Content : `) + (`${message.content}\n\
     `) + colors.blue(`Attachments : `) + (`${attachmentsLink}\n\
     `) + colors.blue(`Channel name : `) + (`#${messageChannel.name}\n\

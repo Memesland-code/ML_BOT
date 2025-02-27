@@ -30,6 +30,8 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
     console.log(colors.blue(`EVENT\nServer member updated\n\
     `) + colors.blue(`Modified user username : `) + (`${oldMember.user.username}\n\
     `) + colors.blue(`Modified user ID : `) + (`${oldMember.user.id}\n\
+    `) + colors.blue(`In guild : `) + (`${oldMember.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${oldMember.guild?.id}\n\
     `) + colors.blue(`Old display name : `) + (`${oldMember.nickname}\n\
     `) + colors.blue(`New display name : `) + (`${newMember.nickname}\n\
     `) + colors.blue(`Old roles list : `) + (`${oldRolesList}\n\
