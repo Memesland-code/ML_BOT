@@ -1,4 +1,4 @@
-import { EmbedBuilder, TextChannel, Message, AuditLogEvent } from "discord.js";
+import { EmbedBuilder, TextChannel, Message, AuditLogEvent, User } from "discord.js";
 import { getLogChannel } from "../../functions";
 import colors from "colors"
 import { botAdmins, client } from "../../index"
@@ -40,13 +40,23 @@ export default async(message: Message) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     let messageContent
-    if (message.content!.length < 900) {
+    if (message.content == null) {
+        messageContent = "Couldn't fetch previous message content: Discord ToS limitation"
+    }
+    else if (message.content.length < 900)
+    {
         messageContent = message.content
-    } else messageContent = "Deleted message was too long to be in an embeded message. Please check the console for full details"
+    }
+    else messageContent = "Deleted message was too long to be in an embeded message. Please check the console for full details"
 
+    var messageAuthorUsername
+    message.author == null ? messageAuthorUsername = "Unknown" : messageAuthorUsername = message.author.username
+
+    var messageAuthorIconURL
+    message.author == null ? messageAuthorIconURL = "https://fr.wikipedia.org/wiki/Fichier:Flat_cross_icon.svg" : messageAuthorIconURL = message.author.avatarURL()
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${message.author!.username}`, iconURL: `${message.author.avatarURL()}`})
+    .setAuthor({name: `${messageAuthorUsername}`, iconURL: `${messageAuthorIconURL}`})
     .setTitle("Message deleted")
     .setColor("DarkGold")
     .addFields([

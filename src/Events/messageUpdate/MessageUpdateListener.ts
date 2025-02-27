@@ -5,6 +5,10 @@ import colors from "colors"
 
 export default async(oldMessage: Message, newMessage: Message) => {
 
+    if (oldMessage.partial) oldMessage = await oldMessage.fetch()
+
+    if (newMessage.partial) newMessage = await newMessage.fetch()
+
     var guild = client!.guilds.cache.get(oldMessage.guild!.id)
     
     var guildLogsChannelID = await getLogChannel(guild?.id) as string
@@ -36,7 +40,7 @@ export default async(oldMessage: Message, newMessage: Message) => {
     `) + colors.blue(`By : `) + (`${oldMessage.author?.username}\n\
     `) + colors.blue(`ID : `) + (`${oldMessage.author?.id}\n\
     `) + colors.blue(`Old message : `) + (`${oldMessage.content}\n\
-    `) + colors.blue(`===> `) + (`${newMessage.content}\n\
+    `) + colors.blue(`New message : `) + (`${newMessage.content}\n\
     `) + colors.blue(`Attachments if modified : `) + (`${isAttachmentStillThere}\n\
     `) + colors.blue(`Current attachments : `) + (`${isAttachment}\n\
     `) + colors.blue(`Channel name : `) + (`${messageChannel.name}\n\
@@ -53,6 +57,9 @@ export default async(oldMessage: Message, newMessage: Message) => {
     if (newMessage.content.length < 900) {
         newMessageContent = newMessage.content
     } else newMessageContent = "New message was too long to be in an embeded message. Please check the console for full details"
+
+
+    if (oldMessage === newMessage) oldMessageContent = "Couldn't fetch previous message content: Discord ToS limitation"
 
 
     const embed = new EmbedBuilder()
