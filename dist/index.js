@@ -26,28 +26,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.db = exports.botAdmins = exports.client = void 0;
 const discord_js_1 = __importStar(require("discord.js"));
 const wokcommands_1 = __importDefault(require("wokcommands"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const fs_1 = __importDefault(require("fs"));
+const mysql_1 = __importDefault(require("mysql"));
+const functions_1 = require("./functions");
 var colors = require('colors');
 dotenv_1.default.config();
-const client = new discord_js_1.default.Client({
-    intents: [discord_js_1.GatewayIntentBits.AutoModerationConfiguration, discord_js_1.GatewayIntentBits.AutoModerationExecution, discord_js_1.GatewayIntentBits.DirectMessageReactions, discord_js_1.GatewayIntentBits.DirectMessageTyping, discord_js_1.GatewayIntentBits.DirectMessages, discord_js_1.GatewayIntentBits.GuildEmojisAndStickers, discord_js_1.GatewayIntentBits.GuildIntegrations, discord_js_1.GatewayIntentBits.GuildInvites, discord_js_1.GatewayIntentBits.GuildMembers, discord_js_1.GatewayIntentBits.GuildMessageReactions, discord_js_1.GatewayIntentBits.GuildMessageTyping, discord_js_1.GatewayIntentBits.GuildMessages, discord_js_1.GatewayIntentBits.GuildModeration, discord_js_1.GatewayIntentBits.GuildPresences, discord_js_1.GatewayIntentBits.GuildScheduledEvents, discord_js_1.GatewayIntentBits.GuildVoiceStates, discord_js_1.GatewayIntentBits.GuildWebhooks, discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.MessageContent]
+exports.client = new discord_js_1.default.Client({
+    intents: [discord_js_1.GatewayIntentBits.AutoModerationConfiguration, discord_js_1.GatewayIntentBits.AutoModerationExecution, discord_js_1.GatewayIntentBits.DirectMessageReactions, discord_js_1.GatewayIntentBits.DirectMessageTyping, discord_js_1.GatewayIntentBits.DirectMessages, discord_js_1.GatewayIntentBits.GuildExpressions, discord_js_1.GatewayIntentBits.GuildIntegrations, discord_js_1.GatewayIntentBits.GuildInvites, discord_js_1.GatewayIntentBits.GuildMembers, discord_js_1.GatewayIntentBits.GuildMessageReactions, discord_js_1.GatewayIntentBits.GuildMessageTyping, discord_js_1.GatewayIntentBits.GuildMessages, discord_js_1.GatewayIntentBits.GuildModeration, discord_js_1.GatewayIntentBits.GuildPresences, discord_js_1.GatewayIntentBits.GuildScheduledEvents, discord_js_1.GatewayIntentBits.GuildVoiceStates, discord_js_1.GatewayIntentBits.GuildWebhooks, discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.MessageContent],
+    partials: [discord_js_1.Partials.Message, discord_js_1.Partials.Channel]
 });
-client.on('ready', () => {
+exports.botAdmins = ["382055791848325122", "272492463128576000"];
+exports.client.on('ready', async () => {
     new wokcommands_1.default({
-        client,
+        client: exports.client,
         commandsDir: path_1.default.join(__dirname, "commands"),
+        events: {
+            dir: path_1.default.join(__dirname, "events")
+        },
+        botOwners: exports.botAdmins
     });
     fs_1.default.readFile('package.json', 'utf-8', function (err, data) {
         if (err)
             throw err;
         const obj = JSON.parse(data);
         const clientVersion = obj.version;
-        client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: discord_js_1.ActivityType.Custom });
+        exports.client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: discord_js_1.ActivityType.Custom });
     });
+    if (await (0, functions_1.IsBotPerformingMaintenance)()) {
+        exports.client.user?.setStatus('dnd');
+    }
+    else {
+        exports.client.user?.setStatus('online');
+    }
 });
-client.login(process.env.TOKEN);
+exports.db = mysql_1.default.createConnection({
+    host: process.env.DB_HOST,
+    user: "mlbot",
+    password: process.env.DB_PASSWORD,
+    database: "ML_Bot"
+});
+exports.db.connect((err) => {
+    if (err)
+        throw err;
+    console.log(colors.green('Successfully connected to Mysql database'));
+});
+exports.client.login(process.env.TOKEN);
 console.log(colors.green(`Bot successfully connected to Discord`));

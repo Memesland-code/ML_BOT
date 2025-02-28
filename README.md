@@ -16,6 +16,7 @@ Liste des listeners :
 - GuildMemberAdd
 - GuildMemberRemove
 - GuildMemberUpdate
+- GuildUpdate
 - InteractionCreate
 - MessageDelete
 - MessageUpdate
