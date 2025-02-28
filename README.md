@@ -7,7 +7,10 @@ Versionning commit message syntax:
 
 
 Liste des listeners :
+- ChannelCreate
+- ChannelDelete
 - ChannelPinsUpdate
+- ChannelUpdate
 - GuildBanAdd
 - GuildBanRemove
 - GuildMemberAdd
