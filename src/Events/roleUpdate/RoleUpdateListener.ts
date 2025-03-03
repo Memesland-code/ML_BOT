@@ -22,7 +22,7 @@ export default async(oldRole: Role, newRole: Role) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.avatarURL()}`})
+    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})
     .setTitle("A role was updated")
     .setColor("Yellow")
     .addFields([

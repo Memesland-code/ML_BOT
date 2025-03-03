@@ -20,7 +20,7 @@ exports.default = async (oldGuild, newGuild) => {
     `) + colors_1.default.magenta(`ID : `) + (`${Entry?.executor.id}\n\
     `) + colors_1.default.cyan(`${new Date().toLocaleString()}\n`));
     const embed = new discord_js_1.EmbedBuilder()
-        .setAuthor({ name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.avatarURL()}` })
+        .setAuthor({ name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}` })
         .setTitle("Server was updated")
         .setColor("DarkBlue")
         .addFields([

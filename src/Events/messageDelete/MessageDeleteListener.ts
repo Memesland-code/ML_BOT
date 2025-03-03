@@ -56,7 +56,7 @@ export default async(message: Message) => {
     message.author == null ? messageAuthorUsername = "Unknown" : messageAuthorUsername = message.author.username
 
     var messageAuthorIconURL
-    message.author == null ? messageAuthorIconURL = "https://fr.wikipedia.org/wiki/Fichier:Flat_cross_icon.svg" : messageAuthorIconURL = message.author.avatarURL()
+    message.author == null ? messageAuthorIconURL = "https://fr.wikipedia.org/wiki/Fichier:Flat_cross_icon.svg" : messageAuthorIconURL = message.author.displayAvatarURL()
 
     const embed = new EmbedBuilder()
     .setAuthor({name: `${messageAuthorUsername}`, iconURL: `${messageAuthorIconURL}`})

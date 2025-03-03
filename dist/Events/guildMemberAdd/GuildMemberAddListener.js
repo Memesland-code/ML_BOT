@@ -19,7 +19,7 @@ exports.default = async (member) => {
     `) + colors_1.default.blue("Server members number : ") + (`${guild?.members.cache.size}\n\
     `) + colors_1.default.cyan(`${new Date().toLocaleString()}\n`));
     const embed = new discord_js_1.EmbedBuilder()
-        .setAuthor({ name: `${member.user.username}`, iconURL: `${member.user.avatarURL()}` })
+        .setAuthor({ name: `${member.user.username}`, iconURL: `${member.user.displayAvatarURL()}` })
         .setTitle("New member joined")
         .setColor("Green")
         .addFields([

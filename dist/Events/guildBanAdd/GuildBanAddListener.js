@@ -23,7 +23,7 @@ exports.default = async (ban) => {
     `) + colors_1.default.magenta(`ID : `) + (`${ban.client.user.id}\n\
     `) + colors_1.default.cyan(`${new Date().toLocaleString()}\n`));
     const embed = new discord_js_1.EmbedBuilder()
-        .setAuthor({ name: `${ban.user.username}`, iconURL: `${ban.user.avatarURL()}` })
+        .setAuthor({ name: `${ban.user.username}`, iconURL: `${ban.user.displayAvatarURL()}` })
         .setTitle("User was banned from server")
         .setColor("DarkRed")
         .addFields([

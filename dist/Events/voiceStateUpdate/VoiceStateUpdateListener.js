@@ -52,7 +52,7 @@ exports.default = async (oldVoiceState, newVoiceState) => {
     `) + colors_1.default.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
     `) + colors_1.default.cyan(`${new Date().toLocaleString()}\n`));
         embed
-            .setAuthor({ name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.avatarURL()}` })
+            .setAuthor({ name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}` })
             .setTitle("User was moved of its voice channel")
             .setColor("DarkGold")
             .addFields([
@@ -91,7 +91,7 @@ exports.default = async (oldVoiceState, newVoiceState) => {
     `) + colors_1.default.magenta(`Executor ID : `) + (`${EntryMemberDisconnect?.executor?.id}\n\
     `) + colors_1.default.cyan(`${new Date().toLocaleString()}\n`));
         embed
-            .setAuthor({ name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.avatarURL()}` })
+            .setAuthor({ name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}` })
             .setTitle("User was disconnected from voice channel")
             .setColor("DarkGold")
             .addFields([
@@ -166,7 +166,7 @@ exports.default = async (oldVoiceState, newVoiceState) => {
         const embedFieldVoiceChannelUsersCount = [{ name: "Connected members count", value: `\`\`\`fix\n${voiceChannel.members.size}\n\`\`\`` }];
         const embedFieldEventExecutor = [{ name: "Executor", value: `\nUser : <@${Entry?.executor?.id}>\nID : ${Entry?.executor?.id}` }];
         embed
-            .setAuthor({ name: `${voiceChannelUser.username}`, iconURL: `${voiceChannelUser.avatarURL()}` })
+            .setAuthor({ name: `${voiceChannelUser.username}`, iconURL: `${voiceChannelUser.displayAvatarURL()}` })
             .setTitle(`${voiceChannelInteraction}`)
             .setColor("DarkGold")
             .addFields([

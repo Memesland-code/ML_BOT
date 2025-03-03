@@ -25,7 +25,7 @@ export default async(role: Role) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.avatarURL()}`})
+    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})
     .setTitle("A role was deleted")
     .setColor("Red")
     .addFields([

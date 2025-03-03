@@ -65,7 +65,7 @@ export default async(oldMessage: Message, newMessage: Message) => {
 
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.avatarURL()}`})
+    .setAuthor({name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.displayAvatarURL()}`})
     .setTitle("Message modified")
     .setColor("Gold")
     .addFields([

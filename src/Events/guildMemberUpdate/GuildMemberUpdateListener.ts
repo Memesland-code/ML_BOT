@@ -52,7 +52,7 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
 
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${oldMember.user.username}`, iconURL: `${oldMember.user.avatarURL()}`})
+    .setAuthor({name: `${oldMember.user.username}`, iconURL: `${oldMember.user.displayAvatarURL()}`})
     .setTitle("An user was updated")
     .setColor("Blue")
 

@@ -26,7 +26,7 @@ export default async(interaction: BaseInteraction) => {
     `) + colors.blue(`Interaction infos : `) + (`${interaction}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${interaction.user.username}`, iconURL: `${interaction.user.avatarURL()}`})
+    .setAuthor({name: `${interaction.user.username}`, iconURL: `${interaction.user.displayAvatarURL()}`})
     .setTitle("Interaction created")
     .setColor("LightGrey")
     .addFields([

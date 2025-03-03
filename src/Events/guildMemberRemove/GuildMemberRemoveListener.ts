@@ -19,7 +19,7 @@ export default async(member: GuildMember) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
     
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${member.user.username}`, iconURL: `${member.user.avatarURL()}`})
+    .setAuthor({name: `${member.user.username}`, iconURL: `${member.user.displayAvatarURL()}`})
     .setTitle("A members quitted the server")
     .setColor("Red")
     .addFields([

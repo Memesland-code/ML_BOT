@@ -21,7 +21,7 @@ export default async(oldGuild: Guild, newGuild: Guild) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.avatarURL()}`})
+    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})
     .setTitle("Server was updated")
     .setColor("DarkBlue")
     .addFields([

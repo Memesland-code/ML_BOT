@@ -25,7 +25,7 @@ exports.default = async (interaction) => {
     `) + colors_1.default.blue(`Category ID : `) + (`${channel.parent?.id}\n\
     `) + colors_1.default.blue(`Interaction infos : `) + (`${interaction}\n`));
     const embed = new discord_js_1.EmbedBuilder()
-        .setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.user.avatarURL()}` })
+        .setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.user.displayAvatarURL()}` })
         .setTitle("Interaction created")
         .setColor("LightGrey")
         .addFields([

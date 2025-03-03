@@ -26,7 +26,7 @@ export default async(channel: GuildChannel) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.avatarURL()}`})
+    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})
     .setTitle("Channel deleted")
     .setColor("Orange")
     .addFields([

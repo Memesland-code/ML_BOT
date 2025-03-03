@@ -45,7 +45,7 @@ exports.default = async (oldMember, newMember) => {
     const enmbedFieldOtherModification = [{ name: "Warning", value: `The guild member update performed is not supported yet.\nPlease check console for full details.` }];
     const embedFieldEventExecutor = [{ name: "Executor", value: `User : <@${Entry?.executor?.id}>\nID : ${Entry?.executor?.id}` }];
     const embed = new discord_js_1.EmbedBuilder()
-        .setAuthor({ name: `${oldMember.user.username}`, iconURL: `${oldMember.user.avatarURL()}` })
+        .setAuthor({ name: `${oldMember.user.username}`, iconURL: `${oldMember.user.displayAvatarURL()}` })
         .setTitle("An user was updated")
         .setColor("Blue");
     if (oldMember.nickname !== newMember.nickname)

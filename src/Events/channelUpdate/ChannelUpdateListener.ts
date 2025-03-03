@@ -26,7 +26,7 @@ export default async(oldChannel: GuildChannel, newChannel: GuildChannel) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.avatarURL()}`})
+    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})
     .setTitle("A channel was updated")
     .setColor("Yellow")
     .addFields([

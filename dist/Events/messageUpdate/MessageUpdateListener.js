@@ -66,7 +66,7 @@ exports.default = async (oldMessage, newMessage) => {
     if (oldMessage === newMessage)
         oldMessageContent = "Couldn't fetch previous message content: Discord ToS limitation";
     const embed = new discord_js_1.EmbedBuilder()
-        .setAuthor({ name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.avatarURL()}` })
+        .setAuthor({ name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.displayAvatarURL()}` })
         .setTitle("Message modified")
         .setColor("Gold")
         .addFields([

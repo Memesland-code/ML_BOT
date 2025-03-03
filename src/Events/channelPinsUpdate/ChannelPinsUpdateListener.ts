@@ -53,7 +53,7 @@ export default async(channel: TextBasedChannel, time: Date) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry.executor?.username}`, iconURL: `${Entry.executor?.avatarURL()}`})
+    .setAuthor({name: `${Entry.executor?.username}`, iconURL: `${Entry.executor?.displayAvatarURL()}`})
     .setTitle(`${pinMessage}`)
     .setColor("DarkAqua")
     .addFields([

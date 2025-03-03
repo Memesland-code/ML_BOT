@@ -2,7 +2,11 @@
 Private Discord bot for Memes_land server
 
 Versionning commit message syntax:
-[msg] - v*x*.*x*.*x* (REV-*x*)
+[msg] - v*x*.*y*.*z*.*r*
+x : Major version
+y : Minor version
+z : Patch version
+r : Revision number
 
 
 

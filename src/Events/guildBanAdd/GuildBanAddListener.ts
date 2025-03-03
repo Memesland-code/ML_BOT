@@ -24,7 +24,7 @@ export default async(ban: GuildBan) => {
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${ban.user.username}`, iconURL: `${ban.user.avatarURL()}`})
+    .setAuthor({name: `${ban.user.username}`, iconURL: `${ban.user.displayAvatarURL()}`})
     .setTitle("User was banned from server")
     .setColor("DarkRed")
     .addFields([

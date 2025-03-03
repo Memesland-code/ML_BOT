@@ -52,7 +52,7 @@ exports.default = async (message) => {
     var messageAuthorUsername;
     message.author == null ? messageAuthorUsername = "Unknown" : messageAuthorUsername = message.author.username;
     var messageAuthorIconURL;
-    message.author == null ? messageAuthorIconURL = "https://fr.wikipedia.org/wiki/Fichier:Flat_cross_icon.svg" : messageAuthorIconURL = message.author.avatarURL();
+    message.author == null ? messageAuthorIconURL = "https://fr.wikipedia.org/wiki/Fichier:Flat_cross_icon.svg" : messageAuthorIconURL = message.author.displayAvatarURL();
     const embed = new discord_js_1.EmbedBuilder()
         .setAuthor({ name: `${messageAuthorUsername}`, iconURL: `${messageAuthorIconURL}` })
         .setTitle("Message deleted")

@@ -57,7 +57,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     
     
         embed
-        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.avatarURL()}`})
+        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}`})
         .setTitle("User was moved of its voice channel")
         .setColor("DarkGold")
         .addFields([
@@ -99,7 +99,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
 
         embed
-        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.avatarURL()}`})
+        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}`})
         .setTitle("User was disconnected from voice channel")
         .setColor("DarkGold")
         .addFields([
@@ -190,7 +190,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     
     
         embed
-        .setAuthor({name: `${voiceChannelUser.username}`, iconURL: `${voiceChannelUser.avatarURL()}`})
+        .setAuthor({name: `${voiceChannelUser.username}`, iconURL: `${voiceChannelUser.displayAvatarURL()}`})
         .setTitle(`${voiceChannelInteraction}`)
         .setColor("DarkGold")
         .addFields([
