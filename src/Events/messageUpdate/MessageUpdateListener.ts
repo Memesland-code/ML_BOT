@@ -9,6 +9,8 @@ export default async(oldMessage: Message, newMessage: Message) => {
 
     if (newMessage.partial) newMessage = await newMessage.fetch()
 
+    if (newMessage.embeds[0] != undefined) return
+
     var guild = client!.guilds.cache.get(oldMessage.guild!.id)
     
     var guildLogsChannelID = await getLogChannel(guild?.id) as string
