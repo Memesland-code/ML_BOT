@@ -8,8 +8,6 @@ Versionning commit message syntax:<br />
 - z : Patch version
 - r : Revision number
 <br />
-<br />
-<br />
 
 Liste des listeners :
 - ChannelCreate
@@ -29,8 +27,6 @@ Liste des listeners :
 - RoleDelete
 - RoleUpdate
 - VoiceStateUpdate
-<br />
-<br />
 <br />
 
 Liste des commandes :
