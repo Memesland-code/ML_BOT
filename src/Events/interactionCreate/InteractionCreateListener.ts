@@ -1,6 +1,6 @@
 import { BaseInteraction, EmbedBuilder, InteractionContextType, TextChannel } from "discord.js"
 import { client } from "../../index"
-import { getLogChannel } from "../../functions"
+import { GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
 
 export default async(interaction: BaseInteraction) => {
@@ -9,21 +9,21 @@ export default async(interaction: BaseInteraction) => {
 
     var guild = client!.guilds.cache.get(interaction.guild!.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const channel = interaction.channel as TextChannel
 
-    console.log(colors.blue(`EVENT\nInteraction created\n\
-    `) + colors.blue(`In guild : `) + (`${interaction.guild?.name}\n\
-    `) + colors.blue(`Guild ID : `) + (`${interaction.guild?.id}\n\
-    `) + colors.blue(`By : `) + (`${interaction.user.username}\n\
-    `) + colors.blue(`ID : `) + (`${interaction.user.id}\n\
-    `) + colors.blue(`In channel : `) + (`${channel.name}\n\
-    `) + colors.blue(`Channel ID :`) + (`${channel.id}\n\
-    `) + colors.blue(`In category : `) + (`${channel.parent?.name}\n\
-    `) + colors.blue(`Category ID : `) + (`${channel.parent?.id}\n\
-    `) + colors.blue(`Interaction infos : `) + (`${interaction}\n`))
+    await HandleLog(colors.blue(`EVENT\nInteraction created\n\
+        `) + colors.blue(`In guild : `) + (`${interaction.guild?.name}\n\
+        `) + colors.blue(`Guild ID : `) + (`${interaction.guild?.id}\n\
+        `) + colors.blue(`By : `) + (`${interaction.user.username}\n\
+        `) + colors.blue(`ID : `) + (`${interaction.user.id}\n\
+        `) + colors.blue(`In channel : `) + (`${channel.name}\n\
+        `) + colors.blue(`Channel ID :`) + (`${channel.id}\n\
+        `) + colors.blue(`In category : `) + (`${channel.parent?.name}\n\
+        `) + colors.blue(`Category ID : `) + (`${channel.parent?.id}\n\
+        `) + colors.blue(`Interaction infos : `) + (`${interaction}\n`))
 
     const embed = new EmbedBuilder()
     .setAuthor({name: `${interaction.user.username}`, iconURL: `${interaction.user.displayAvatarURL()}`})

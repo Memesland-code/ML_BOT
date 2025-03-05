@@ -1,18 +1,18 @@
 import { AuditLogEvent, EmbedBuilder, Role, TextChannel } from "discord.js"
 import { client } from "../../index"
-import { executeQuery, getLogChannel } from "../../functions"
+import { ExecuteQuery, GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
 
 export default async(oldRole: Role, newRole: Role) => {
     var guild = client!.guilds.cache.get(oldRole.guild!.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.RoleUpdate})
     const Entry = AuditLogFetch.entries.first()
 
-    console.log(colors.yellow(`EVENT\nA role was updated\n\
+    await HandleLog(colors.yellow(`EVENT\nA role was updated\n\
     `) + colors.yellow(`Role name : `) + (`${newRole.name}\n\
     `) + colors.yellow(`Role ID : `) + (`${newRole.id}\n\
     `) + colors.red(`In server : `) + (`${newRole.guild.name}\n\

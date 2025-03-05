@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
-import { getLogChannel } from "../../functions";
+import { GetLogChannel, HandleLog } from "../../functions";
 import colors from "colors"
 import { client } from "../../index"
 
@@ -7,16 +7,16 @@ export default async(member: GuildMember) => {
     
     var guild = client!.guilds.cache.get(member.guild.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    console.log(colors.blue(`EVENT\nA member quitted the server\n\
-    `) + colors.blue("User username : ") + (`${member.user.username}\n\
-    `) + colors.blue("User ID : ") + (`${member.user.id}\n\
-    `) + colors.blue(`In guild : `) + (`${member.guild?.name}\n\
-    `) + colors.blue(`Guild ID : `) + (`${member.guild?.id}\n\
-    `) + colors.blue("Server members number : ") + (`${guild?.members.cache.size}\n\
-    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    await HandleLog(colors.blue(`EVENT\nA member quitted the server\n\
+        `) + colors.blue("User username : ") + (`${member.user.username}\n\
+        `) + colors.blue("User ID : ") + (`${member.user.id}\n\
+        `) + colors.blue(`In guild : `) + (`${member.guild?.name}\n\
+        `) + colors.blue(`Guild ID : `) + (`${member.guild?.id}\n\
+        `) + colors.blue("Server members number : ") + (`${guild?.members.cache.size}\n\
+        `) + colors.cyan(`${new Date().toLocaleString()}\n`))
     
     const embed = new EmbedBuilder()
     .setAuthor({name: `${member.user.username}`, iconURL: `${member.user.displayAvatarURL()}`})

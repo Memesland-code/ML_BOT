@@ -1,5 +1,5 @@
 import { EmbedBuilder, TextChannel, Message, AuditLogEvent, User } from "discord.js";
-import { getLogChannel } from "../../functions";
+import { GetLogChannel, HandleLog } from "../../functions";
 import colors from "colors"
 import { botAdmins, client } from "../../index"
 
@@ -7,7 +7,7 @@ export default async(message: Message) => {
 
     var guild = client!.guilds.cache.get(message.guild!.id)
 
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MessageDelete})
@@ -28,7 +28,7 @@ export default async(message: Message) => {
 
     const messageChannel = message.channel as TextChannel
 
-    console.log(colors.blue(`EVENT\nMessage deleted\n\
+    await HandleLog(colors.blue(`EVENT\nMessage deleted\n\
     `) + colors.blue(`From user : `) + (`${message.author?.username}\n\
     `) + colors.blue(`User ID : `) + (`${message.author?.id}\n\
     `) + colors.blue(`In guild : `) + (`${message.guild?.name}\n\

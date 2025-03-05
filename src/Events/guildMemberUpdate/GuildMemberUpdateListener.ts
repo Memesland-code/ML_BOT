@@ -1,12 +1,12 @@
 import { APIEmbedField, AuditLogEvent, EmbedBuilder, GuildMember, TextChannel } from "discord.js";
-import { getLogChannel } from "../../functions";
+import { GetLogChannel, HandleLog } from "../../functions";
 import colors from "colors"
 import { client } from "../../index"
 
 export default async(oldMember: GuildMember, newMember: GuildMember) => {
     var guild = client!.guilds.cache.get(oldMember.guild.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberUpdate})
@@ -26,21 +26,19 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
     }
     newRolesList = newRolesList.substring(0, newRolesList.length - 4)
     
-
-    console.log(colors.blue(`EVENT\nServer member updated\n\
-    `) + colors.blue(`Modified user username : `) + (`${oldMember.user.username}\n\
-    `) + colors.blue(`Modified user ID : `) + (`${oldMember.user.id}\n\
-    `) + colors.blue(`In guild : `) + (`${oldMember.guild?.name}\n\
-    `) + colors.blue(`Guild ID : `) + (`${oldMember.guild?.id}\n\
-    `) + colors.blue(`Old display name : `) + (`${oldMember.nickname}\n\
-    `) + colors.blue(`New display name : `) + (`${newMember.nickname}\n\
-    `) + colors.blue(`Old roles list : `) + (`${oldRolesList}\n\
-    `) + colors.blue(`New roles list : `) + (`${oldRolesList}\n\
-    `) + colors.magenta(`Executor username : `) + (`${Entry?.executor?.id}\n\
-    `) + colors.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
-    `) + colors.gray(`Please note that if all above are the same, the guild member update performed is not supported yet\n\
-    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
-
+    await HandleLog(colors.blue(`EVENT\nServer member updated\n\
+        `) + colors.blue(`Modified user username : `) + (`${oldMember.user.username}\n\
+        `) + colors.blue(`Modified user ID : `) + (`${oldMember.user.id}\n\
+        `) + colors.blue(`In guild : `) + (`${oldMember.guild?.name}\n\
+        `) + colors.blue(`Guild ID : `) + (`${oldMember.guild?.id}\n\
+        `) + colors.blue(`Old display name : `) + (`${oldMember.nickname}\n\
+        `) + colors.blue(`New display name : `) + (`${newMember.nickname}\n\
+        `) + colors.blue(`Old roles list : `) + (`${oldRolesList}\n\
+        `) + colors.blue(`New roles list : `) + (`${oldRolesList}\n\
+        `) + colors.magenta(`Executor username : `) + (`${Entry?.executor?.id}\n\
+        `) + colors.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
+        `) + colors.gray(`Please note that if all above are the same, the guild member update performed is not supported yet\n\
+        `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embedFieldModifiednickname: APIEmbedField[] = [{name: "Modified display name", value: `Previous display name : ${oldMember.nickname}\nNew display name : ${newMember.nickname}`}]
 

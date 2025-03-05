@@ -1,25 +1,25 @@
 import { AuditLogEvent, EmbedBuilder, Role, TextChannel } from "discord.js"
 import { client } from "../../index"
-import { getLogChannel } from "../../functions"
+import { GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
 
 export default async(role: Role) => {
 
     var guild = client!.guilds.cache.get(role.guild!.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild?.fetchAuditLogs({limit: 1, type: AuditLogEvent.RoleCreate});
     const Entry = AuditLogFetch?.entries.first();
 
-    console.log(colors.yellow(`EVENT\nNew role created\n\
-    `) + colors.yellow(`ID : `) + (`${role.id}\n\
-    `) + colors.red(`In server : `) + (`${role.guild.name}\n\
-    `) + colors.red(`Server ID : `) + (`${role.guild.id}\n\
-    `) + colors.magenta(`Créé par : `) + (`${Entry?.executor?.tag}\n\
-    `) + colors.magenta(`ID : `) + (`${Entry?.executor?.id}\n\
-    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    await HandleLog(colors.yellow(`EVENT\nNew role created\n\
+        `) + colors.yellow(`ID : `) + (`${role.id}\n\
+        `) + colors.red(`In server : `) + (`${role.guild.name}\n\
+        `) + colors.red(`Server ID : `) + (`${role.guild.id}\n\
+        `) + colors.magenta(`Créé par : `) + (`${Entry?.executor?.tag}\n\
+        `) + colors.magenta(`ID : `) + (`${Entry?.executor?.id}\n\
+        `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     const embed = new EmbedBuilder()
     .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})

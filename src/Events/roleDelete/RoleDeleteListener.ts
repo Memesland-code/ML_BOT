@@ -1,18 +1,18 @@
 import { AuditLogEvent, EmbedBuilder, Role, TextChannel } from "discord.js"
 import { client } from "../../index"
-import { getLogChannel } from "../../functions"
+import { GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
 
 export default async(role: Role) => {
     var guild = client!.guilds.cache.get(role.guild!.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild?.fetchAuditLogs({limit: 1, type: AuditLogEvent.RoleDelete});
     const Entry = AuditLogFetch?.entries.first();
 
-    console.log(colors.yellow(`EVENT\nA role was deleted\n\
+    await HandleLog(colors.yellow(`EVENT\nA role was deleted\n\
     `) + colors.yellow(`Role name : `) + (`${role.name}\n\
     `) + colors.yellow(`ID : `) + (`${role.id}\n\
     `) + colors.yellow(`Hex color : `) + (`${role.hexColor}\n\

@@ -1,13 +1,13 @@
 import { APIEmbedField, AuditLogEvent, CategoryChannel, EmbedBuilder, TextChannel, User, VoiceBasedChannel, VoiceState } from "discord.js";
 import { botAdmins, client } from "../../index"
-import { getLogChannel } from "../../functions";
+import { GetLogChannel, HandleLog } from "../../functions";
 import colors from "colors"
 
 export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
     var guild = client!.guilds.cache.get(oldVoiceState.guild!.id)
     
-    var guildLogsChannelID = await getLogChannel(guild?.id) as string
+    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetchMemberUpdate = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberUpdate})
@@ -35,8 +35,8 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     const embed = new EmbedBuilder()
 
     if (memberMove) //* MEMBER MOVE
-        {
-        console.log(colors.blue(`EVENT\nUser was moved of its voice channel\n\
+    {
+        await HandleLog(colors.blue(`EVENT\nUser was moved of its voice channel\n\
     `) + colors.blue(`Modified user username : `) + (`${oldVoiceState.member?.user.username}\n\
     `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
     `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
@@ -88,7 +88,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
         if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 3000)) {
 
-            console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
+            await HandleLog(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
     `) + colors.blue(`User username : `) + (`${oldVoiceState.member?.user.username}\n\
     `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
     `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
@@ -124,8 +124,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         }
         else
         {
-            console.log(colors.red("DISCONNECT"))
-            console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
+            await HandleLog(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
     `) + colors.blue(`User username : `) + (`${oldVoiceState.member?.user.username}\n\
     `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
     `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
@@ -184,9 +183,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             voiceChannelCategory = oldVoiceState.channel?.parent!
         }
 
-
-
-        console.log(colors.blue(`EVENT\n${voiceChannelInteraction}\n\
+        await HandleLog(colors.blue(`EVENT\n${voiceChannelInteraction}\n\
     `) + colors.blue(`Modified user : `) + (`${voiceChannelUser.username}\n\
     `) + colors.blue(`User ID : `) + (`${voiceChannelUser.id}\n\
     `) + colors.blue(`In guild : `) + (`${voiceChannel.guild?.name}\n\
@@ -210,8 +207,6 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     `) + colors.magenta(`Executor username : `) + (`${Entry?.executor?.username}\n\
     `) + colors.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
-
-
 
         const embedFieldServerMute: APIEmbedField[] = [{name: "Server muted?", value: `\`\`\`md\n# Old ==> ${oldVoiceState.serverMute}\n> New ==> ${newVoiceState.serverMute}\`\`\``}]
 
