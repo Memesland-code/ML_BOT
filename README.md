@@ -1,8 +1,8 @@
 # ML_BOT
 Private Discord bot for Memes_land server
 
-Versionning commit message syntax:\n
-[msg] - v*x*.*y*.*z*.*r*
+Versionning commit message syntax:<br />
+[msg] - v**x**.**y**.**z**.**r**
 - x : Major version
 - y : Minor version
 - z : Patch version
