@@ -14,7 +14,7 @@ async function CheckTableExist(table) {
 
 export async function IsBotPerformingMaintenance(){
     if (await !CheckTableExist("Admin")) {
-        console.log(colors.red("Error, table Admin does not exists!"))
+        HandleLog(colors.red("Error, table Admin does not exists!"))
         return false
     }
     
@@ -64,10 +64,9 @@ export async function HandleLog(logMessage) {
 
     try {
         const fd = fs.openSync(`./logs/${logFile}.txt`, 'a')
-        fs.appendFileSync(fd, colors.stripColors(logMessage))
-        console.log("Log written to file succsessfuly!")
+        fs.appendFileSync(fd, colors.stripColors(logMessage + "\n"))
         fs.closeSync(fd)
     } catch (err) {
-        console.log(colors.red(`Error when writting log to file : ${err}`))
+        HandleLog(colors.red(`Error when writting log to file : ${err}`))
     }
 }

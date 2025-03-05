@@ -84,8 +84,6 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     else if (memberDisconnect) //* MEMBER DISCONNECT
     {
 
-        console.log(EntryMemberDisconnect?.createdTimestamp, Date.now())
-
         if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 3000)) {
 
             await HandleLog(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
@@ -257,7 +255,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
         if (oldVoiceState.channel != undefined) embed.addFields(embedFieldEventExecutor)
     } else {
-        console.error(colors.red(`An error occured while creating parsing the 3 possible states of VoiceUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Planned Bounds`)) //* VSUT_LogBuildFail
+        HandleLog(colors.red(`An error occured while creating parsing the 3 possible states of VoiceUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Planned Bounds`)) //* VSUT_LogBuildFail
         logsChannel.send({content: `<@${botAdmins[0]}> An error occured while parsing the 3 possible states of VoiceStateUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Bounds`})
         return
     }

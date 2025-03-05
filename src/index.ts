@@ -4,7 +4,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 import fs from 'fs/promises'
 import mysql from 'mysql'
-import { IsBotPerformingMaintenance } from "./functions"
+import { HandleLog, IsBotPerformingMaintenance } from "./functions"
 var colors = require('colors')
 dotenv.config()
 
@@ -15,46 +15,6 @@ export const client = new DiscordJS.Client({
 
 export const botAdmins = ["382055791848325122", "272492463128576000"]
 
-async function setClientActivity() {
-  try {
-    const data = await fs.readFile('package.json', 'utf-8');
-    const obj = JSON.parse(data);
-    const clientVersion = obj.version;
-
-    client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
-  } catch (err) {
-    console.error("Error while reading package.json :", err);
-  }
-}
-
-client.on('ready', async() => {
-  new WOK({
-    client,
-    commandsDir: path.join(__dirname, "commands"),
-    events: {
-      dir: path.join(__dirname, "events")
-    },
-    botOwners: botAdmins
-  })
-
-  setClientActivity()
-
-  if (await IsBotPerformingMaintenance()) {
-    client.user?.setStatus('dnd')
-  } else {
-    client.user?.setStatus('online')
-  }
-})
-
-export const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: "mlbot",
-  password: process.env.DB_PASSWORD,
-  database: "ML_Bot"
-})
-
-
-
 //* Logs
 async function checkAndCreateLogsFolder() {
   try {
@@ -64,7 +24,7 @@ async function checkAndCreateLogsFolder() {
       await fs.mkdir("./logs");
     });
   } catch (err) {
-    console.error("Error while verifying/creating folder logs :", err);
+    HandleLog("Error while verifying/creating folder logs :" + err);
   }
 }
 
@@ -100,7 +60,7 @@ async function constructLogFileName() {
 
     return `${todayDate}-${maxIndex + 1}`;
   } catch (error) {
-    console.error("Erreur lors de la lecture des fichiers :", error);
+    HandleLog("Erreur lors de la lecture des fichiers :" + error);
     throw error;
   }
 }
@@ -113,9 +73,9 @@ async function createLogFile() {
     const fileHandle = await fs.open(`./logs/${logFile}.txt`, 'w')
     await fileHandle.close()
 
-    console.log(colors.cyan("Log file created successfully!"));
+    HandleLog(colors.cyan("Log file created successfully!"));
   } catch (err) {
-    console.error("Error while creating log file :", err)
+    HandleLog("Error while creating log file :" + err)
     throw err
   }
 
@@ -154,19 +114,61 @@ export async function getCurrentLogFile() {
       return `${new Date().getFullYear().toString()}-${new Date().getDay().toString()}-${new Date().getDate().toString()}-${maxIndex}`
     }
   } catch (err) {
-    console.error("Error while reading logs folder :", err);
+    HandleLog("Error while reading logs folder :" + err);
     throw err;
   }
 }
 
-createLogFile()
+async function setClientActivity() {
+  try {
+    const data = await fs.readFile('package.json', 'utf-8');
+    const obj = JSON.parse(data);
+    const clientVersion = obj.version;
 
+    client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
+  } catch (err) {
+    HandleLog("Error while reading package.json :" + err);
+  }
+}
 
+client.on('ready', async() => {
+  new WOK({
+    client,
+    commandsDir: path.join(__dirname, "commands"),
+    events: {
+      dir: path.join(__dirname, "events")
+    },
+    botOwners: botAdmins
+  })
 
-db.connect(async (err) => {
-  if (err) throw err
-  await console.log(colors.green('Successfully connected to Mysql database'))
+  setClientActivity()
+
+  if (await IsBotPerformingMaintenance()) {
+    client.user?.setStatus('dnd')
+  } else {
+    client.user?.setStatus('online')
+  }
 })
 
-client.login(process.env.TOKEN)
-console.log(colors.green(`Bot successfully connected to Discord\nConnection time: ${new Date().toLocaleString()}`))
+export const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: "mlbot",
+  password: process.env.DB_PASSWORD,
+  database: "ML_Bot"
+})
+
+
+
+
+
+createLogFile().then(() => {
+  db.connect(async (err) => {
+    if (err) throw err
+    await HandleLog(colors.green('Successfully connected to Mysql database')).then(() => {
+        client.login(process.env.TOKEN)
+        HandleLog(colors.green(`Bot successfully connected to Discord\nConnection time: ${new Date().toLocaleString()}`)).then(() => {    
+      })
+    })
+  })
+})
+

@@ -81,7 +81,7 @@ export default async(message: Message) => {
                 try {
                     client.users.cache.find((user) => user.id === admin)?.send({content: `:warning: <@${admin}>!\nUser ${executor.username} tried to delete a logged message!`, embeds: [message.embeds[0]]})
                 } catch (error) {
-                    console.log(error)
+                    HandleLog(error)
                 }
             });
         }
