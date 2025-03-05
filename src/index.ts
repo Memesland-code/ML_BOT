@@ -46,10 +46,10 @@ export const db = mysql.createConnection({
   database: "ML_Bot"
 })
 
-db.connect((err) => {
+db.connect(async (err) => {
   if (err) throw err
-  console.log(colors.green('Successfully connected to Mysql database'))
+  await console.log(colors.green('Successfully connected to Mysql database'))
 })
 
 client.login(process.env.TOKEN)
-console.log(colors.green(`Bot successfully connected to Discord`))
+console.log(colors.green(`Bot successfully connected to Discord\nConnection time: ${new Date().toLocaleString()}`))

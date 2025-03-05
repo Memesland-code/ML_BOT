@@ -14,7 +14,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     const EntryMemberUpdate = AuditLogFetchMemberUpdate.entries.first()
 
     const AuditLogFetchMemberDisconnect = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberDisconnect})
-    const EntryMemberDisconnect = AuditLogFetchMemberDisconnect.entries.first()
+    var EntryMemberDisconnect = AuditLogFetchMemberDisconnect.entries.first()
 
     var Entry
     var memberUpdate
@@ -25,7 +25,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         Entry = EntryMemberUpdate
         memberMove = true
     } else if (oldVoiceState.channel != null && newVoiceState.channel == undefined) {
-        Entry = EntryMemberUpdate
+        Entry = EntryMemberDisconnect
         memberDisconnect = true
     } else {
         Entry = EntryMemberUpdate
@@ -34,7 +34,7 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
     const embed = new EmbedBuilder()
 
-    if (memberMove)
+    if (memberMove) //* MEMBER MOVE
         {
         console.log(colors.blue(`EVENT\nUser was moved of its voice channel\n\
     `) + colors.blue(`Modified user username : `) + (`${oldVoiceState.member?.user.username}\n\
@@ -81,9 +81,14 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             ID : ${Entry.executor.id}\n`}
         ])
     }
-    else if (memberDisconnect)
+    else if (memberDisconnect) //* MEMBER DISCONNECT
     {
-        console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
+
+        console.log(EntryMemberDisconnect?.createdTimestamp, Date.now())
+
+        if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 3000)) {
+
+            console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
     `) + colors.blue(`User username : `) + (`${oldVoiceState.member?.user.username}\n\
     `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
     `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
@@ -93,32 +98,69 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     `) + colors.blue(`Previous channel users count : `) + (`${oldVoiceState.channel?.members.size}\n\
     `) + colors.blue(`Previous category name : `) + (`${oldVoiceState.channel?.parent?.name}\n\
     `) + colors.blue(`Previous category ID : `) + (`${oldVoiceState.channel?.parent?.id}\n\
-    `) + colors.magenta(`Executor username : `) + (`${EntryMemberDisconnect?.executor?.username}\n\
-    `) + colors.magenta(`Executor ID : `) + (`${EntryMemberDisconnect?.executor?.id}\n\
+    `) + colors.magenta(`Executor username : `) + (`${oldVoiceState.member?.user.username}\n\
+    `) + colors.magenta(`Executor ID : `) + (`${oldVoiceState.member?.user.id}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
+            embed
+            .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}`})
+            .setTitle("User was disconnected from voice channel")
+            .setColor("DarkGold")
+            .addFields([
+                {name: "User's infos", value: `\n\
+                User : <@${oldVoiceState.member?.user.id}>\n\
+                User ID : ${oldVoiceState.member?.user.id}`},
+                {name: "Previous channel infos", value: `\n\
+                Name : <#${oldVoiceState.channel?.id}>\n\
+                ID : ${oldVoiceState.channel?.id}\n\
+                Users count : ${oldVoiceState.channel?.members.size}`},
+                {name: "Previous category infos", value: `\n\
+                Name : <#${oldVoiceState.channel?.parent?.name}>\n\
+                ID : ${oldVoiceState.channel?.parent?.id}`},
+                {name: "Executor", value: `\n\
+                User : <@${oldVoiceState.member?.user.id}>\n\
+                ID : ${oldVoiceState.member?.user.id}\n`}
+            ])
+        }
+        else
+        {
+            console.log(colors.red("DISCONNECT"))
+            console.log(colors.blue(`EVENT\nUser was disconnected from voice channel\n\
+    `) + colors.blue(`User username : `) + (`${oldVoiceState.member?.user.username}\n\
+    `) + colors.blue(`User ID : `) + (`${oldVoiceState.member?.user.id}\n\
+    `) + colors.blue(`In guild : `) + (`${oldVoiceState.guild?.name}\n\
+    `) + colors.blue(`Guild ID : `) + (`${oldVoiceState.guild?.id}\n\
+    `) + colors.blue(`Previous channel name : `) + (`${oldVoiceState.channel?.name}\n\
+    `) + colors.blue(`Previous channel ID : `) + (`${oldVoiceState.channel?.id}\n\
+    `) + colors.blue(`Previous channel users count : `) + (`${oldVoiceState.channel?.members.size}\n\
+    `) + colors.blue(`Previous category name : `) + (`${oldVoiceState.channel?.parent?.name}\n\
+    `) + colors.blue(`Previous category ID : `) + (`${oldVoiceState.channel?.parent?.id}\n\
+    `) + colors.magenta(`Executor username : `) + (`${EntryMemberDisconnect?.executor!.username}\n\
+    `) + colors.magenta(`Executor ID : `) + (`${EntryMemberDisconnect?.executor!.id}\n\
+    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
-        embed
-        .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}`})
-        .setTitle("User was disconnected from voice channel")
-        .setColor("DarkGold")
-        .addFields([
-            {name: "User's infos", value: `\n\
-            User : <@${oldVoiceState.member?.user.id}>\n\
-            User ID : ${oldVoiceState.member?.user.id}`},
-            {name: "Previous channel infos", value: `\n\
-            Name : <#${oldVoiceState.channel?.id}>\n\
-            ID : ${oldVoiceState.channel?.id}\n\
-            Users count : ${oldVoiceState.channel?.members.size}`},
-            {name: "Previous category infos", value: `\n\
-            Name : <#${oldVoiceState.channel?.parent?.name}>\n\
-            ID : ${oldVoiceState.channel?.parent?.id}`},
-            {name: "Executor", value: `\n\
-            User : <@${EntryMemberDisconnect?.executor?.id}>\n\
-            ID : ${EntryMemberDisconnect?.executor?.id}\n`}
-        ])
+            embed
+            .setAuthor({name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}`})
+            .setTitle("User was disconnected from voice channel")
+            .setColor("DarkGold")
+            .addFields([
+                {name: "User's infos", value: `\n\
+                User : <@${oldVoiceState.member?.user.id}>\n\
+                User ID : ${oldVoiceState.member?.user.id}`},
+                {name: "Previous channel infos", value: `\n\
+                Name : <#${oldVoiceState.channel?.name}>\n\
+                ID : ${oldVoiceState.channel?.id}\n\
+                Users count : ${oldVoiceState.channel?.members.size}`},
+                {name: "Previous category infos", value: `\n\
+                Name : <#${oldVoiceState.channel?.parent?.name}>\n\
+                ID : ${oldVoiceState.channel?.parent?.id}`},
+                {name: "Executor", value: `\n\
+                User : <@${EntryMemberDisconnect?.executor?.id}>\n\
+                ID : ${EntryMemberDisconnect?.executor?.id}\n`}
+            ])
+        }    
     }
-    else if (memberUpdate)
+    else if (memberUpdate) //* MEMBER UPDATE
     {
         var voiceChannelInteraction: String = ""
         var voiceChannelUser: User
@@ -217,10 +259,11 @@ export default async(oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         if (oldVoiceState.streaming != newVoiceState.streaming) embed.addFields(embedFieldStreaming)
     
         embed.addFields(embedFieldVoiceChannelUsersCount)
-        embed.addFields(embedFieldEventExecutor)
+
+        if (oldVoiceState.channel != undefined) embed.addFields(embedFieldEventExecutor)
     } else {
         console.error(colors.red(`An error occured while creating parsing the 3 possible states of VoiceUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Planned Bounds`)) //* VSUT_LogBuildFail
-        logsChannel.send({content: `<@${botAdmins[0]}> An error occured while parsing the 3 possible states of VoiceStateUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Planned Bounds`})
+        logsChannel.send({content: `<@${botAdmins[0]}> An error occured while parsing the 3 possible states of VoiceStateUpdateListener\nError code: VSUT_LogBuildFail\nDetails: Exception Out Of Bounds`})
         return
     }
 

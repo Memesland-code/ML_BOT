@@ -107,7 +107,7 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "outDir": "dist"
   },
-  "include": ["src"],
+  //"include": ["src"],
   "exclude": ["node_modules"],
 
   "watchOptions": {

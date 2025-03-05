@@ -9,7 +9,7 @@
     "tsx": "^4.7.1"
   },
   "name": "ml_bot",
-  "version": "0.1.1.32",
+  "version": "0.1.2.33",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
