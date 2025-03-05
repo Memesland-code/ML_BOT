@@ -10,7 +10,7 @@ Versionning commit message syntax:<br />
 <br />
 <br />
 <br />
-Liste des listeners :
+Liste des listeners :<br />
 - ChannelCreate
 - ChannelDelete
 - ChannelPinsUpdate
@@ -31,7 +31,7 @@ Liste des listeners :
 <br />
 <br />
 <br />
-Liste des commandes :
+Liste des commandes :<br />
 - Admin
     - clearCommandeCache (reset le cache commandes du bot)
     - setMaintenanceState (change le mode de maintenance du bot)
