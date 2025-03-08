@@ -73,9 +73,9 @@ async function createLogFile() {
     const fileHandle = await fs.open(`./logs/${logFile}.txt`, 'w')
     await fileHandle.close()
 
-    HandleLog(colors.cyan("Log file created successfully!"));
+    console.log(colors.cyan("Log file created successfully!"));
   } catch (err) {
-    HandleLog("Error while creating log file :" + err)
+    console.log("Error while creating log file :" + err)
     throw err
   }
 
