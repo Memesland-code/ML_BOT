@@ -23,8 +23,19 @@ export default async(message: Message) => {
         attachmentsLink = all_attachments
     } else attachmentsLink = "No attachment"
 
-    var executor
-    Entry?.executor == undefined ? executor = message.author : executor = Entry.executor
+    var executorID
+    var executorUsername
+    var executorUsernameFormatted
+
+    if (Entry?.createdTimestamp! > Date.now() - 2000) {
+        executorUsernameFormatted = `<@${Entry?.executor?.id}>`
+        executorUsername = Entry?.executor?.username
+        executorID = `${Entry?.executor?.id}`
+    } else {
+        executorUsernameFormatted = `Either <@${message.author.id}> or Discord automated deletion`
+        executorUsername = `Either ${message.author.username} or Discord automated deletion`
+        executorID = `Either ${message.author.id} or none`
+    }
 
     const messageChannel = message.channel as TextChannel
 
@@ -38,8 +49,8 @@ export default async(message: Message) => {
     `) + colors.blue(`Channel name : `) + (`#${messageChannel.name}\n\
     `) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n\
     `) + colors.blue(`Message initially sent on : `) + (`${message.createdAt.toLocaleString()}\n\
-    `) + colors.magenta(`Executor : `) + (`${executor?.username}\n\
-    `) + colors.magenta(`Executor ID : `) + (`${executor?.id}\n\
+    `) + colors.magenta(`Executor : `) + (`${executorUsername}\n\
+    `) + colors.magenta(`Executor ID : `) + (`${executorID}\n\
     `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
     let messageContent
@@ -71,7 +82,7 @@ export default async(message: Message) => {
         {name: `Message content`, value: `\`\`\`fix\n${messageContent}\n\`\`\``},
         {name: `Attachements`, value: `\n${attachmentsLink}\n`},
         {name: "Message initially sent on", value: `${message.createdAt.toLocaleString()}`},
-        {name: `Executor`, value: `\nUser : <@${executor?.id}>\nID : ${executor?.id}\n`},
+        {name: `Executor`, value: `\nUser : ${executorUsernameFormatted}\nID : ${executorID}\n`},
         ])
     .setFooter({text: `${new Date().toLocaleString()}`})
 
@@ -79,7 +90,7 @@ export default async(message: Message) => {
         if (message.embeds[0] != undefined) {
             botAdmins.forEach(admin => {
                 try {
-                    client.users.cache.find((user) => user.id === admin)?.send({content: `:warning: <@${admin}>!\nUser ${executor.username} tried to delete a logged message!`, embeds: [message.embeds[0]]})
+                    client.users.cache.find((user) => user.id === admin)?.send({content: `:warning: <@${admin}>!\nUser ${executorUsername} tried to delete a logged message!`, embeds: [message.embeds[0]]})
                 } catch (error) {
                     HandleLog(error)
                 }
