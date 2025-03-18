@@ -1,9 +1,9 @@
 import DiscordJS, { ActivityType, GatewayIntentBits, Partials } from "discord.js"
-import WOK from 'wokcommands'
-import path from 'path'
 import dotenv from 'dotenv'
 import fs from 'fs/promises'
 import mysql from 'mysql'
+import path from 'path'
+import WOK from 'wokcommands'
 import { HandleLog, IsBotPerformingMaintenance } from "./functions"
 var colors = require('colors')
 dotenv.config()
@@ -30,7 +30,7 @@ async function checkAndCreateLogsFolder() {
 
 checkAndCreateLogsFolder();
 
-const todayDate = `${new Date().getFullYear()}-${new Date().getDay()}-${new Date().getDate()}`
+const todayDate = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
 
 async function constructLogFileName() {
   var maxIndex = 0

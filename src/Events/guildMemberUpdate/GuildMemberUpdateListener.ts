@@ -12,6 +12,20 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
     const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberUpdate})
     const Entry = AuditLogFetch.entries.first()
 
+    var executorID
+    var executorUsername
+    var executorUsernameFormatted
+
+    if (Entry?.createdTimestamp! > Date.now() - 2000) {
+        executorUsernameFormatted = `<@${Entry?.executor?.id}>`
+        executorUsername = Entry?.executor?.username
+        executorID = `${Entry?.executor?.id}`
+    } else {
+        executorUsernameFormatted = `Couldn't find an executor in Discord audit logs`
+        executorUsername = `Couldn't find an executor in Discord audit logs`
+        executorID = `Couldn't find an executor in Discord audit logs`
+    }
+
     var oldRolesList: String = ""
     for (let roleName of oldMember.roles.cache.toJSON()) {
         if (roleName.name === "@everyone") continue
@@ -35,8 +49,8 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
         `) + colors.blue(`New display name : `) + (`${newMember.nickname}\n\
         `) + colors.blue(`Old roles list : `) + (`${oldRolesList}\n\
         `) + colors.blue(`New roles list : `) + (`${oldRolesList}\n\
-        `) + colors.magenta(`Executor username : `) + (`${Entry?.executor?.id}\n\
-        `) + colors.magenta(`Executor ID : `) + (`${Entry?.executor?.id}\n\
+        `) + colors.magenta(`Executor username : `) + (`${executorUsername}\n\
+        `) + colors.magenta(`Executor ID : `) + (`${executorID}\n\
         `) + colors.gray(`Please note that if all above are the same, the guild member update performed is not supported yet\n\
         `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
@@ -46,7 +60,7 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
 
     const enmbedFieldOtherModification: APIEmbedField[] = [{name: "Warning", value: `The guild member update performed is not supported yet.\nPlease check console for full details.`}]
 
-    const embedFieldEventExecutor: APIEmbedField[] = [{name: "Executor", value: `User : <@${Entry?.executor?.id}>\nID : ${Entry?.executor?.id}`}]
+    const embedFieldEventExecutor: APIEmbedField[] = [{name: "Executor", value: `User : ${executorUsernameFormatted}\nID : ${executorID}`}]
 
 
     const embed = new EmbedBuilder()

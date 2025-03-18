@@ -1,4 +1,4 @@
-import { EmbedBuilder, TextChannel, Message, AuditLogEvent, User } from "discord.js";
+import { EmbedBuilder, TextChannel, Message, AuditLogEvent } from "discord.js";
 import { GetLogChannel, HandleLog } from "../../functions";
 import colors from "colors"
 import { botAdmins, client } from "../../index"
