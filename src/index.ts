@@ -110,7 +110,7 @@ export async function getCurrentLogFile() {
     if (maxIndex == 0) {
       return await createLogFile() // Si on a pas trouvé d'index c'est qu'il faut créer un nouveau fichier pour le jour
     } else { // Sinon on renvoie le fichier actuel
-      return `${new Date().getFullYear().toString()}-${new Date().getDay().toString()}-${new Date().getDate().toString()}-${maxIndex}`
+      return `${new Date().getFullYear().toString()}-${(new Date().getMonth() + 1).toString()}-${new Date().getDate().toString()}-${maxIndex}`
     }
   } catch (err) {
     HandleLog("Error while reading logs folder :" + err);
