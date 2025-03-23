@@ -1,6 +1,6 @@
 import colors from "colors";
 import { AuditLogEvent, EmbedBuilder, Message, TextChannel } from "discord.js";
-import { GetLogChannel, HandleLog } from "../../functions";
+import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../functions";
 import { botAdmins, client } from "../../index";
 
 export default async (message: Message) => {
@@ -8,6 +8,7 @@ export default async (message: Message) => {
     var guild = client!.guilds.cache.get(message.guild!.id)
 
     var guildLogsChannelID = await GetLogChannel(guild?.id) as string
+    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id) as String
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageDelete })
@@ -89,7 +90,7 @@ export default async (message: Message) => {
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })
 
-    if (message.channel.id == guildLogsChannelID && message.author.id == client.user!.id) {
+    if ((message.channel.id == guildLogsChannelID || message.channel.id == guildHighLogsChannelID) && message.author.id == client.user!.id) {
         if (message.embeds[0] != undefined) {
             botAdmins.forEach(admin => {
                 try {
