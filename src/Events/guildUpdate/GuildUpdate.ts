@@ -1,39 +1,50 @@
 import colors from "colors"
 import { AuditLogEvent, EmbedBuilder, Guild, TextChannel } from "discord.js"
-import { GetLogChannel, HandleLog } from "../../functions"
-import { client } from "../../index"
+import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../functions"
+import { botAdmins, client } from "../../index"
 
 export default async (_oldGuild: Guild, newGuild: Guild) => {
 
     var guild = client!.guilds.cache.get(newGuild.id)
 
-    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-    var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
-    const AuditLogFetch = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.GuildUpdate });
-    const Entry = AuditLogFetch?.entries.first();
+    try {
+        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    await HandleLog(
-        colors.yellow(`EVENT\nServer was updated\n`) +
-        colors.yellow(`Server : `) + colors.white(`${newGuild.name}\n`) +
-        colors.yellow(`Server ID : `) + colors.white(`${newGuild.id}\n`) +
-        colors.magenta(`Executor : `) + colors.white(`${Entry?.executor!.username}\n`) +
-        colors.magenta(`ID : `) + colors.white(`${Entry?.executor!.id}\n`) +
-        colors.cyan(`${new Date().toLocaleString()}\n`)
-    )
+        const AuditLogFetch = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.GuildUpdate });
+        const Entry = AuditLogFetch?.entries.first();
 
-    const embed = new EmbedBuilder()
-        .setAuthor({ name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}` })
-        .setTitle("Server was updated")
-        .setColor("DarkBlue")
-        .addFields([
-            {
-                name: `Executor`, value: `\
-                User : <@${Entry?.executor?.id}>\n\
-                ID : ${Entry?.executor?.id}`
-            }
-        ])
-        .setFooter({ text: `${new Date().toLocaleString()}` })
+        await HandleLog(
+            colors.yellow(`EVENT\nServer was updated\n`) +
+            colors.yellow(`Server : `) + colors.white(`${newGuild.name}\n`) +
+            colors.yellow(`Server ID : `) + colors.white(`${newGuild.id}\n`) +
+            colors.magenta(`Executor : `) + colors.white(`${Entry?.executor!.username}\n`) +
+            colors.magenta(`ID : `) + colors.white(`${Entry?.executor!.id}\n`) +
+            colors.cyan(`${new Date().toLocaleString()}\n`)
+        )
 
-    logsChannel.send({ embeds: [embed] })
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}` })
+            .setTitle("Server was updated")
+            .setColor("DarkBlue")
+            .addFields([
+                {
+                    name: `Executor`, value: `\
+                    User : <@${Entry?.executor?.id}>\n\
+                    ID : ${Entry?.executor?.id}`
+                }
+            ])
+            .setFooter({ text: `${new Date().toLocaleString()}` })
+
+        logsChannel.send({ embeds: [embed] })
+    } catch (error) {
+
+        await console.log(`An error occured on VoiceStateUpdate listener\n${error}`)
+        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
+    }
+
+
 }

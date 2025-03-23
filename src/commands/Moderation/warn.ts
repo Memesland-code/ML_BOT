@@ -26,52 +26,62 @@ export default {
 
   callback: async ({ interaction, args }) => {
 
-    //* Basic check for bot maintenance
-    let interactor: string = interaction?.user.id!
-    if (await IsBotPerformingMaintenance() && !botAdmins.includes(interactor)) {
-      interaction?.reply({ content: "Vous ne pouvez pas effectuer de commandes pour l'instant, maintenance du bot en cours...", flags: ['Ephemeral'] })
-      return
-    }
-
-    var guild = interaction?.guildId
+    if (!interaction) return
+    var guild = interaction.guildId
 
     var guildLogsChannelID = await GetHighLogChannel(guild as string)
     var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    if (await CheckTableExist(`WARNINGS_${interaction?.guildId}`) == false) {
-      await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID VARCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason VARCHAR(1024));`)
-    }
-
-    const currentDateAndTime = `${new Date().getFullYear().toString()}-${(new Date().getMonth() + 1).toString()}-${new Date().getDate().toString()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-
-    var securedReasonString = ""
-    for (let i = 0; i < args[1].length; i++) {
-      if ("\"".includes(args[1][i])) {
-        securedReasonString += "\""
+    try {
+      //* Basic check for bot maintenance
+      let interactor: string = interaction?.user.id!
+      if (await IsBotPerformingMaintenance() && !botAdmins.includes(interactor)) {
+        interaction?.reply({ content: "Vous ne pouvez pas effectuer de commandes pour l'instant, maintenance du bot en cours...", flags: ['Ephemeral'] })
+        return
       }
-      securedReasonString += args[1][i]
+
+      if (await CheckTableExist(`WARNINGS_${interaction?.guildId}`) == false) {
+        await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID VARCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason VARCHAR(1024));`)
+      }
+
+      const currentDateAndTime = `${new Date().getFullYear().toString()}-${(new Date().getMonth() + 1).toString()}-${new Date().getDate().toString()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+
+      var securedReasonString = ""
+      for (let i = 0; i < args[1].length; i++) {
+        if ("\"".includes(args[1][i])) {
+          securedReasonString += "\""
+        }
+        securedReasonString += args[1][i]
+      }
+
+      const user = client.users.cache.get(String(args[0]))
+
+      const embed = new EmbedBuilder()
+        .setAuthor({ name: `${user?.username}`, iconURL: `${user?.avatarURL()}` })
+        .setTitle("A user was warned")
+        .setColor("DarkVividPink")
+        .addFields({
+          name: `Entry informations`, value: `\`\`\`md
+          [Warned user][${user?.username}]
+          [Warned user ID][${user?.id}]\n
+          [Warn date and time][${new Date().toLocaleString()}]\n
+          [Warn Executor][${interaction?.user.username}]
+          [Warn executor ID][${interaction?.user.id}]\n
+          [Warn reason][${args[1]}]\n
+          \`\`\``.split("\n").map(line => line.trim()).join("\n")
+        })
+
+      await ExecuteQuery(`INSERT INTO WARNINGS_${interaction?.guildId} (UserID, WarnDateAndTime, WarnExecutorID, WarnReason) VALUES ('${args[0]}', '${currentDateAndTime}', '${interaction?.user.id}', "${securedReasonString}");`)
+
+      interaction?.reply({ content: `User <@${args[0]}> has successfully been warned with reason: "**${args[1]}**"` })
+      highLogsChannel.send({ embeds: [embed] })
+    } catch (error) {
+
+      await console.log(`An error occured when running command ${interaction.commandName}\n${error}`)
+      await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on command ${interaction.commandName}\nPlease check console for full details` })
+      interaction.reply({ content: "An error occured when running command! The problem was reported to admins please wait for the resolution of the problem", flags: ["Ephemeral"] })
     }
 
-    const user = client.users.cache.get(String(args[0]))
 
-    const embed = new EmbedBuilder()
-      .setAuthor({ name: `${user?.username}`, iconURL: `${user?.avatarURL()}` })
-      .setTitle("A user was warned")
-      .setColor("DarkVividPink")
-      .addFields({
-        name: `Entry informations`, value: `\`\`\`md
-        [Warned user][${user?.username}]
-        [Warned user ID][${user?.id}]\n
-        [Warn date and time][${new Date().toLocaleString()}]\n
-        [Warn Executor][${interaction?.user.username}]
-        [Warn executor ID][${interaction?.user.id}]\n
-        [Warn reason][${args[1]}]\n
-        \`\`\``.split("\n").map(line => line.trim()).join("\n")
-      })
-
-    await ExecuteQuery(`INSERT INTO WARNINGS_${interaction?.guildId} (UserID, WarnDateAndTime, WarnExecutorID, WarnReason) VALUES ('${args[0]}', '${currentDateAndTime}', '${interaction?.user.id}', "${securedReasonString}");`)
-
-    interaction?.reply({ content: `User <@${args[0]}> has successfully been warned with reason: "**${args[1]}**"` })
-    highLogsChannel.send({ embeds: [embed] })
   }
 } as CommandObject
