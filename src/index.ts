@@ -31,7 +31,7 @@ async function checkAndCreateLogsFolder() {
 const todayDate = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
 
 async function constructLogFileName() {
-  var maxIndex = 0
+  let maxIndex = 0
 
   try {
     const files = await fs.readdir("./logs");
@@ -82,7 +82,7 @@ async function createLogFile() {
 
 // Récupère le fichier de log actif OU crée un nouveau si c'est le premier log de son jour
 export async function getCurrentLogFile() {
-  var maxIndex = 0
+  let maxIndex = 0
 
   try {
     const files = await fs.readdir("./logs")

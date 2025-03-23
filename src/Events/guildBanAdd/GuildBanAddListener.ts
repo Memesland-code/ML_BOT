@@ -5,12 +5,12 @@ import { botAdmins, client } from "../../index"
 
 export default async (ban: GuildBan) => {
 
-    var guild = client!.guilds.cache.get(ban.guild!.id)
+    let guild = client!.guilds.cache.get(ban.guild!.id)
 
     if (!guild) return
 
-    var guildLogsChannelID = await GetHighLogChannel(guild?.id) as string
-    var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+    let guildLogsChannelID = await GetHighLogChannel(guild?.id) as string
+    let highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     try {
         const AuditLogFetch = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberBanAdd })

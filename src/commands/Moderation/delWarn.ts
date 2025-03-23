@@ -27,10 +27,10 @@ export default {
   callback: async ({ interaction, args }) => {
 
     if (!interaction) return
-    var guild = interaction.guildId
+    let guild = interaction.guildId
 
-    var guildLogsChannelID = await GetHighLogChannel(guild as string)
-    var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+    let guildLogsChannelID = await GetHighLogChannel(guild as string)
+    let highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     try {
       //* Basic check for bot maintenance
@@ -49,7 +49,7 @@ export default {
       }
 
       if (await CheckTableExist(`WARNINGS_${interaction?.guildId}`) == false) {
-        await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID VARCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason VARCHAR(1024));`)
+        await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID letCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason letCHAR(1024));`)
       }
 
       // Get warn corresponding ID

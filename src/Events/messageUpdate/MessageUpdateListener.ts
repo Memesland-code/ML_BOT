@@ -11,16 +11,16 @@ export default async (oldMessage: Message, newMessage: Message) => {
 
     if (newMessage.embeds[0] != undefined) return
 
-    var guild = client!.guilds.cache.get(oldMessage.guild!.id)
+    let guild = client!.guilds.cache.get(oldMessage.guild!.id)
 
     if (!guild) return
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
-    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
+    let guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         let isAttachmentStillThere
         let allAttachments: any = []

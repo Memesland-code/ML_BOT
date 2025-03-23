@@ -46,7 +46,7 @@ export async function HandleLog(logMessage: String | unknown) {
 
     console.log(logMessage)
 
-    var logFile = await getCurrentLogFile()
+    let logFile = await getCurrentLogFile()
 
     try {
         const fd = fs.openSync(`./logs/${logFile}.txt`, 'a')

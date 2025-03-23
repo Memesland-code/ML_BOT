@@ -5,16 +5,16 @@ import { botAdmins, client } from "../../index";
 
 export default async (message: Message) => {
 
-    var guild = client!.guilds.cache.get(message.guild!.id)
+    let guild = client!.guilds.cache.get(message.guild!.id)
 
     if (!guild) return
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
-    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
+    let guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id)
-        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildLogsChannelID = await GetLogChannel(guild?.id)
+        let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         const AuditLogFetch = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageDelete })
         const Entry = AuditLogFetch.entries.first()
@@ -23,15 +23,15 @@ export default async (message: Message) => {
         let all_attachments: any = []
         if (message.attachments.size > 0) {
             message.attachments.forEach(attachment => {
-                var ImageLink = attachment.proxyURL
+                let ImageLink = attachment.proxyURL
                 all_attachments.push(ImageLink)
             })
             attachmentsLink = all_attachments
         } else attachmentsLink = "No attachment"
 
-        var executorID
-        var executorUsername: String | undefined
-        var executorUsernameFormatted
+        let executorID
+        let executorUsername: String | undefined
+        let executorUsernameFormatted
 
         if (Entry?.createdTimestamp! > Date.now() - 1500) {
             executorUsernameFormatted = `<@${Entry?.executor?.id}>`
@@ -70,10 +70,10 @@ export default async (message: Message) => {
         }
         else messageContent = "Deleted message was too long to be in an embeded message. Please check the console for full details"
 
-        var messageAuthorUsername
+        let messageAuthorUsername
         message.author == null ? messageAuthorUsername = "Unknown" : messageAuthorUsername = message.author.username
 
-        var messageAuthorIconURL
+        let messageAuthorIconURL
         message.author == null ? messageAuthorIconURL = "https://fr.wikipedia.org/wiki/Fichier:Flat_cross_icon.svg" : messageAuthorIconURL = message.author.displayAvatarURL()
 
         const embed = new EmbedBuilder()

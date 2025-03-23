@@ -5,16 +5,16 @@ import { botAdmins, client } from "../../index";
 
 export default async (member: GuildMember) => {
 
-    var guild = client!.guilds.cache.get(member.guild.id)
+    let guild = client!.guilds.cache.get(member.guild.id)
 
     if (!guild) return
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
-    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
+    let guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         await HandleLog(
             colors.blue(`EVENT\nA member quitted the server\n`) +

@@ -5,27 +5,27 @@ import { botAdmins, client } from "../../index";
 
 export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
-    var guild = client.guilds.cache.get(oldVoiceState.guild.id)
+    let guild = client.guilds.cache.get(oldVoiceState.guild.id)
 
     if (!guild) return
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
-    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
+    let guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         const AuditLogFetchMemberUpdate = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberUpdate })
         const EntryMemberUpdate = AuditLogFetchMemberUpdate.entries.first()
 
         const AuditLogFetchMemberDisconnect = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberDisconnect })
-        var EntryMemberDisconnect = AuditLogFetchMemberDisconnect.entries.first()
+        let EntryMemberDisconnect = AuditLogFetchMemberDisconnect.entries.first()
 
-        var Entry
-        var memberUpdate
-        var memberMove
-        var memberDisconnect
+        let Entry
+        let memberUpdate
+        let memberMove
+        let memberDisconnect
 
         if (oldVoiceState.channel?.id != newVoiceState.channel?.id && newVoiceState.channel != null && oldVoiceState.channel != null) {
             Entry = EntryMemberUpdate
@@ -193,10 +193,10 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         }
         else if (memberUpdate) //* MEMBER UPDATE
         {
-            var voiceChannelInteraction: String = ""
-            var voiceChannelUser: User
-            var voiceChannel: VoiceBasedChannel
-            var voiceChannelCategory: CategoryChannel
+            let voiceChannelInteraction: String = ""
+            let voiceChannelUser: User
+            let voiceChannel: VoiceBasedChannel
+            let voiceChannelCategory: CategoryChannel
 
             if (oldVoiceState.channel == undefined) {
                 voiceChannelInteraction = "User connected to voice channel"
@@ -215,9 +215,9 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                 voiceChannelCategory = oldVoiceState.channel?.parent!
             }
 
-            var executorID
-            var executorUsername
-            var executorUsernameFormatted
+            let executorID
+            let executorUsername
+            let executorUsernameFormatted
 
             if (Entry?.createdTimestamp! > Date.now() - 1500) {
                 executorUsernameFormatted = `<@${Entry?.executor?.id}>`

@@ -7,16 +7,16 @@ export default async (channel: TextBasedChannel) => {
 
     if (channel.type != ChannelType.GuildText) return
 
-    var guild = client!.guilds.cache.get(channel.guild!.id)
+    let guild = client!.guilds.cache.get(channel.guild!.id)
 
     if (!guild) return
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
-    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
+    let guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         const AuditLogFetchPinAdd = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessagePin })
         const EntryPinAdd = AuditLogFetchPinAdd?.entries.first()
@@ -24,9 +24,9 @@ export default async (channel: TextBasedChannel) => {
         const AuditLogFetchPinRemove = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageUnpin })
         const EntryPinRemove = AuditLogFetchPinRemove?.entries.first()
 
-        var Entry: GuildAuditLogsEntry
-        var AuditLog: GuildAuditLogs | null
-        var pinMessage: String
+        let Entry: GuildAuditLogsEntry
+        let AuditLog: GuildAuditLogs | null = null
+        let pinMessage: String
 
         if (AuditLogFetchPinAdd != null && EntryPinAdd != undefined && EntryPinAdd.createdTimestamp > Date.now() - 1500) {
             Entry = EntryPinAdd
@@ -37,11 +37,10 @@ export default async (channel: TextBasedChannel) => {
             AuditLog = AuditLogFetchPinRemove
             pinMessage = "Message pin was removed"
         } else {
-            AuditLog = null
             return
         }
 
-        var modifiedMessageID
+        let modifiedMessageID
 
         await AuditLogFetchPinAdd?.entries.forEach(element => {
             modifiedMessageID = element.extra.messageId

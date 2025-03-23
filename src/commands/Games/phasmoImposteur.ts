@@ -140,7 +140,7 @@ const step4_row = new ActionRowBuilder<ButtonBuilder>()
 
 
 //* Step 5 - In game embed
-var step5 = new EmbedBuilder()
+let step5 = new EmbedBuilder()
   .setTitle("En game")
   .setColor("DarkBlue")
   .setFields({ name: "Temps restant", value: `‎` })
@@ -241,7 +241,7 @@ const dmError = new EmbedBuilder()
 
 
 async function func_step6(interaction: any, confirmation5: any, response5: any, isError: boolean, collectorFilter: any) {
-  var response6
+  let response6
   if (isError) {
     response6 = await response5.edit({ embeds: [step6], components: [step6_row] })
   } else {
@@ -267,7 +267,7 @@ async function func_step6(interaction: any, confirmation5: any, response5: any, 
 
 /*
 async function func_step6_1(interaction: any, confirmation6_1: any, response6_1: any, isError: boolean, collectorFilter: any) {
-  var response6_1
+  let response6_1
   if (isError) {
     response6_1 = await response6_1.edit({embeds: [step7], components: [step7_row]})
   } else {
@@ -289,7 +289,7 @@ async function func_step6_1(interaction: any, confirmation6_1: any, response6_1:
 
 
 async function func_step7(interaction: any, confirmation6: any, response6: any, isError: boolean, collectorFilter: any) {
-  var response7
+  let response7
   if (isError) {
     response7 = await response6.edit({ embeds: [step7], components: [step7_row] })
   } else {
@@ -376,12 +376,12 @@ export default {
       return
     }
 
-    var mapList = ["10 Ridgeview Court", "13 Willow Street", "42 Edgefield Road", "6 Tanglewood Drive", "Bleasdale Farmhouse", "Camp Woodwind", "Grafton Farmhouse"]
+    let mapList = ["10 Ridgeview Court", "13 Willow Street", "42 Edgefield Road", "6 Tanglewood Drive", "Bleasdale Farmhouse", "Camp Woodwind", "Grafton Farmhouse"]
 
     if (args[4] == "true") mapList.push("Brownstone High School", "Maple Lodge Campsite", "Prison")
     if (args[5] == "true") mapList.push("Sunny Meadows Mental Institution")
 
-    var chosenMap = mapList[Math.floor(Math.random() * mapList.length)]
+    let chosenMap = mapList[Math.floor(Math.random() * mapList.length)]
     if (chosenMap == undefined) chosenMap = mapList[0]
 
     step2.setFields({ name: "Map choisie", value: `${chosenMap}` })
@@ -393,7 +393,7 @@ export default {
       { name: "Joueur 4", value: `<@${args[3]}>` }
     )
 
-    var impostor: any = interaction?.client.users.cache.get(args[Math.floor(Math.random() * 4)])
+    let impostor: any = interaction?.client.users.cache.get(args[Math.floor(Math.random() * 4)])
 
     if (args[6] == "true" && interaction?.channel?.type === ChannelType.GuildText) {
       await interaction.channel.send({ embeds: [pointsReminder] })

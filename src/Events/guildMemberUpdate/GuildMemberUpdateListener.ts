@@ -5,23 +5,23 @@ import { botAdmins, client } from "../../index";
 
 export default async (oldMember: GuildMember, newMember: GuildMember) => {
 
-    var guild = client!.guilds.cache.get(oldMember.guild.id)
+    let guild = client!.guilds.cache.get(oldMember.guild.id)
 
     if (!guild) return
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
-    var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
+    let guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-        var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         const AuditLogFetch = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberUpdate })
         const Entry = AuditLogFetch.entries.first()
 
-        var executorID
-        var executorUsername
-        var executorUsernameFormatted
+        let executorID
+        let executorUsername
+        let executorUsernameFormatted
 
         if (Entry?.createdTimestamp! > Date.now() - 1500) {
             executorUsernameFormatted = `<@${Entry?.executor?.id}>`
@@ -33,14 +33,14 @@ export default async (oldMember: GuildMember, newMember: GuildMember) => {
             executorID = `Couldn't find an executor in Discord audit logs`
         }
 
-        var oldRolesList: String = ""
+        let oldRolesList: String = ""
         for (let roleName of oldMember.roles.cache.toJSON()) {
             if (roleName.name === "@everyone") continue
             oldRolesList += roleName.name + ", \n"
         }
         oldRolesList = oldRolesList.substring(0, oldRolesList.length - 4)
 
-        var newRolesList: String = ""
+        let newRolesList: String = ""
         for (let roleName of newMember.roles.cache.toJSON()) {
             if (roleName.name === "@everyone") continue
             newRolesList += roleName.name + ", \n"
