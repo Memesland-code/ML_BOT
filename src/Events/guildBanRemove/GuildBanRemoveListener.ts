@@ -1,21 +1,21 @@
 import colors from "colors"
 import { AuditLogEvent, EmbedBuilder, GuildBan, TextChannel } from "discord.js"
-import { GetLogChannel, HandleLog } from "../../functions"
+import { GetHighLogChannel, HandleLog } from "../../functions"
 import { client } from "../../index"
 
 export default async (ban: GuildBan) => {
 
     var guild = client!.guilds.cache.get(ban.guild!.id)
 
-    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-    var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+    var guildLogsChannelID = await GetHighLogChannel(guild?.id) as string
+    var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberBanRemove })
     const Entry = AuditLogFetch.entries.first()
 
     var executorUsername
     var executorID
-    if (Entry && Entry.createdTimestamp > Date.now() - 2000) {
+    if (Entry && Entry.createdTimestamp > Date.now() - 1500) {
         executorUsername = Entry.executor?.username
         executorID = Entry.executor?.id
     } else {
@@ -42,16 +42,16 @@ export default async (ban: GuildBan) => {
         .addFields([
             {
                 name: "User's infos", value: `\
-                User : <@${ban.user.id}>\n\
-                ID : ${ban.user.id}`
+            User : <@${ban.user.id}>\n\
+            ID : ${ban.user.id}`
             },
             {
                 name: "Executor", value: `\
-                User : <@${executorID}>\n\
-                ID : ${executorID}`
+            User : <@${executorID}>\n\
+            ID : ${executorID}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })
 
-    logsChannel.send({ embeds: [embed] })
+    highLogsChannel.send({ embeds: [embed] })
 }

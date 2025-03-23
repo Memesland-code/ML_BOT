@@ -1,14 +1,14 @@
 import colors from "colors"
 import { AuditLogEvent, EmbedBuilder, GuildBan, TextChannel } from "discord.js"
-import { GetLogChannel, HandleLog } from "../../functions"
+import { GetHighLogChannel, HandleLog } from "../../functions"
 import { client } from "../../index"
 
 export default async (ban: GuildBan) => {
 
     var guild = client!.guilds.cache.get(ban.guild!.id)
 
-    var guildLogsChannelID = await GetLogChannel(guild?.id) as string
-    var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+    var guildLogsChannelID = await GetHighLogChannel(guild?.id) as string
+    var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     const AuditLogFetch = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberBanAdd })
     const Entry = AuditLogFetch?.entries.first()
@@ -44,5 +44,5 @@ export default async (ban: GuildBan) => {
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })
 
-    logsChannel.send({ embeds: [embed] })
+    highLogsChannel.send({ embeds: [embed] })
 }

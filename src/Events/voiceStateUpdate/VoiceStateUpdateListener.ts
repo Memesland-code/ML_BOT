@@ -93,7 +93,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     else if (memberDisconnect) //* MEMBER DISCONNECT
     {
 
-        if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 3000)) {
+        if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 1500)) {
 
             await HandleLog(
                 colors.blue(`EVENT\nUser was disconnected from voice channel\n`) +
@@ -209,6 +209,20 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             voiceChannelCategory = oldVoiceState.channel?.parent!
         }
 
+        var executorID
+        var executorUsername
+        var executorUsernameFormatted
+
+        if (Entry?.createdTimestamp! > Date.now() - 1500) {
+            executorUsernameFormatted = `<@${Entry?.executor?.id}>`
+            executorUsername = Entry?.executor?.username
+            executorID = `${Entry?.executor?.id}`
+        } else {
+            executorUsernameFormatted = `<@${newVoiceState.member?.user.id}>`
+            executorUsername = `${newVoiceState.member?.user.username}`
+            executorID = `${newVoiceState.member?.user.id}`
+        }
+
         await HandleLog(
             colors.blue(`EVENT\n${voiceChannelInteraction}\n`) +
             colors.blue(`Modified user : `) + colors.white(`${voiceChannelUser.username}\n`) +
@@ -231,8 +245,8 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             colors.blue(`New camera share state : `) + colors.white(`${newVoiceState.selfVideo}\n`) +
             colors.blue(`Old stream state : `) + colors.white(`${oldVoiceState.streaming}\n`) +
             colors.blue(`New stream state : `) + colors.white(`${newVoiceState.streaming}\n`) +
-            colors.magenta(`Executor username : `) + colors.white(`${Entry?.executor?.username}\n`) +
-            colors.magenta(`Executor ID : `) + colors.white(`${Entry?.executor?.id}\n`) +
+            colors.magenta(`Executor username : `) + colors.white(`${executorUsername}\n`) +
+            colors.magenta(`Executor ID : `) + colors.white(`${executorID}\n`) +
             colors.cyan(`${new Date().toLocaleString()}\n`)
         )
 
@@ -250,7 +264,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
         const embedFieldVoiceChannelUsersCount: APIEmbedField[] = [{ name: "Connected members count", value: `\`\`\`fix\n${voiceChannel.members.size}\n\`\`\`` }]
 
-        const embedFieldEventExecutor: APIEmbedField[] = [{ name: "Executor", value: `\nUser : <@${Entry?.executor?.id}>\nID : ${Entry?.executor?.id}` }]
+        const embedFieldEventExecutor: APIEmbedField[] = [{ name: "Executor", value: `\nUser : ${executorUsernameFormatted}\nID : ${executorID}` }]
 
 
 

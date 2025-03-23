@@ -16,7 +16,7 @@ export default async (oldMember: GuildMember, newMember: GuildMember) => {
     var executorUsername
     var executorUsernameFormatted
 
-    if (Entry?.createdTimestamp! > Date.now() - 2000) {
+    if (Entry?.createdTimestamp! > Date.now() - 1500) {
         executorUsernameFormatted = `<@${Entry?.executor?.id}>`
         executorUsername = Entry?.executor?.username
         executorID = `${Entry?.executor?.id}`
