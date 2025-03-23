@@ -25,7 +25,7 @@ export default async (channel: TextBasedChannel) => {
         const EntryPinRemove = AuditLogFetchPinRemove?.entries.first()
 
         var Entry: GuildAuditLogsEntry
-        var AuditLog: GuildAuditLogs
+        var AuditLog: GuildAuditLogs | null
         var pinMessage: String
 
         if (AuditLogFetchPinAdd != null && EntryPinAdd != undefined && EntryPinAdd.createdTimestamp > Date.now() - 1500) {
@@ -37,6 +37,7 @@ export default async (channel: TextBasedChannel) => {
             AuditLog = AuditLogFetchPinRemove
             pinMessage = "Message pin was removed"
         } else {
+            AuditLog = null
             return
         }
 
