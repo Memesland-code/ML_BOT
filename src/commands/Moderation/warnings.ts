@@ -1,7 +1,8 @@
+import colors from "colors"
 import { ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits, TextChannel } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
 import { botAdmins, client } from "../.."
-import { CheckTableExist, ExecuteQuery, GetHighLogChannel, IsBotPerformingMaintenance } from "../../functions"
+import { CheckTableExist, ExecuteQuery, GetHighLogChannel, HandleLog, IsBotPerformingMaintenance } from "../../functions"
 
 export default {
   description: "Get warnings of an user",
@@ -35,7 +36,7 @@ export default {
       }
 
       if (await CheckTableExist(`WARNINGS_${interaction?.guildId}`) == false) {
-        await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID letCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason letCHAR(1024));`)
+        await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID VARCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason VARCHAR(1024));`)
       }
 
       // Get user reference from its ID
@@ -69,7 +70,7 @@ export default {
       interaction?.reply({ embeds: [embed] })
     } catch (error) {
 
-      await console.log(`An error occured when running command ${interaction.commandName}\n${error}`)
+      await HandleLog(colors.red(`An error occured when running command ${interaction.commandName}\n${error}`))
       await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on command ${interaction.commandName}\nPlease check console for full details` })
       interaction.reply({ content: "An error occured when running command! The problem was reported to admins please wait for the resolution of the problem", flags: ["Ephemeral"] })
     }

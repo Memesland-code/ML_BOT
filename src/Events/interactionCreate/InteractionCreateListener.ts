@@ -54,7 +54,7 @@ export default async (interaction: BaseInteraction) => {
         logsChannel.send({ embeds: [embed] })
     } catch (error) {
 
-        await console.log(`An error occured on InteractionCreate listener\n${error}`)
+        await HandleLog(colors.red(`An error occured on InteractionCreate listener\n${error}`))
         await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
     }
 
