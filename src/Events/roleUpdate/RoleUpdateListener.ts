@@ -1,39 +1,45 @@
-import { AuditLogEvent, EmbedBuilder, Role, TextChannel } from "discord.js"
-import { client } from "../../index"
-import { ExecuteQuery, GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
+import { AuditLogEvent, EmbedBuilder, Role, TextChannel } from "discord.js"
+import { GetLogChannel, HandleLog } from "../../functions"
+import { client } from "../../index"
 
-export default async(oldRole: Role, newRole: Role) => {
+export default async (oldRole: Role, newRole: Role) => {
     var guild = client!.guilds.cache.get(oldRole.guild!.id)
-    
+
     var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.RoleUpdate})
+    const AuditLogFetch = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.RoleUpdate })
     const Entry = AuditLogFetch.entries.first()
 
-    await HandleLog(colors.yellow(`EVENT\nA role was updated\n\
-    `) + colors.yellow(`Role name : `) + (`${newRole.name}\n\
-    `) + colors.yellow(`Role ID : `) + (`${newRole.id}\n\
-    `) + colors.red(`In server : `) + (`${newRole.guild.name}\n\
-    `) + colors.red(`Server ID : `) + (`${newRole.guild.id}\n\
-    `) + colors.magenta(`Updated by user : `) + (`${Entry?.executor?.username}\n\
-    `) + colors.magenta(`User ID : `) + (`${Entry?.executor?.id}\n\
-    `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    await HandleLog(
+        colors.yellow(`EVENT\nA role was updated\n\
+        `) + colors.yellow(`Role name : `) + (`${newRole.name}\n\
+        `) + colors.yellow(`Role ID : `) + (`${newRole.id}\n\
+        `) + colors.red(`In server : `) + (`${newRole.guild.name}\n\
+        `) + colors.red(`Server ID : `) + (`${newRole.guild.id}\n\
+        `) + colors.magenta(`Updated by user : `) + (`${Entry?.executor?.username}\n\
+        `) + colors.magenta(`User ID : `) + (`${Entry?.executor?.id}\n\
+        `) + colors.cyan(`${new Date().toLocaleString()}\n`)
+    )
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}`})
-    .setTitle("A role was updated")
-    .setColor("Yellow")
-    .addFields([
-        {name: "Role infos", value: `\
+        .setAuthor({ name: `${Entry?.executor?.username}`, iconURL: `${Entry?.executor?.displayAvatarURL()}` })
+        .setTitle("A role was updated")
+        .setColor("Yellow")
+        .addFields([
+            {
+                name: "Role infos", value: `\
         Role : <@&${newRole.id}>\n\
-        ID : ${newRole.id}`},
-        {name: "Executor", value: `\
+        ID : ${newRole.id}`
+            },
+            {
+                name: "Executor", value: `\
         User : <@${Entry?.executor?.id}>\n\
-        ID : ${Entry?.executor?.id}`}
-    ])
-    .setFooter({text: `${new Date().toLocaleString()}`})
+        ID : ${Entry?.executor?.id}`
+            }
+        ])
+        .setFooter({ text: `${new Date().toLocaleString()}` })
 
-    logsChannel.send({embeds: [embed]})
+    logsChannel.send({ embeds: [embed] })
 }

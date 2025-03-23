@@ -1,9 +1,9 @@
-import { EmbedBuilder, Message, TextChannel } from "discord.js"
-import { client } from "../../index"
-import { GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
+import { EmbedBuilder, Message, TextChannel } from "discord.js"
+import { GetLogChannel, HandleLog } from "../../functions"
+import { client } from "../../index"
 
-export default async(oldMessage: Message, newMessage: Message) => {
+export default async (oldMessage: Message, newMessage: Message) => {
 
     if (oldMessage.partial) oldMessage = await oldMessage.fetch()
 
@@ -12,7 +12,7 @@ export default async(oldMessage: Message, newMessage: Message) => {
     if (newMessage.embeds[0] != undefined) return
 
     var guild = client!.guilds.cache.get(oldMessage.guild!.id)
-    
+
     var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
@@ -28,29 +28,31 @@ export default async(oldMessage: Message, newMessage: Message) => {
 
     let isAttachment;
     let all_attachments: any = []
-    if(newMessage.attachments.size > 0) {
-      newMessage.attachments.forEach(attachment => {
-        const ImageLink = attachment.proxyURL;
-        all_attachments.push(ImageLink)
-      })
-      isAttachment = all_attachments
+    if (newMessage.attachments.size > 0) {
+        newMessage.attachments.forEach(attachment => {
+            const ImageLink = attachment.proxyURL;
+            all_attachments.push(ImageLink)
+        })
+        isAttachment = all_attachments
     } else isAttachment = `No attachment`
 
     const messageChannel = oldMessage.channel as TextChannel
 
-    await HandleLog(colors.blue(`EVENT\nMessage modified\n\
-        `) + colors.blue(`In guild : `) + (`${oldMessage.guild?.name}\n\
-        `) + colors.blue(`Guild ID : `) + (`${oldMessage.guild?.id}\n\
-        `) + colors.blue(`By : `) + (`${oldMessage.author?.username}\n\
-        `) + colors.blue(`ID : `) + (`${oldMessage.author?.id}\n\
-        `) + colors.blue(`Old message : `) + (`${oldMessage.content}\n\
-        `) + colors.blue(`New message : `) + (`${newMessage.content}\n\
-        `) + colors.blue(`Attachments if modified : `) + (`${isAttachmentStillThere}\n\
-        `) + colors.blue(`Current attachments : `) + (`${isAttachment}\n\
-        `) + colors.blue(`Channel name : `) + (`${messageChannel.name}\n\
-        `) + colors.blue(`Channel ID : `) + (`${messageChannel.id}\n\
-        `) + colors.blue(`Message initially sent : `) + (`${oldMessage.createdAt.toLocaleString()}\n\
-        `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    await HandleLog(
+        colors.blue((`EVENT\nMessage modified\n`) +
+            colors.blue(`In guild : `) + colors.white(`${oldMessage.guild?.name}\n`) +
+            colors.blue(`Guild ID : `) + colors.white(`${oldMessage.guild?.id}\n`) +
+            colors.blue(`By : `) + colors.white(`${oldMessage.author?.username}\n`) +
+            colors.blue(`ID : `) + colors.white(`${oldMessage.author?.id}\n`) +
+            colors.blue(`Old message : `) + colors.white(`${oldMessage.content}\n`) +
+            colors.blue(`New message : `) + colors.white(`${newMessage.content}\n`) +
+            colors.blue(`Attachments if modified : `) + colors.white(`${isAttachmentStillThere}\n`) +
+            colors.blue(`Current attachments : `) + colors.white(`${isAttachment}\n`) +
+            colors.blue(`Channel name : `) + colors.white(`${messageChannel.name}\n`) +
+            colors.blue(`Channel ID : `) + colors.white(`${messageChannel.id}\n`) +
+            colors.blue(`Message initially sent : `) + colors.white(`${oldMessage.createdAt.toLocaleString()}\n`) +
+            colors.cyan(`${new Date().toLocaleString()}\n`))
+    )
 
     let oldMessageContent
     if (oldMessage.content.length < 900) {
@@ -67,18 +69,18 @@ export default async(oldMessage: Message, newMessage: Message) => {
 
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.displayAvatarURL()}`})
-    .setTitle("Message modified")
-    .setColor("Gold")
-    .addFields([
-        {name: "User's message infos", value: `\nUser : <@${oldMessage.author.id}>\nUser ID : ${oldMessage.author.id}\nChannel name : <#${messageChannel.id}>\nChannel ID : ${messageChannel.id}`},
-        {name: "Old message content", value: `\`\`\`fix\n${oldMessageContent}\n\`\`\``},
-        {name: "New message content", value: `\`\`\`fix\n${newMessageContent}\n\`\`\``},
-        {name: "Old message attachments if removed", value: `${isAttachmentStillThere}`},
-        {name: "Current attachments", value: `${isAttachment}`},
-        {name: "Message initially sent", value: `${oldMessage.createdAt.toLocaleString()}`}
-    ])
-    .setFooter({text: `${new Date().toLocaleString()}`})
+        .setAuthor({ name: `${oldMessage.author.username}`, iconURL: `${oldMessage.author.displayAvatarURL()}` })
+        .setTitle("Message modified")
+        .setColor("Gold")
+        .addFields([
+            { name: "User's message infos", value: `\nUser : <@${oldMessage.author.id}>\nUser ID : ${oldMessage.author.id}\nChannel name : <#${messageChannel.id}>\nChannel ID : ${messageChannel.id}` },
+            { name: "Old message content", value: `\`\`\`fix\n${oldMessageContent}\n\`\`\`` },
+            { name: "New message content", value: `\`\`\`fix\n${newMessageContent}\n\`\`\`` },
+            { name: "Old message attachments if removed", value: `${isAttachmentStillThere}` },
+            { name: "Current attachments", value: `${isAttachment}` },
+            { name: "Message initially sent", value: `${oldMessage.createdAt.toLocaleString()}` }
+        ])
+        .setFooter({ text: `${new Date().toLocaleString()}` })
 
-    logsChannel.send({embeds: [embed]})
+    logsChannel.send({ embeds: [embed] })
 }

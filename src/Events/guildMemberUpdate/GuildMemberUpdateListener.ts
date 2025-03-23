@@ -1,15 +1,15 @@
+import colors from "colors";
 import { APIEmbedField, AuditLogEvent, EmbedBuilder, GuildMember, TextChannel } from "discord.js";
 import { GetLogChannel, HandleLog } from "../../functions";
-import colors from "colors"
-import { client } from "../../index"
+import { client } from "../../index";
 
-export default async(oldMember: GuildMember, newMember: GuildMember) => {
+export default async (oldMember: GuildMember, newMember: GuildMember) => {
     var guild = client!.guilds.cache.get(oldMember.guild.id)
-    
+
     var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    const AuditLogFetch = await guild!.fetchAuditLogs({limit: 1, type: AuditLogEvent.MemberUpdate})
+    const AuditLogFetch = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberUpdate })
     const Entry = AuditLogFetch.entries.first()
 
     var executorID
@@ -39,34 +39,36 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
         newRolesList += roleName.name + ", \n"
     }
     newRolesList = newRolesList.substring(0, newRolesList.length - 4)
-    
-    await HandleLog(colors.blue(`EVENT\nServer member updated\n\
-        `) + colors.blue(`Modified user username : `) + (`${oldMember.user.username}\n\
-        `) + colors.blue(`Modified user ID : `) + (`${oldMember.user.id}\n\
-        `) + colors.blue(`In guild : `) + (`${oldMember.guild?.name}\n\
-        `) + colors.blue(`Guild ID : `) + (`${oldMember.guild?.id}\n\
-        `) + colors.blue(`Old display name : `) + (`${oldMember.nickname}\n\
-        `) + colors.blue(`New display name : `) + (`${newMember.nickname}\n\
-        `) + colors.blue(`Old roles list : `) + (`${oldRolesList}\n\
-        `) + colors.blue(`New roles list : `) + (`${oldRolesList}\n\
-        `) + colors.magenta(`Executor username : `) + (`${executorUsername}\n\
-        `) + colors.magenta(`Executor ID : `) + (`${executorID}\n\
-        `) + colors.gray(`Please note that if all above are the same, the guild member update performed is not supported yet\n\
-        `) + colors.cyan(`${new Date().toLocaleString()}\n`))
 
-    const embedFieldModifiednickname: APIEmbedField[] = [{name: "Modified display name", value: `Previous display name : ${oldMember.nickname}\nNew display name : ${newMember.nickname}`}]
+    await HandleLog(
+        colors.blue(`EVENT\nServer member updated\n`) +
+        colors.blue(`Modified user username : `) + colors.white(`${oldMember.user.username}\n`) +
+        colors.blue(`Modified user ID : `) + colors.white(`${oldMember.user.id}\n`) +
+        colors.blue(`In guild : `) + colors.white(`${oldMember.guild?.name}\n`) +
+        colors.blue(`Guild ID : `) + colors.white(`${oldMember.guild?.id}\n`) +
+        colors.blue(`Old display name : `) + colors.white(`${oldMember.nickname}\n`) +
+        colors.blue(`New display name : `) + colors.white(`${newMember.nickname}\n`) +
+        colors.blue(`Old roles list : `) + colors.white(`${oldRolesList}\n`) +
+        colors.blue(`New roles list : `) + colors.white(`${oldRolesList}\n`) +
+        colors.magenta(`Executor username : `) + colors.white(`${executorUsername}\n`) +
+        colors.magenta(`Executor ID : `) + colors.white(`${executorID}\n`) +
+        colors.gray(`Please note that if all above are the same, the guild member update performed is not supported yet\n`) +
+        colors.cyan(`${new Date().toLocaleString()}\n`)
+    )
 
-    const embedFieldModifiedRolesList: APIEmbedField[] = [{name: "Previous roles list", value: `${oldRolesList}`, inline: true}, {name: "New roles list", value: `${newRolesList}`, inline: true}]
+    const embedFieldModifiednickname: APIEmbedField[] = [{ name: "Modified display name", value: `Previous display name : ${oldMember.nickname}\nNew display name : ${newMember.nickname}` }]
 
-    const enmbedFieldOtherModification: APIEmbedField[] = [{name: "Warning", value: `The guild member update performed is not supported yet.\nPlease check console for full details.`}]
+    const embedFieldModifiedRolesList: APIEmbedField[] = [{ name: "Previous roles list", value: `${oldRolesList}`, inline: true }, { name: "New roles list", value: `${newRolesList}`, inline: true }]
 
-    const embedFieldEventExecutor: APIEmbedField[] = [{name: "Executor", value: `User : ${executorUsernameFormatted}\nID : ${executorID}`}]
+    const enmbedFieldOtherModification: APIEmbedField[] = [{ name: "Warning", value: `The guild member update performed is not supported yet.\nPlease check console for full details.` }]
+
+    const embedFieldEventExecutor: APIEmbedField[] = [{ name: "Executor", value: `User : ${executorUsernameFormatted}\nID : ${executorID}` }]
 
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${oldMember.user.username}`, iconURL: `${oldMember.user.displayAvatarURL()}`})
-    .setTitle("An user was updated")
-    .setColor("Blue")
+        .setAuthor({ name: `${oldMember.user.username}`, iconURL: `${oldMember.user.displayAvatarURL()}` })
+        .setTitle("An user was updated")
+        .setColor("Blue")
 
     if (oldMember.nickname !== newMember.nickname) embed.addFields(embedFieldModifiednickname)
 
@@ -76,5 +78,5 @@ export default async(oldMember: GuildMember, newMember: GuildMember) => {
 
     embed.addFields(embedFieldEventExecutor)
 
-    logsChannel.send({embeds: [embed]})
+    logsChannel.send({ embeds: [embed] })
 }

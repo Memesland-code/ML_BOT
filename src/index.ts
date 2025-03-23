@@ -1,11 +1,11 @@
+import colors from "colors"
 import DiscordJS, { ActivityType, GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import fs from 'fs/promises'
-import mysql from 'mysql'
+import mysql from 'mysql2/promise'
 import path from 'path'
 import WOK from 'wokcommands'
 import { HandleLog, IsBotPerformingMaintenance } from "./functions"
-var colors = require('colors')
 dotenv.config()
 
 export const client = new DiscordJS.Client({
@@ -130,12 +130,12 @@ async function setClientActivity() {
   }
 }
 
-client.on('ready', async() => {
+client.on('ready', async () => {
   new WOK({
     client,
-    commandsDir: path.join(__dirname, "commands"),
+    commandsDir: path.join(__dirname, 'commands'),
     events: {
-      dir: path.join(__dirname, "events")
+      dir: path.join(__dirname, 'events')
     },
     botOwners: botAdmins
   })
@@ -149,25 +149,35 @@ client.on('ready', async() => {
   }
 })
 
-export const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: "mlbot",
-  password: process.env.DB_PASSWORD,
-  database: "ML_Bot"
-})
+
+
+let db
+
+export async function dbConnection() {
+  if (!db) {
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: "mlbot",
+      password: process.env.DB_PASSWORD,
+      database: "ML_Bot",
+      charset: "utf8mb4",
+      supportBigNumbers: true,
+      bigNumberStrings: true
+    })
+  }
+
+  return db
+}
+
+export { db }
 
 
 
-
-
-createLogFile().then(() => {
-  db.connect(async (err) => {
-    if (err) throw err
-    await HandleLog(colors.green('Successfully connected to Mysql database')).then(() => {
-        client.login(process.env.TOKEN)
-        HandleLog(colors.green(`Bot successfully connected to Discord\nConnection time: ${new Date().toLocaleString()}`)).then(() => {    
-      })
+createLogFile().then(async () => {
+  dbConnection().then(async () => {
+    await HandleLog(colors.green('Successfully connected to Mysql database')).then(async () => {
+      client.login(process.env.TOKEN)
+      HandleLog(colors.green(`Bot successfully connected to Discord\nConnection time: ${new Date().toLocaleString()}\n`))
     })
   })
 })
-

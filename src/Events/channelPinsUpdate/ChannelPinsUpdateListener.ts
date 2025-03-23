@@ -1,21 +1,21 @@
-import { AuditLogEvent, ChannelType, Collection, EmbedBuilder, GuildAuditLogs, GuildAuditLogsEntry, Message, TextBasedChannel, TextChannel } from "discord.js"
-import { client } from "../../index"
-import { GetLogChannel, HandleLog } from "../../functions"
 import colors from "colors"
+import { AuditLogEvent, ChannelType, EmbedBuilder, GuildAuditLogs, GuildAuditLogsEntry, TextBasedChannel, TextChannel } from "discord.js"
+import { GetLogChannel, HandleLog } from "../../functions"
+import { client } from "../../index"
 
-export default async(channel: TextBasedChannel, time: Date) => {
+export default async (channel: TextBasedChannel) => {
 
-    if (channel.type !=  ChannelType.GuildText) return
+    if (channel.type != ChannelType.GuildText) return
 
     var guild = client!.guilds.cache.get(channel.guild!.id)
-    
+
     var guildLogsChannelID = await GetLogChannel(guild?.id) as string
     var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-    const AuditLogFetchPinAdd = await guild?.fetchAuditLogs({limit: 1, type: AuditLogEvent.MessagePin})
+    const AuditLogFetchPinAdd = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessagePin })
     const EntryPinAdd = AuditLogFetchPinAdd?.entries.first()
 
-    const AuditLogFetchPinRemove = await guild?.fetchAuditLogs({limit: 1, type: AuditLogEvent.MessageUnpin})
+    const AuditLogFetchPinRemove = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageUnpin })
     const EntryPinRemove = AuditLogFetchPinRemove?.entries.first()
 
     var Entry: GuildAuditLogsEntry
@@ -40,34 +40,40 @@ export default async(channel: TextBasedChannel, time: Date) => {
         modifiedMessageID = element.extra.messageId
     });
 
-    await HandleLog(colors.yellow(`EVENT\n${pinMessage}\n\
-        `) + colors.yellow(`In guild : `) + (`${channel.guild}\n\
-        `) + colors.yellow(`Guild ID : `) + (`${channel.guild.id}\n\
-        `) + colors.yellow(`In channel : `) + (`${channel.name}\n\
-        `) + colors.yellow(`Channel ID : `) + (`${channel.id}\n\
-        `) + colors.yellow(`In category : `) + (`${channel.parent?.name}\n\
-        `) + colors.yellow(`Category ID : `) + (`${channel.parent?.id}\n\
-        `) + colors.yellow(`Message ref : `) + (`https://discord.com/channels/${channel.guild.id}/${channel.id}/${modifiedMessageID}\n\
-        `) + colors.magenta(`Executor username : `) + (`${Entry.executor?.username}\n\
-        `) + colors.magenta(`Executor ID : `) + (`${Entry.executor?.id}\n\
-        `) + colors.cyan(`${new Date().toLocaleString()}\n`))
+    await HandleLog(
+        colors.yellow(`EVENT\n${pinMessage}\n`) +
+        colors.yellow(`In guild : `) + colors.white(`${channel.guild}\n`) +
+        colors.yellow(`Guild ID : `) + colors.white(`${channel.guild.id}\n`) +
+        colors.yellow(`In channel : `) + colors.white(`${channel.name}\n`) +
+        colors.yellow(`Channel ID : `) + colors.white(`${channel.id}\n`) +
+        colors.yellow(`In category : `) + colors.white(`${channel.parent?.name}\n`) +
+        colors.yellow(`Category ID : `) + colors.white(`${channel.parent?.id}\n`) +
+        colors.yellow(`Message ref : `) + colors.white(`https://discord.com/channels/${channel.guild.id}/${channel.id}/${modifiedMessageID}\n`) +
+        colors.magenta(`Executor username : `) + colors.white(`${Entry.executor?.username}\n`) +
+        colors.magenta(`Executor ID : `) + colors.white(`${Entry.executor?.id}\n`) +
+        colors.cyan(`${new Date().toLocaleString()}\n`)
+    )
 
     const embed = new EmbedBuilder()
-    .setAuthor({name: `${Entry.executor?.username}`, iconURL: `${Entry.executor?.displayAvatarURL()}`})
-    .setTitle(`${pinMessage}`)
-    .setColor("DarkAqua")
-    .addFields([
-        {name: `Channel infos`, value: `\
+        .setAuthor({ name: `${Entry.executor?.username}`, iconURL: `${Entry.executor?.displayAvatarURL()}` })
+        .setTitle(`${pinMessage}`)
+        .setColor("DarkAqua")
+        .addFields([
+            {
+                name: `Channel infos`, value: `\
         Channel : <#${channel.id}>\n\
         ID : ${channel.id}\n\
         Category : ${channel.parent?.name}\n\
-        ID : ${channel.parent?.id}`},
-        {name: `Message ref`, value: `[Message](https://discord.com/channels/${channel.guild.id}/${channel.id}/${modifiedMessageID})`},
-        {name: `Executor`, value: `\
+        ID : ${channel.parent?.id}`
+            },
+            { name: `Message ref`, value: `[Message](https://discord.com/channels/${channel.guild.id}/${channel.id}/${modifiedMessageID})` },
+            {
+                name: `Executor`, value: `\
         User  : <@${Entry.executor?.id}>\n\
-        ID : ${Entry.executor?.id}`}
-    ])
-    .setFooter({text: `${new Date().toLocaleString()}`})
+        ID : ${Entry.executor?.id}`
+            }
+        ])
+        .setFooter({ text: `${new Date().toLocaleString()}` })
 
-    logsChannel.send({embeds: [embed]})
+    logsChannel.send({ embeds: [embed] })
 }

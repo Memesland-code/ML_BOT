@@ -1,59 +1,30 @@
-import { db, getCurrentLogFile } from "./index"
 import colors from "colors"
 import fs from "fs"
+import { db, getCurrentLogFile } from "./index"
 
-async function CheckTableExist(table) {
-    await db.query("SHOW TABLES LIKE ?", [table], (err, results) => {
-        if (err) throw err
-        if (results.length > 0) {
-            return true
-        }
-    })
-    return false
+export async function CheckTableExist(table) {
+    const [rows] = await db.query(`SHOW TABLES LIKE "${table}"`)
+    return ((rows as any[]).length > 0)
 }
 
-export async function IsBotPerformingMaintenance(){
+export async function IsBotPerformingMaintenance() {
     if (await !CheckTableExist("Admin")) {
         HandleLog(colors.red("Error, table Admin does not exists!"))
         return false
     }
-    
-    return new Promise((resolve, reject) => {
-        db.query("SELECT Value FROM Admin WHERE KeyName = 'MaintenanceState';", (error, results) => {
-            if (error) {
-                reject(error)
-                return
-            }
 
-            resolve(results[0].Value != 0)
-        })
-    })
+    const [rows] = await db.query(`SELECT Value FROM Admin WHERE KeyName = 'MaintenanceState';`)
+    return (rows[0].Value != 0)
 }
 
-export function ExecuteQuery(query){
-    return new Promise((resolve, reject) => {
-        db.query(query, (error, results) => {
-            if (error) {
-                reject(error)
-                return
-            }
-
-            resolve(results)
-        })
-    })
+export async function ExecuteQuery(query: string): Promise<[any[], any]> {
+    const [rows] = await db.query(query)
+    return (rows)
 }
 
-export function GetLogChannel(guildId) {
-    return new Promise((resolve, reject) => {
-        db.query(`SELECT LogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`, (error, results) => {
-            if (error) {
-                reject(error)
-                return
-            }
-
-            resolve(results[0].LogsChannel)
-        })
-    })
+export async function GetLogChannel(guildId) {
+    const [rows] = await db.query(`SELECT LogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`)
+    return (rows[0].LogsChannel)
 }
 
 export async function HandleLog(logMessage) {

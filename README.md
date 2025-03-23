@@ -33,6 +33,7 @@ Liste des commandes :
 - Admin
     - clearCommandeCache (reset le cache commandes du bot)
     - setMaintenanceState (change le mode de maintenance du bot)
+    - Warn (ajoute / récupère le(s) warn(s) d'un membre)
 
 - Games
     - phasmoImposteur (lance le mode de jeu phasmo imposteur)
