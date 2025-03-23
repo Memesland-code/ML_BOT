@@ -8,7 +8,7 @@ export default {
     description: "Delete a warning from database",
     type: CommandType.SLASH,
     guildOnly: true,
-    permissions: [PermissionFlagsBits.Administrator, PermissionFlagsBits.BanMembers, PermissionFlagsBits.KickMembers, PermissionFlagsBits.ModerateMembers],
+    permissions: [PermissionFlagsBits.Administrator],
     ownerOnly: false,
     options: [
         {
