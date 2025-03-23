@@ -27,6 +27,11 @@ export async function GetLogChannel(guildId) {
     return (rows[0].LogsChannel)
 }
 
+export async function GetHighLogChannel(guildId) {
+    const [rows] = await db.query(`SELECT HighLogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`)
+    return (rows[0].HighLogsChannel)
+}
+
 export async function HandleLog(logMessage) {
 
     console.log(logMessage)

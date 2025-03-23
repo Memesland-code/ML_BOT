@@ -1,7 +1,7 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js"
+import { ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits, TextChannel } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
-import { botAdmins } from "../.."
-import { CheckTableExist, ExecuteQuery, IsBotPerformingMaintenance } from "../../functions"
+import { botAdmins, client } from "../.."
+import { CheckTableExist, ExecuteQuery, GetHighLogChannel, IsBotPerformingMaintenance } from "../../functions"
 
 export default {
   description: "Warn a user",
@@ -33,6 +33,11 @@ export default {
       return
     }
 
+    var guild = interaction?.guildId
+
+    var guildLogsChannelID = await GetHighLogChannel(guild as string)
+    var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+
     if (await CheckTableExist(`WARNINGS_${interaction?.guildId}`) == false) {
       await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID VARCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason VARCHAR(1024));`)
     }
@@ -47,8 +52,26 @@ export default {
       securedReasonString += args[1][i]
     }
 
+    const user = client.users.cache.get(String(args[0]))
+
+    const embed = new EmbedBuilder()
+      .setAuthor({ name: `${user?.username}`, iconURL: `${user?.avatarURL()}` })
+      .setTitle("A user was warned")
+      .setColor("DarkVividPink")
+      .addFields({
+        name: `Entry informations`, value: `\`\`\`md
+        [Warned user][${user?.username}]
+        [Warned user ID][${user?.id}]\n
+        [Warn date and time][${new Date().toLocaleString()}]\n
+        [Warn Executor][${interaction?.user.username}]
+        [Warn executor ID][${interaction?.user.id}]\n
+        [Warn reason][${args[1]}]\n
+        \`\`\``.split("\n").map(line => line.trim()).join("\n")
+      })
+
     await ExecuteQuery(`INSERT INTO WARNINGS_${interaction?.guildId} (UserID, WarnDateAndTime, WarnExecutorID, WarnReason) VALUES ('${args[0]}', '${currentDateAndTime}', '${interaction?.user.id}', "${securedReasonString}");`)
 
     interaction?.reply({ content: `User <@${args[0]}> has successfully been warned with reason: "**${args[1]}**"` })
+    highLogsChannel.send({ embeds: [embed] })
   }
 } as CommandObject

@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits, TextChannel } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
 import { botAdmins, client } from "../.."
-import { CheckTableExist, ExecuteQuery, GetLogChannel, IsBotPerformingMaintenance } from "../../functions"
+import { CheckTableExist, ExecuteQuery, GetHighLogChannel, IsBotPerformingMaintenance } from "../../functions"
 
 export default {
   description: "Delete a warning from database",
@@ -35,8 +35,8 @@ export default {
 
     var guild = interaction?.guildId
 
-    var guildLogsChannelID = await GetLogChannel(guild as string)
-    var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+    var guildLogsChannelID = await GetHighLogChannel(guild as string)
+    var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
     interface Warn {
       WarnID: number;
@@ -125,7 +125,7 @@ export default {
         await ExecuteQuery(`DELETE FROM WARNINGS_${interaction?.guildId} WHERE WarnID = '${args[0]}'`)
 
         // Send action log to logs channel
-        logsChannel.send({ embeds: [embedLog] })
+        highLogsChannel.send({ embeds: [embedLog] })
 
         // Change the button label and make it unclickable
         confirmRow.components[0].setDisabled(true)
