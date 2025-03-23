@@ -48,13 +48,13 @@ export default {
     for (let i = 0; i < results.length; i++) {
       embed.addFields({
         name: `Entry ${i}`, value: `\`\`\`md
-      [Internal warn ID][${results[i].WarnID}]\n
-      [Warned user][${client.users.cache.get(String(results[i].UserID))?.username}]
-      [Warned user ID][${results[i].UserID}]\n
-      [Warn date and time][${new Date(results[i].WarnDateAndTime).toLocaleString()}]\n
-      [Warn Executor][${client.users.cache.get(String(results[i].WarnExecutorID))?.username}]
-      [Warn executor ID][${results[i].WarnExecutorID}]\n
-      [Warn reason][${results[i].WarnReason}]\n
+        [Internal warn ID][${results[i].WarnID}]\n
+        [Warned user][${client.users.cache.get(String(results[i].UserID))?.username}]
+        [Warned user ID][${results[i].UserID}]\n
+        [Warn date and time][${new Date(results[i].WarnDateAndTime).toLocaleString()}]\n
+        [Warn Executor][${client.users.cache.get(String(results[i].WarnExecutorID))?.username}]
+        [Warn executor ID][${results[i].WarnExecutorID}]\n
+        [Warn reason][${results[i].WarnReason}]\n
         \`\`\``.split("\n").map(line => line.trim()).join("\n")
       })
     }

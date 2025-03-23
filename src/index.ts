@@ -28,8 +28,6 @@ async function checkAndCreateLogsFolder() {
   }
 }
 
-checkAndCreateLogsFolder();
-
 const todayDate = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
 
 async function constructLogFileName() {
@@ -173,14 +171,16 @@ export { db }
 
 
 
-createLogFile().then(async () => {
-  dbConnection().then(async () => {
-    await HandleLog(colors.green('Successfully connected to Mysql database')).then(async () => {
-      client.login(process.env.TOKEN)
-      const data = await fs.readFile('package.json', 'utf-8');
-      const obj = JSON.parse(data);
-      const clientVersion = obj.version;
-      HandleLog(colors.green(`Bot successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`))
+checkAndCreateLogsFolder().then(async () => {
+  await createLogFile().then(async () => {
+    await dbConnection().then(async () => {
+      await HandleLog(colors.green('Successfully connected to Mysql database')).then(async () => {
+        client.login(process.env.TOKEN)
+        const data = await fs.readFile('package.json', 'utf-8');
+        const obj = JSON.parse(data);
+        const clientVersion = obj.version;
+        HandleLog(colors.green(`Bot successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`))
+      })
     })
   })
 })
