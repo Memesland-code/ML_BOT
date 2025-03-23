@@ -149,7 +149,7 @@ client.on('ready', async () => {
 
 
 
-let db
+let db: mysql.Connection
 
 export async function dbConnection() {
   if (!db) {

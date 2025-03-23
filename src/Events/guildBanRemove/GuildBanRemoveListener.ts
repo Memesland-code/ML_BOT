@@ -7,6 +7,8 @@ export default async (ban: GuildBan) => {
 
     var guild = client!.guilds.cache.get(ban.guild!.id)
 
+    if (!guild) return
+
     var guildLogsChannelID = await GetHighLogChannel(guild?.id) as string
     var highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 

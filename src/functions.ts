@@ -1,8 +1,18 @@
 import colors from "colors"
 import fs from "fs"
+import { RowDataPacket } from "mysql2"
 import { db, getCurrentLogFile } from "./index"
 
-export async function CheckTableExist(table) {
+interface AdminRow extends RowDataPacket {
+    Value: number
+}
+
+interface ServersInfosRow extends RowDataPacket {
+    LogsChannel: string;
+    HighLogsChannel: string;
+}
+
+export async function CheckTableExist(table: String) {
     const [rows] = await db.query(`SHOW TABLES LIKE "${table}"`)
     return ((rows as any[]).length > 0)
 }
@@ -13,26 +23,26 @@ export async function IsBotPerformingMaintenance() {
         return false
     }
 
-    const [rows] = await db.query(`SELECT Value FROM Admin WHERE KeyName = 'MaintenanceState';`)
-    return (rows[0].Value != 0)
+    const [rows] = await db.query<AdminRow[]>(`SELECT Value FROM Admin WHERE KeyName = 'MaintenanceState';`)
+    return rows[0].Value != 0
 }
 
-export async function ExecuteQuery(query: string): Promise<[any[], any]> {
+export async function ExecuteQuery(query: string): Promise<any> {
     const [rows] = await db.query(query)
-    return (rows)
+    return rows
 }
 
-export async function GetLogChannel(guildId) {
-    const [rows] = await db.query(`SELECT LogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`)
-    return (rows[0].LogsChannel)
+export async function GetLogChannel(guildId: String) {
+    const [rows] = await db.query<ServersInfosRow[]>(`SELECT LogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`)
+    return rows[0].LogsChannel
 }
 
-export async function GetHighLogChannel(guildId) {
-    const [rows] = await db.query(`SELECT HighLogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`)
-    return (rows[0].HighLogsChannel)
+export async function GetHighLogChannel(guildId: String) {
+    const [rows] = await db.query<ServersInfosRow[]>(`SELECT HighLogsChannel FROM ServersInfos WHERE GuildID = '${guildId}'`)
+    return rows[0].HighLogsChannel
 }
 
-export async function HandleLog(logMessage) {
+export async function HandleLog(logMessage: String | unknown) {
 
     console.log(logMessage)
 

@@ -5,13 +5,15 @@ import { botAdmins, client } from "../../index"
 
 export default async (channel: GuildChannel) => {
 
-    var guild = client!.guilds.cache.get(channel.guild!.id)
+    var guild = client.guilds.cache.get(channel.guild.id)
 
-    var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
+    if (!guild) return
+
+    var guildHighLogsChannelID = await GetHighLogChannel(guild.id)
     var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
     try {
-        var guildLogsChannelID = await GetLogChannel(guild?.id) as string
+        var guildLogsChannelID = await GetLogChannel(guild.id) as string
         var logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
         const AuditLogFetch = await guild?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.ChannelCreate });

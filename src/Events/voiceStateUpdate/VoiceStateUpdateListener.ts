@@ -7,6 +7,8 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
     var guild = client.guilds.cache.get(oldVoiceState.guild.id)
 
+    if (!guild) return
+
     var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
     var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
@@ -89,8 +91,8 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                     },
                     {
                         name: "Executor", value: `\n\
-                        User : <@${Entry.executor.id}>\n\
-                        ID : ${Entry.executor.id}\n`
+                        User : <@${Entry?.executor?.id}>\n\
+                        ID : ${Entry?.executor?.id}\n`
                     }
                 ])
         }

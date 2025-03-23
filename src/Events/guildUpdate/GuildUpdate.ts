@@ -7,6 +7,8 @@ export default async (_oldGuild: Guild, newGuild: Guild) => {
 
     var guild = client!.guilds.cache.get(newGuild.id)
 
+    if (!guild) return
+
     var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
     var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 

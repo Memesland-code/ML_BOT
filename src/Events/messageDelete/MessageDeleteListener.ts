@@ -7,6 +7,8 @@ export default async (message: Message) => {
 
     var guild = client!.guilds.cache.get(message.guild!.id)
 
+    if (!guild) return
+
     var guildHighLogsChannelID = await GetHighLogChannel(guild?.id)
     var highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
@@ -28,7 +30,7 @@ export default async (message: Message) => {
         } else attachmentsLink = "No attachment"
 
         var executorID
-        var executorUsername
+        var executorUsername: String | undefined
         var executorUsernameFormatted
 
         if (Entry?.createdTimestamp! > Date.now() - 1500) {
