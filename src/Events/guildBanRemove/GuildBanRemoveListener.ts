@@ -59,7 +59,7 @@ export default async (ban: GuildBan) => {
         highLogsChannel.send({ embeds: [embed] })
     } catch (error) {
 
-        await console.log(`An error occured on VoiceStateUpdate listener\n${error}`)
+        await console.log(`An error occured on GuildBanRemove listener\n${error}`)
         await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
     }
 }

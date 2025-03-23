@@ -1,5 +1,5 @@
 import colors from "colors"
-import { AuditLogEvent, ChannelType, EmbedBuilder, GuildAuditLogs, GuildAuditLogsEntry, TextBasedChannel, TextChannel } from "discord.js"
+import { AuditLogEvent, ChannelType, EmbedBuilder, GuildAuditLogsEntry, TextBasedChannel, TextChannel } from "discord.js"
 import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../functions"
 import { botAdmins, client } from "../../index"
 
@@ -25,16 +25,13 @@ export default async (channel: TextBasedChannel) => {
         const EntryPinRemove = AuditLogFetchPinRemove?.entries.first()
 
         let Entry: GuildAuditLogsEntry
-        let AuditLog: GuildAuditLogs | null = null
         let pinMessage: String
 
         if (AuditLogFetchPinAdd != null && EntryPinAdd != undefined && EntryPinAdd.createdTimestamp > Date.now() - 1500) {
             Entry = EntryPinAdd
-            AuditLog = AuditLogFetchPinAdd
             pinMessage = "New message pinned"
         } else if (AuditLogFetchPinRemove != null && EntryPinRemove != undefined && EntryPinRemove.createdTimestamp > Date.now() - 1500) {
             Entry = EntryPinRemove
-            AuditLog = AuditLogFetchPinRemove
             pinMessage = "Message pin was removed"
         } else {
             return
@@ -84,7 +81,7 @@ export default async (channel: TextBasedChannel) => {
         logsChannel.send({ embeds: [embed] })
     } catch (error) {
 
-        await console.log(`An error occured on VoiceStateUpdate listener\n${error}`)
+        await console.log(`An error occured on ChannelPinsUpdate listener\n${error}`)
         await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
     }
 }
