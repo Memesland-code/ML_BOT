@@ -35,12 +35,12 @@ export default async (interaction: BaseInteraction) => {
         .addFields([
             {
                 name: `General infos`, value: `\n\
-        User : <@${interaction.user.id}>\n\
-        User ID : ${interaction.user.id}\n\
-        In channel : <#${channel.id}>\n\
-        Channel ID : ${channel.id}\n\
-        In category : ${channel.parent?.name}\n\
-        Category ID : ${channel.parent?.id}`
+                User : <@${interaction.user.id}>\n\
+                User ID : ${interaction.user.id}\n\
+                In channel : <#${channel.id}>\n\
+                Channel ID : ${channel.id}\n\
+                In category : ${channel.parent?.name}\n\
+                Category ID : ${channel.parent?.id}`
             },
             { name: "Interaction infos", value: `\`\`\`fix\n${interaction}\n\`\`\`` }
         ])

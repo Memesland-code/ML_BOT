@@ -29,8 +29,8 @@ export default async (_oldGuild: Guild, newGuild: Guild) => {
         .addFields([
             {
                 name: `Executor`, value: `\
-        User : <@${Entry?.executor?.id}>\n\
-        ID : ${Entry?.executor?.id}`
+                User : <@${Entry?.executor?.id}>\n\
+                ID : ${Entry?.executor?.id}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })

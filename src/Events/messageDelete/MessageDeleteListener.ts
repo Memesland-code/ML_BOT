@@ -77,10 +77,10 @@ export default async (message: Message) => {
         .addFields([
             {
                 name: `Target's message infos`, value: `\n\
-        User : <@${message.author?.id}> \n\
-        User ID : ${message.author?.id}\n\
-        Channel name : <#${messageChannel.id}>\n\
-        Channel ID : ${messageChannel.id}\n`
+                User : <@${message.author?.id}> \n\
+                User ID : ${message.author?.id}\n\
+                Channel name : <#${messageChannel.id}>\n\
+                Channel ID : ${messageChannel.id}\n`
             },
             { name: `Message content`, value: `\`\`\`fix\n${messageContent}\n\`\`\`` },
             { name: `Attachements`, value: `\n${attachmentsLink}\n` },

@@ -61,16 +61,16 @@ export default async (channel: TextBasedChannel) => {
         .addFields([
             {
                 name: `Channel infos`, value: `\
-        Channel : <#${channel.id}>\n\
-        ID : ${channel.id}\n\
-        Category : ${channel.parent?.name}\n\
-        ID : ${channel.parent?.id}`
+                Channel : <#${channel.id}>\n\
+                ID : ${channel.id}\n\
+                Category : ${channel.parent?.name}\n\
+                ID : ${channel.parent?.id}`
             },
             { name: `Message ref`, value: `[Message](https://discord.com/channels/${channel.guild.id}/${channel.id}/${modifiedMessageID})` },
             {
                 name: `Executor`, value: `\
-        User  : <@${Entry.executor?.id}>\n\
-        ID : ${Entry.executor?.id}`
+                User  : <@${Entry.executor?.id}>\n\
+                ID : ${Entry.executor?.id}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })

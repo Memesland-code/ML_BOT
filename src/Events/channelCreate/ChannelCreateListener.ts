@@ -35,16 +35,16 @@ export default async (channel: GuildChannel) => {
         .addFields([
             {
                 name: "Channel's infos", value: `\
-        Channel : <#${channel.id}>\n\
-        Channel ID : ${channel.id}\n\
-        Channel type : ${channel.type}
-        In category : ${channel.parent?.name}\n\
-        Category ID : ${channel.parent?.id}`
+                Channel : <#${channel.id}>\n\
+                Channel ID : ${channel.id}\n\
+                Channel type : ${channel.type}
+                In category : ${channel.parent?.name}\n\
+                Category ID : ${channel.parent?.id}`
             },
             {
                 name: "Executor", value: `\
-        User : <@${Entry?.executor?.id}>\n\
-        ID : ${Entry?.executor?.id}`
+                User : <@${Entry?.executor?.id}>\n\
+                ID : ${Entry?.executor?.id}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })

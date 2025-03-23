@@ -30,13 +30,13 @@ export default async (oldRole: Role, newRole: Role) => {
         .addFields([
             {
                 name: "Role infos", value: `\
-        Role : <@&${newRole.id}>\n\
-        ID : ${newRole.id}`
+                Role : <@&${newRole.id}>\n\
+                ID : ${newRole.id}`
             },
             {
                 name: "Executor", value: `\
-        User : <@${Entry?.executor?.id}>\n\
-        ID : ${Entry?.executor?.id}`
+                User : <@${Entry?.executor?.id}>\n\
+                ID : ${Entry?.executor?.id}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })

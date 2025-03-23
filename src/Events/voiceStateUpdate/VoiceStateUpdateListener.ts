@@ -64,29 +64,29 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             .addFields([
                 {
                     name: "Target's infos", value: `\n\
-            User : <@${oldVoiceState.member?.user.id}>\n\
-            User ID : ${oldVoiceState.member?.user.id}`
+                    User : <@${oldVoiceState.member?.user.id}>\n\
+                    User ID : ${oldVoiceState.member?.user.id}`
                 },
                 {
                     name: "Previous channel infos", value: `\n\
-            Name : <#${oldVoiceState.channel?.id}>\n\
-            ID : ${oldVoiceState.channel?.id}\n\
-            Users count : ${oldVoiceState.channel?.members.size}\n\
-            Category name : ${oldVoiceState.channel?.parent?.name}\n\
-            Category ID : ${oldVoiceState.channel?.parent?.id}`
+                    Name : <#${oldVoiceState.channel?.id}>\n\
+                    ID : ${oldVoiceState.channel?.id}\n\
+                    Users count : ${oldVoiceState.channel?.members.size}\n\
+                    Category name : ${oldVoiceState.channel?.parent?.name}\n\
+                    Category ID : ${oldVoiceState.channel?.parent?.id}`
                 },
                 {
                     name: "New channel infos", value: `\n\
-            Name : <#${newVoiceState.channel?.id}>\n\
-            ID : ${newVoiceState.channel?.id}\n\
-            Users count : ${newVoiceState.channel?.members.size}\n\
-            Category name : ${newVoiceState.channel?.parent?.name}\n\
-            Category ID : ${newVoiceState.channel?.parent?.id}`
+                    Name : <#${newVoiceState.channel?.id}>\n\
+                    ID : ${newVoiceState.channel?.id}\n\
+                    Users count : ${newVoiceState.channel?.members.size}\n\
+                    Category name : ${newVoiceState.channel?.parent?.name}\n\
+                    Category ID : ${newVoiceState.channel?.parent?.id}`
                 },
                 {
                     name: "Executor", value: `\n\
-            User : <@${Entry.executor.id}>\n\
-            ID : ${Entry.executor.id}\n`
+                    User : <@${Entry.executor.id}>\n\
+                    ID : ${Entry.executor.id}\n`
                 }
             ])
     }
@@ -118,24 +118,24 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                 .addFields([
                     {
                         name: "User's infos", value: `\n\
-                User : <@${oldVoiceState.member?.user.id}>\n\
-                User ID : ${oldVoiceState.member?.user.id}`
+                        User : <@${oldVoiceState.member?.user.id}>\n\
+                        User ID : ${oldVoiceState.member?.user.id}`
                     },
                     {
                         name: "Previous channel infos", value: `\n\
-                Name : <#${oldVoiceState.channel?.id}>\n\
-                ID : ${oldVoiceState.channel?.id}\n\
-                Users count : ${oldVoiceState.channel?.members.size}`
+                        Name : <#${oldVoiceState.channel?.id}>\n\
+                        ID : ${oldVoiceState.channel?.id}\n\
+                        Users count : ${oldVoiceState.channel?.members.size}`
                     },
                     {
                         name: "Previous category infos", value: `\n\
-                Name : <#${oldVoiceState.channel?.parent?.name}>\n\
-                ID : ${oldVoiceState.channel?.parent?.id}`
+                        Name : <#${oldVoiceState.channel?.parent?.name}>\n\
+                        ID : ${oldVoiceState.channel?.parent?.id}`
                     },
                     {
                         name: "Executor", value: `\n\
-                User : <@${oldVoiceState.member?.user.id}>\n\
-                ID : ${oldVoiceState.member?.user.id}\n`
+                        User : <@${oldVoiceState.member?.user.id}>\n\
+                        ID : ${oldVoiceState.member?.user.id}\n`
                     }
                 ])
         }
@@ -163,24 +163,24 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                 .addFields([
                     {
                         name: "User's infos", value: `\n\
-                User : <@${oldVoiceState.member?.user.id}>\n\
-                User ID : ${oldVoiceState.member?.user.id}`
+                        User : <@${oldVoiceState.member?.user.id}>\n\
+                        User ID : ${oldVoiceState.member?.user.id}`
                     },
                     {
                         name: "Previous channel infos", value: `\n\
-                Name : <#${oldVoiceState.channel?.name}>\n\
-                ID : ${oldVoiceState.channel?.id}\n\
-                Users count : ${oldVoiceState.channel?.members.size}`
+                        Name : <#${oldVoiceState.channel?.name}>\n\
+                        ID : ${oldVoiceState.channel?.id}\n\
+                        Users count : ${oldVoiceState.channel?.members.size}`
                     },
                     {
                         name: "Previous category infos", value: `\n\
-                Name : <#${oldVoiceState.channel?.parent?.name}>\n\
-                ID : ${oldVoiceState.channel?.parent?.id}`
+                        Name : <#${oldVoiceState.channel?.parent?.name}>\n\
+                        ID : ${oldVoiceState.channel?.parent?.id}`
                     },
                     {
                         name: "Executor", value: `\n\
-                User : <@${EntryMemberDisconnect?.executor?.id}>\n\
-                ID : ${EntryMemberDisconnect?.executor?.id}\n`
+                        User : <@${EntryMemberDisconnect?.executor?.id}>\n\
+                        ID : ${EntryMemberDisconnect?.executor?.id}\n`
                     }
                 ])
         }
@@ -261,12 +261,12 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
             .addFields([
                 {
                     name: "General infos", value: `\n\
-            User : <@${voiceChannelUser.id}>\n\
-            User ID : ${voiceChannelUser.id}\n\
-            Channel name : <#${voiceChannel.id}>\n\
-            Channel ID : ${voiceChannel.id}\n\
-            Category name : ${voiceChannelCategory.name}\n\
-            Category ID : ${voiceChannelCategory.id}`
+                    User : <@${voiceChannelUser.id}>\n\
+                    User ID : ${voiceChannelUser.id}\n\
+                    Channel name : <#${voiceChannel.id}>\n\
+                    Channel ID : ${voiceChannel.id}\n\
+                    Category name : ${voiceChannelCategory.name}\n\
+                    Category ID : ${voiceChannelCategory.id}`
                 },
             ])
             .setFooter({ text: `${new Date().toLocaleString()}` })

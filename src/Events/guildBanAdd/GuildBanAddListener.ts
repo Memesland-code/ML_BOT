@@ -32,14 +32,14 @@ export default async (ban: GuildBan) => {
         .addFields([
             {
                 name: "User's infos", value: `\
-        User : <@${ban.user.id}>\n\
-        ID : ${ban.user.id}`
+                User : <@${ban.user.id}>\n\
+                ID : ${ban.user.id}`
             },
             { name: "Reason", value: `\`\`\`fix\n${Entry?.reason}\n\`\`\`` },
             {
                 name: "Executor", value: `\
-        User : <@${ban.client.user.id}>\n\
-        ID : ${ban.client.user.id}`
+                User : <@${ban.client.user.id}>\n\
+                ID : ${ban.client.user.id}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })

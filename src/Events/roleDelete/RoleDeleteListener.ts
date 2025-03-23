@@ -35,8 +35,8 @@ export default async (role: Role) => {
             { name: "Role initially created on", value: `${role.createdAt.toLocaleString()}` },
             {
                 name: "Executor", value: `\
-        User : <@${Entry?.executor?.id}>\n\
-        ID : ${Entry?.executor?.id}`
+                User : <@${Entry?.executor?.id}>\n\
+                ID : ${Entry?.executor?.id}`
             }
         ])
         .setFooter({ text: `${new Date().toLocaleString()}` })

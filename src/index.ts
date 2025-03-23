@@ -177,7 +177,10 @@ createLogFile().then(async () => {
   dbConnection().then(async () => {
     await HandleLog(colors.green('Successfully connected to Mysql database')).then(async () => {
       client.login(process.env.TOKEN)
-      HandleLog(colors.green(`Bot successfully connected to Discord\nConnection time: ${new Date().toLocaleString()}\n`))
+      const data = await fs.readFile('package.json', 'utf-8');
+      const obj = JSON.parse(data);
+      const clientVersion = obj.version;
+      HandleLog(colors.green(`Bot successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`))
     })
   })
 })

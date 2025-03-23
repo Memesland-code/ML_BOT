@@ -1,5 +1,5 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js" // Required imports
-import { CommandObject, CommandType } from "wokcommands" // Required imports
+import { PermissionFlagsBits } from "discord.js";
+import { CommandObject, CommandType } from "wokcommands"; // Required imports
 
 export default { // Command name is file name
   description: "Change le mode de maintenance du bot", // Command description
@@ -8,7 +8,7 @@ export default { // Command name is file name
   permissions: [PermissionFlagsBits.Administrator], // Required permissions to execute command
   ownerOnly: true,
 
-  callback: async ({interaction, args}) => {
+  callback: async ({ }) => {
     //* to execute
   }
 } as CommandObject
