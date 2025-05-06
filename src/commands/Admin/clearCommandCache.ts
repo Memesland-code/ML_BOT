@@ -4,7 +4,7 @@ import { client } from "../..";
 import { HandleLog } from "../../functions";
 
 export default { // Command name is file name
-  description: "Supprime la liste des commandes enregistrées sur Discord /!\\ éteint le bot", // Command description
+  description: "Deletes the registered commands list on Discord /!\\ Shuts down the bot & requires Discord reload", // Command description
   type: CommandType.BOTH, // type of command
   guildOnly: true, // always true
   ownerOnly: true,

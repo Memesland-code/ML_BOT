@@ -2,7 +2,7 @@ import { PermissionFlagsBits } from "discord.js";
 import { CommandObject, CommandType } from "wokcommands"; // Required imports
 
 export default { // Command name is file name
-  description: "Change le mode de maintenance du bot", // Command description
+  description: "Change bot maintenance state", // Command description
   type: CommandType.SLASH, // type of command
   guildOnly: true, // always true
   permissions: [PermissionFlagsBits.Administrator], // Required permissions to execute command

@@ -30,8 +30,8 @@ export default {
         if (!interaction) return
         let guild = interaction.guildId
 
-        let guildLogsChannelID = await GetHighLogChannel(guild as string)
-        let highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildHighLogsChannelID = await GetHighLogChannel(guild as string)
+        let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
         try {
             //* Basic check for bot maintenance

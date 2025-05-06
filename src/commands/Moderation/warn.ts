@@ -30,8 +30,8 @@ export default {
         if (!interaction) return
         let guild = interaction.guildId
 
-        let guildLogsChannelID = await GetHighLogChannel(guild as string)
-        let highLogsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
+        let guildHighLogsChannelID = await GetHighLogChannel(guild as string)
+        let highLogsChannel = client.channels.cache.get(guildHighLogsChannelID) as TextChannel
 
         try {
             //* Basic check for bot maintenance
@@ -56,6 +56,19 @@ export default {
             }
 
             const user = client.users.cache.get(String(args[0]))
+            
+            await HandleLog(
+                colors.yellow(`Command executed\nwarn`) +
+                colors.yellow(`In server : `) + colors.white(`${interaction.guild?.name}`) +
+                colors.yellow(`Server ID : `) + colors.white(`${interaction.guildId}`) +
+                colors.yellow(`Warned user : `) + colors.white(`${user?.username}`) +
+                colors.yellow(`Warned user ID : `) + colors.white(`${user?.id}`) +
+                colors.yellow(`Warn date and time : `) + colors.white(`${new Date().toLocaleString()}`) +
+                colors.yellow(`Warn executor : `) + colors.white(`${interaction?.user.username}`) +
+                colors.yellow(`Warn executor ID : `) + colors.white(`][${interaction?.user.id}`) +
+                colors.yellow(`Warn reason : `) + colors.white(`${args[1]}`) +
+                colors.cyan(`${new Date().toLocaleString()}\n`)
+            )
 
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `${user?.username}`, iconURL: `${user?.avatarURL()}` })
@@ -71,21 +84,9 @@ export default {
                     [Warn reason][${args[1]}]\n
                     \`\`\``.split("\n").map(line => line.trim()).join("\n")
                 })
+                .setFooter({ text: `${new Date().toLocaleString()}` })
 
             await ExecuteQuery(`INSERT INTO WARNINGS_${interaction?.guildId} (UserID, WarnDateAndTime, WarnExecutorID, WarnReason) VALUES ('${args[0]}', '${currentDateAndTime}', '${interaction?.user.id}', "${securedReasonString}");`)
-
-            await HandleLog(
-                colors.yellow(`Command executed\nwarn`) +
-                colors.yellow(`In server : `) + colors.white(`${interaction.guild?.name}`) +
-                colors.yellow(`Server ID : `) + colors.white(`${interaction.guildId}`) +
-                colors.yellow(`Warned user : `) + colors.white(`${user?.username}`) +
-                colors.yellow(`Warned user ID : `) + colors.white(`${user?.id}`) +
-                colors.yellow(`Warn date and time : `) + colors.white(`${new Date().toLocaleString()}`) +
-                colors.yellow(`Warn executor : `) + colors.white(`${interaction?.user.username}`) +
-                colors.yellow(`Warn executor ID : `) + colors.white(`][${interaction?.user.id}`) +
-                colors.yellow(`Warn reason : `) + colors.white(`${args[1]}`) +
-                colors.cyan(`${new Date().toLocaleString()}\n`)
-            )
 
             interaction?.reply({ content: `User <@${args[0]}> has successfully been warned with reason: "**${args[1]}**"` })
             highLogsChannel.send({ embeds: [embed] })

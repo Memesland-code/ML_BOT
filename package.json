@@ -4,13 +4,13 @@
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "fs": "^0.0.1-security",
-    "mysql2": "^3.14.0",
+    "mysql2": "^3.14.1",
     "tsx": "^4.7.1",
     "typescript": "^5.8.2",
     "wokcommands": "^2.1.9"
   },
   "name": "ml_bot",
-  "version": "0.2.0.56",
+  "version": "0.2.0.57",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts"
