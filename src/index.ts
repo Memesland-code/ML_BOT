@@ -116,15 +116,17 @@ export async function getCurrentLogFile() {
   }
 }
 
-async function setClientActivity(isMaintenance: boolean) {
+export async function setClientActivity(isMaintenance: boolean) {
   try {
     const data = await fs.readFile('package.json', 'utf-8');
     const obj = JSON.parse(data);
     const clientVersion = obj.version;
 
     if (isMaintenance) {
+        client.user?.setStatus('dnd')
         client.user?.setActivity(`⚠️ Under maintenance - v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
     } else {
+        client.user?.setStatus('online')
         client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
     }
   } catch (err) {
@@ -143,10 +145,8 @@ client.on('ready', async () => {
   })
 
   if (await IsBotPerformingMaintenance()) {
-    client.user?.setStatus('dnd')
     setClientActivity(true)
   } else {
-    client.user?.setStatus('online')
     setClientActivity(false)
   }
 })
