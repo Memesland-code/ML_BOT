@@ -17,12 +17,15 @@ export default { // Command name is file name
     }
   ],
 
-  callback: async ({ interaction, args }) => {
-    if (args[0] == "true") {
+  callback: async ({ interaction }) => {
+
+    if (interaction?.options.getBoolean("maintenancestate") == true) {
       ExecuteQuery(`UPDATE Admin SET Value = 1 WHERE KeyName = 'MaintenanceState';`)
       interaction?.reply({ content: "Le bot est maintenant en maintenance", flags: ["Ephemeral"] })
       setClientActivity(true)
+
     } else {
+      
       ExecuteQuery(`UPDATE Admin SET Value = 0 WHERE KeyName = 'MaintenanceState';`)
       interaction?.reply({ content: "Le bot n'est plus en maintenance", flags: ["Ephemeral"] })
       setClientActivity(false)

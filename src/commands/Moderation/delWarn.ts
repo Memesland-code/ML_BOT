@@ -25,7 +25,7 @@ export default {
         }
     ],
 
-    callback: async ({ interaction, args }) => {
+    callback: async ({ interaction }) => {
 
         if (!interaction) return
         let guild = interaction.guildId
@@ -54,10 +54,10 @@ export default {
             }
 
             // Get warn corresponding ID
-            const results: Warn[] = await ExecuteQuery(`SELECT * FROM WARNINGS_${interaction?.guildId} WHERE WarnID = '${args[0]}';`)
+            const results: Warn[] = await ExecuteQuery(`SELECT * FROM WARNINGS_${interaction?.guildId} WHERE WarnID = '${interaction.options.getNumber("warnid")}';`)
 
             if (results.length == 0) {
-                interaction?.reply({ content: `No warn entry found with warn ID ${args[0]}!` })
+                interaction?.reply({ content: `No warn entry found with warn ID ${interaction.options.getNumber("warnid")}!` })
                 return
             }
 
@@ -78,7 +78,7 @@ export default {
                         [Warn reason][${results[0].WarnReason}]\n
                         \`\`\``.split("\n").map(line => line.trim()).join("\n")
                     },
-                    { name: `Warn deletion reason`, value: `${args[1]}` }
+                    { name: `Warn deletion reason`, value: `${interaction.options.getString("reason")}` }
                 )
                 .setFooter({ text: `${new Date().toLocaleString()}` })
 
@@ -87,7 +87,7 @@ export default {
             // Construct confirmation embed
             const confirmActionEmbed = new EmbedBuilder()
                 .setAuthor({ name: `${interaction?.user.username}`, iconURL: `${interaction?.user.avatarURL()}` })
-                .setTitle(`Please confirm that you want to delete entry ${args[0]}`)
+                .setTitle(`Please confirm that you want to delete entry ${interaction.options.getNumber("warnid")}`)
                 .setColor("DarkVividPink")
                 .addFields({
                     name: `Entry informations`, value: `\`\`\`md
@@ -125,7 +125,7 @@ export default {
                 // On button click
                 if (buttonClickListener?.customId === "confirm") {
                     // Delete entry in DB
-                    await ExecuteQuery(`DELETE FROM WARNINGS_${interaction?.guildId} WHERE WarnID = '${args[0]}'`)
+                    await ExecuteQuery(`DELETE FROM WARNINGS_${interaction?.guildId} WHERE WarnID = '${interaction.options.getNumber("warnid")}'`)
 
                     await HandleLog(
                         colors.yellow(`Command executed\ndelWarn`) +

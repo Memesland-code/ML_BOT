@@ -25,7 +25,7 @@ export default {
         }
     ],
 
-    callback: async ({ interaction, args }) => {
+    callback: async ({ interaction }) => {
 
         if (!interaction) return
         let guild = interaction.guildId
@@ -48,14 +48,14 @@ export default {
             const currentDateAndTime = `${new Date().getFullYear().toString()}-${(new Date().getMonth() + 1).toString()}-${new Date().getDate().toString()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
 
             let securedReasonString = ""
-            for (let i = 0; i < args[1].length; i++) {
-                if ("\"".includes(args[1][i])) {
+            for (let i = 0; i < interaction.options.getString("reason")!.length; i++) {
+                if ("\"".includes(interaction.options.getString("reason")![i])) {
                     securedReasonString += "\""
                 }
-                securedReasonString += args[1][i]
+                securedReasonString += interaction.options.getString("reason")![i]
             }
 
-            const user = client.users.cache.get(String(args[0]))
+            const user = client.users.cache.get(String(interaction.options.getUser("user")))
             
             await HandleLog(
                 colors.yellow(`Command executed\nwarn`) +
@@ -66,7 +66,7 @@ export default {
                 colors.yellow(`Warn date and time : `) + colors.white(`${new Date().toLocaleString()}`) +
                 colors.yellow(`Warn executor : `) + colors.white(`${interaction?.user.username}`) +
                 colors.yellow(`Warn executor ID : `) + colors.white(`][${interaction?.user.id}`) +
-                colors.yellow(`Warn reason : `) + colors.white(`${args[1]}`) +
+                colors.yellow(`Warn reason : `) + colors.white(`${interaction.options.getString("reason")}`) +
                 colors.cyan(`${new Date().toLocaleString()}\n`)
             )
 
@@ -81,14 +81,14 @@ export default {
                     [Warn date and time][${new Date().toLocaleString()}]\n
                     [Warn Executor][${interaction?.user.username}]
                     [Warn executor ID][${interaction?.user.id}]\n
-                    [Warn reason][${args[1]}]\n
+                    [Warn reason][${interaction.options.getString("reason")}]\n
                     \`\`\``.split("\n").map(line => line.trim()).join("\n")
                 })
                 .setFooter({ text: `${new Date().toLocaleString()}` })
 
-            await ExecuteQuery(`INSERT INTO WARNINGS_${interaction?.guildId} (UserID, WarnDateAndTime, WarnExecutorID, WarnReason) VALUES ('${args[0]}', '${currentDateAndTime}', '${interaction?.user.id}', "${securedReasonString}");`)
+            await ExecuteQuery(`INSERT INTO WARNINGS_${interaction?.guildId} (UserID, WarnDateAndTime, WarnExecutorID, WarnReason) VALUES ('${interaction.options.getUser("user")}', '${currentDateAndTime}', '${interaction?.user.id}', "${securedReasonString}");`)
 
-            interaction?.reply({ content: `User <@${args[0]}> has successfully been warned with reason: "**${args[1]}**"` })
+            interaction?.reply({ content: `User <@${interaction.options.getUser("user")}> has successfully been warned with reason: "**${interaction.options.getString("reason")}**"` })
             highLogsChannel.send({ embeds: [embed] })
         } catch (error) {
 

@@ -94,7 +94,7 @@ export default { // Command name is file name
         }
     ],
 
-  callback: async ({ interaction, args }) => {
+  callback: async ({ interaction }) => {
 
     if (!interaction) return
     let guild = interaction.guildId
@@ -110,59 +110,60 @@ export default { // Command name is file name
             return
         }
 
-        const ch = interaction?.channel as TextChannel
-        var currentDeletedMessages = 0
-        var finalDeletedMessages
+        if (interaction.options.getSubcommand() === "message") {
+            const ch = interaction?.channel as TextChannel
+            var currentDeletedMessages = 0
+            var finalDeletedMessages
 
-        if (args[1] === "") { // if user is null, deletes all messages without checking
-            ch.bulkDelete(Number (args[0]), true)
-            finalDeletedMessages = args[0]
-        } else {
-            for (let i = 0; i < ch.messages.cache.size; i++) { // for each message in channel
-                if (currentDeletedMessages >= Number(args[0])) break
-                var msg = ch.messages.cache.at(i)
-                if (msg?.author == args[1] as unknown as User) {
-                    if (!msg?.deletable) break // stops if message can't be deleted
-                    msg?.delete() // Delete the message if the referenced user is the author
-                    currentDeletedMessages++
+            if (interaction.options.getUser("user")?.username === "") { // if user is null, deletes all messages without checking
+                ch.bulkDelete(Number (interaction.options.getNumber("number")), true)
+                finalDeletedMessages = interaction.options.getNumber("number")
+            } else {
+                for (let i = 0; i < ch.messages.cache.size; i++) { // for each message in channel
+                    if (currentDeletedMessages >= Number (interaction.options.getNumber("number"))) break
+                    var msg = ch.messages.cache.at(i)
+                    if (msg?.author == interaction.options.getUser("user") as unknown as User) {
+                        if (!msg?.deletable) break // stops if message can't be deleted
+                        msg?.delete() // Delete the message if the referenced user is the author
+                        currentDeletedMessages++
+                    }
                 }
+                finalDeletedMessages = currentDeletedMessages
             }
-            finalDeletedMessages = currentDeletedMessages
-        }
 
-        await HandleLog(
-            colors.yellow(`Command executed\npurgeMessages`) +
-            colors.yellow(`In server : `) + colors.white(`${interaction.guild?.name}`) +
-            colors.yellow(`Server ID : `) + colors.white(`${interaction.guild?.id}`) +
-            colors.yellow(`In channel : `) + colors.white(`${ch.name}`) +
-            colors.yellow(`Channel ID : `) + colors.white(`${ch.id}`) +
-            colors.yellow(`Number of messages deleted : `) + colors.white(`${finalDeletedMessages}`) +
-            colors.yellow(`Executor username : `) + colors.white(`${interaction.user.username}`) +
-            colors.yellow(`Executor ID : `) + colors.white(`${interaction.user.id}`) +
-            colors.cyan(`${new Date().toLocaleString()}\n`)
-        )
-
-        const embed = new EmbedBuilder()
-            .setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.user.avatarURL()}`})
-            .setTitle("Messages deleted")
-            .setColor("Orange")
-            .addFields(
-                {
-                    name: `Command`, value: `\
-                    Name: ${interaction.commandName}\n\
-                    Number of messages to delete: ${finalDeletedMessages}`
-                },
-                {
-                    name: `Executor`, value: `\
-                    User : <@${interaction.user.id}>\n\
-                    ID : ${interaction.user.id}`
-                }
+            await HandleLog(
+                colors.yellow(`Command executed\npurgeMessages`) +
+                colors.yellow(`In server : `) + colors.white(`${interaction.guild?.name}`) +
+                colors.yellow(`Server ID : `) + colors.white(`${interaction.guild?.id}`) +
+                colors.yellow(`In channel : `) + colors.white(`${ch.name}`) +
+                colors.yellow(`Channel ID : `) + colors.white(`${ch.id}`) +
+                colors.yellow(`Number of messages deleted : `) + colors.white(`${finalDeletedMessages}`) +
+                colors.yellow(`Executor username : `) + colors.white(`${interaction.user.username}`) +
+                colors.yellow(`Executor ID : `) + colors.white(`${interaction.user.id}`) +
+                colors.cyan(`${new Date().toLocaleString()}\n`)
             )
-            .setFooter({ text: `${new Date().toLocaleString()}` })
-        
-        interaction.reply({ content: `${args[0]} messages have successfully been deleted!`})
-        highLogsChannel.send({ embeds: [embed] })
 
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.user.avatarURL()}`})
+                .setTitle("Messages deleted")
+                .setColor("Orange")
+                .addFields(
+                    {
+                        name: `Command`, value: `\
+                        Name: ${interaction.commandName}\n\
+                        Number of messages to delete: ${finalDeletedMessages}`
+                    },
+                    {
+                        name: `Executor`, value: `\
+                        User : <@${interaction.user.id}>\n\
+                        ID : ${interaction.user.id}`
+                    }
+                )
+                .setFooter({ text: `${new Date().toLocaleString()}` })
+            
+            interaction.reply({ content: `${interaction.options.getNumber("number")} messages have successfully been deleted!`})
+            highLogsChannel.send({ embeds: [embed] })
+        }
     } catch (error) {
         
         await HandleLog(colors.red(`An error occured when running command ${interaction.commandName}\n${error}`))

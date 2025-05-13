@@ -19,7 +19,7 @@ export default {
     }
   ],
 
-  callback: async ({ interaction, args }) => {
+  callback: async ({ interaction }) => {
 
     if (!interaction) return
     let guild = interaction.guildId
@@ -39,17 +39,14 @@ export default {
         await ExecuteQuery(`CREATE TABLE WARNINGS_${interaction?.guildId} (WarnID int AUTO_INCREMENT UNIQUE, UserID VARCHAR(20), WarnDateAndTime DATETIME, WarnExecutorID BIGINT, WarnReason VARCHAR(1024));`)
       }
 
-      // Get user reference from its ID
-      const user = client.users.cache.get(args[0])
-
       // Construct embed
       const embed = new EmbedBuilder()
-        .setAuthor({ name: `${user?.username}`, iconURL: `${user?.displayAvatarURL()}` })
+        .setAuthor({ name: `${interaction.options.getUser("user")?.username}`, iconURL: `${interaction.options.getUser("user")?.displayAvatarURL()}` })
         .setColor("Blurple")
         .setFooter({ text: `${new Date().toLocaleString()}` })
 
       // Get all warns
-      const results = await ExecuteQuery(`SELECT * FROM WARNINGS_${interaction?.guildId} WHERE UserID = '${args[0]}';`)
+      const results = await ExecuteQuery(`SELECT * FROM WARNINGS_${interaction?.guildId} WHERE UserID = '${interaction.options.getUser("user")?.id}';`)
 
       embed.setTitle(`Found ${results.length} warns`)
 
