@@ -94,6 +94,6 @@ export default async (oldMessage: Message, newMessage: Message) => {
     } catch (error) {
 
         await HandleLog(colors.red(`An error occured on MessageUpdate listener\n${error}`))
-        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
+        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on MessageUpdate listener\nPlease check console for full details` })
     }
 }

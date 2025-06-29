@@ -43,6 +43,6 @@ export default async (member: GuildMember) => {
     } catch (error) {
 
         await HandleLog(colors.red(`An error occured on GuildMemberRemove listener\n${error}`))
-        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
+        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on GuildMemberRemove listener\nPlease check console for full details` })
     }
 }

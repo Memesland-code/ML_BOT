@@ -51,6 +51,6 @@ export default async (ban: GuildBan) => {
     } catch (error) {
 
         await HandleLog(colors.red(`An error occured on GuildBanAdd listener\n${error}`))
-        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on VoiceStateUpdate listener\nPlease check console for full details` })
+        await highLogsChannel.send({ content: `<@${botAdmins[0]}> An error occured on GuildBanAdd listener\nPlease check console for full details` })
     }
 }
