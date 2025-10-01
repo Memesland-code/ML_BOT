@@ -1,7 +1,7 @@
 import colors from "colors";
 import { APIEmbedField, AuditLogEvent, EmbedBuilder, GuildMember, TextChannel } from "discord.js";
-import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../functions";
 import { botAdmins, client } from "../../index";
+import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../utils/functions";
 
 export default async (oldMember: GuildMember, newMember: GuildMember) => {
 

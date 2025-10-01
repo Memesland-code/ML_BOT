@@ -1,7 +1,7 @@
 import colors from "colors"
 import fs from "fs"
 import { RowDataPacket } from "mysql2"
-import { db, getCurrentLogFile } from "./index"
+import { db, getCurrentLogFile } from "../index"
 
 interface AdminRow extends RowDataPacket {
     Value: number

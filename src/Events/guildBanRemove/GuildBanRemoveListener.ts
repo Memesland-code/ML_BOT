@@ -1,7 +1,7 @@
 import colors from "colors"
 import { AuditLogEvent, EmbedBuilder, GuildBan, TextChannel } from "discord.js"
-import { GetHighLogChannel, HandleLog } from "../../functions"
 import { botAdmins, client } from "../../index"
+import { GetHighLogChannel, HandleLog } from "../../utils/functions"
 
 export default async (ban: GuildBan) => {
 

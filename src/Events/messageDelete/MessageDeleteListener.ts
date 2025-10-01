@@ -1,7 +1,7 @@
 import colors from "colors";
 import { AuditLogEvent, EmbedBuilder, Message, TextChannel } from "discord.js";
-import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../functions";
 import { botAdmins, client } from "../../index";
+import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../utils/functions";
 
 export default async (message: Message) => {
 
@@ -30,7 +30,7 @@ export default async (message: Message) => {
         } else attachmentsLink = "No attachment"
 
         let executorID
-        let executorUsername: String | undefined
+        let executorUsername: String | null | undefined
         let executorUsernameFormatted
 
         if (Entry?.createdTimestamp! > Date.now() - 1500) {

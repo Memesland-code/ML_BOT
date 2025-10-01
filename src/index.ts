@@ -5,7 +5,7 @@ import fs from 'fs/promises'
 import mysql from 'mysql2/promise'
 import path from 'path'
 import WOK from 'wokcommands'
-import { HandleLog, IsBotPerformingMaintenance } from "./functions"
+import { HandleLog, IsBotPerformingMaintenance } from "./utils/functions"
 dotenv.config()
 
 export const client = new DiscordJS.Client({
@@ -123,11 +123,11 @@ export async function setClientActivity(isMaintenance: boolean) {
     const clientVersion = obj.version;
 
     if (isMaintenance) {
-        client.user?.setStatus('dnd')
-        client.user?.setActivity(`⚠️ Under maintenance - v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
+      client.user?.setStatus('dnd')
+      client.user?.setActivity(`⚠️ Under maintenance - v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
     } else {
-        client.user?.setStatus('online')
-        client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
+      client.user?.setStatus('online')
+      client.user?.setActivity(`v${clientVersion} - by Memes_land`, { type: ActivityType.Playing }); // ⚠️ ActivityType.Custom ne fonctionne pas toujours
     }
   } catch (err) {
     HandleLog("Error while reading package.json :" + err);

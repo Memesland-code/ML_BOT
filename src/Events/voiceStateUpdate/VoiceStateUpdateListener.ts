@@ -1,7 +1,7 @@
 import colors from "colors";
 import { APIEmbedField, AuditLogEvent, CategoryChannel, EmbedBuilder, TextChannel, User, VoiceBasedChannel, VoiceState } from "discord.js";
-import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../functions";
 import { botAdmins, client } from "../../index";
+import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../utils/functions";
 
 export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
