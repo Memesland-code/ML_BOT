@@ -1,7 +1,7 @@
 import colors from "colors";
 import { CommandObject, CommandType } from "wokcommands"; // Required imports
 import { client } from "../..";
-import { HandleLog } from "../../functions";
+import { HandleLog } from "../../utils/functions";
 
 export default { // Command name is file name
   description: "Deletes the registered commands list on Discord /!\\ Shuts down the bot & requires Discord reload", // Command description

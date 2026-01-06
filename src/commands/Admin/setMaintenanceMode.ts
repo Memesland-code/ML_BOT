@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandObject, CommandType } from "wokcommands"; // Required imports
-import { ExecuteQuery } from "../../functions";
+import { ExecuteQuery } from "../../utils/functions";
 import { setClientActivity } from "../..";
 
 export default { // Command name is file name
