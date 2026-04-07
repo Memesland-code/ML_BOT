@@ -110,10 +110,12 @@ export default { // Command name is file name
                 return
             }
 
-            if (interaction.options.getSubcommand() === "message") {
-                const ch = interaction?.channel as TextChannel
-                var currentDeletedMessages = 0
-                var finalDeletedMessages
+            const ch = interaction?.channel as TextChannel
+            var currentDeletedMessages = 0
+            var finalDeletedMessages
+
+            //* /purge messages subcommand
+            if (interaction.options.getSubcommand() === "messages") {
 
                 if (interaction.options.getUser("user")?.username === "") { // if user is null, deletes all messages without checking
                     ch.bulkDelete(Number(interaction.options.getNumber("number")), true)
@@ -123,9 +125,9 @@ export default { // Command name is file name
                         if (currentDeletedMessages >= Number(interaction.options.getNumber("number"))) break
                         var msg = ch.messages.cache.at(i)
                         if (msg?.author == interaction.options.getUser("user") as unknown as User) {
-                            if (!msg?.deletable) break // stops if message can't be deleted
+                            if (!msg?.deletable) break // stops if message can't be deleted (prevents potential errors)
                             msg?.delete() // Delete the message if the referenced user is the author
-                            currentDeletedMessages++
+                            currentDeletedMessages++ // Increase number of successfully deleted messages
                         }
                     }
                     finalDeletedMessages = currentDeletedMessages
@@ -163,6 +165,10 @@ export default { // Command name is file name
 
                 interaction.reply({ content: `${interaction.options.getNumber("number")} messages have successfully been deleted!` })
                 highLogsChannel.send({ embeds: [embed] })
+
+            } else if (interaction.options.getSubcommand() === "last") {
+
+                //var test = ch.messages.cache.at(0)?.createdTimestamp
             }
         } catch (error) {
 
