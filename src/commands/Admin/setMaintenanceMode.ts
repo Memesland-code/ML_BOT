@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandObject, CommandType } from "wokcommands"; // Required imports
-import { ExecuteQuery } from "../../functions";
 import { setClientActivity } from "../..";
+import { ExecuteQuery } from "../../utils/functions";
 
 export default { // Command name is file name
   description: "Change bot maintenance state", // Command description
@@ -25,7 +25,7 @@ export default { // Command name is file name
       setClientActivity(true)
 
     } else {
-      
+
       ExecuteQuery(`UPDATE Admin SET Value = 0 WHERE KeyName = 'MaintenanceState';`)
       interaction?.reply({ content: "Le bot n'est plus en maintenance", flags: ["Ephemeral"] })
       setClientActivity(false)

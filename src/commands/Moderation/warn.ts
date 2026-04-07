@@ -2,7 +2,7 @@ import colors from "colors"
 import { ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits, TextChannel } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
 import { botAdmins, client } from "../.."
-import { CheckTableExist, ExecuteQuery, GetHighLogChannel, HandleLog, IsBotPerformingMaintenance } from "../../functions"
+import { CheckTableExist, ExecuteQuery, GetHighLogChannel, HandleLog, IsBotPerformingMaintenance } from "../../utils/functions"
 
 export default {
     description: "Warn a user",
@@ -56,7 +56,7 @@ export default {
             }
 
             const user = client.users.cache.get(String(interaction.options.getUser("user")))
-            
+
             await HandleLog(
                 colors.yellow(`Command executed\nwarn`) +
                 colors.yellow(`In server : `) + colors.white(`${interaction.guild?.name}`) +

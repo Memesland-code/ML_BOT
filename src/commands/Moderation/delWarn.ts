@@ -2,7 +2,7 @@ import colors from "colors"
 import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits, TextChannel } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
 import { botAdmins, client } from "../.."
-import { CheckTableExist, ExecuteQuery, GetHighLogChannel, HandleLog, IsBotPerformingMaintenance } from "../../functions"
+import { CheckTableExist, ExecuteQuery, GetHighLogChannel, HandleLog, IsBotPerformingMaintenance } from "../../utils/functions"
 
 export default {
     description: "Delete a warning from database",

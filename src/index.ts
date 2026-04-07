@@ -134,7 +134,7 @@ export async function setClientActivity(isMaintenance: boolean) {
   }
 }
 
-client.on('ready', async () => {
+client.on('clientReady', async () => {
   new WOK({
     client,
     commandsDir: path.join(__dirname, 'commands'),

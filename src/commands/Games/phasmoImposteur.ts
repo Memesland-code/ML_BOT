@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits } from "discord.js"
 import { CommandObject, CommandType } from "wokcommands"
-import { IsBotPerformingMaintenance } from "../../functions"
 import { botAdmins } from "../../index"
+import { IsBotPerformingMaintenance } from "../../utils/functions"
 
 
 

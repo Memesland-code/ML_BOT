@@ -16,8 +16,9 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         let guildLogsChannelID = await GetLogChannel(guild?.id) as string
         let logsChannel = client.channels.cache.get(guildLogsChannelID) as TextChannel
 
-        const AuditLogFetchMemberUpdate = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberUpdate })
-        const EntryMemberUpdate = AuditLogFetchMemberUpdate.entries.first()
+        //const AuditLogFetchMemberUpdate = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberUpdate })
+        const AuditLogFetchMemberMove = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberMove })
+        const EntryMemberUpdate = AuditLogFetchMemberMove.entries.first()
 
         const AuditLogFetchMemberDisconnect = await guild!.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MemberDisconnect })
         let EntryMemberDisconnect = AuditLogFetchMemberDisconnect.entries.first()
@@ -33,6 +34,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         } else if (oldVoiceState.channel != null && newVoiceState.channel == undefined) {
             Entry = EntryMemberDisconnect
             memberDisconnect = true
+            console.log("EntryMemberDisconnect")
         } else {
             Entry = EntryMemberUpdate
             memberUpdate = true
@@ -43,19 +45,19 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         if (memberMove) //* MEMBER MOVE
         {
             await HandleLog(
-                colors.blue(`EVENT\nUser was moved of its voice channel\n`) +
+                colors.blue(`EVENT\nUser was moved from its voice channel\n`) +
                 colors.blue(`Modified user username : `) + colors.white(`${oldVoiceState.member?.user.username}\n`) +
                 colors.blue(`User ID : `) + colors.white(`${oldVoiceState.member?.user.id}\n`) +
                 colors.blue(`In guild : `) + colors.white(`${oldVoiceState.guild?.name}\n`) +
                 colors.blue(`Guild ID : `) + colors.white(`${oldVoiceState.guild?.id}\n`) +
                 colors.blue(`Previous channel name : `) + colors.white(`${oldVoiceState.channel?.name}\n`) +
                 colors.blue(`Previous channel ID : `) + (`${oldVoiceState.channel?.id}\n`) +
-                colors.blue(`Previous channel users count : `) + colors.white(`${oldVoiceState.channel?.members.size}\n`) +
+                colors.blue(`Previous channel connected members count : `) + colors.white(`${oldVoiceState.channel?.members.size}\n`) +
                 colors.blue(`Previous category name : `) + colors.white(`${oldVoiceState.channel?.parent?.name}\n`) +
                 colors.blue(`Previous category ID : `) + colors.white(`${oldVoiceState.channel?.parent?.id}\n`) +
                 colors.blue(`New channel name : `) + colors.white(`${newVoiceState.channel?.name}\n`) +
                 colors.blue(`New channel ID : `) + colors.white(`${newVoiceState.channel?.id}\n`) +
-                colors.blue(`New channel users count : `) + colors.white(`${newVoiceState.channel?.members.size}\n`) +
+                colors.blue(`New channel connected members count : `) + colors.white(`${newVoiceState.channel?.members.size}\n`) +
                 colors.blue(`New category name : `) + colors.white(`${newVoiceState.channel?.parent?.name}\n`) +
                 colors.blue(`New category ID : `) + colors.white(`${newVoiceState.channel?.parent?.id}\n`) +
                 colors.magenta(`Executor username : `) + colors.white(`${Entry?.executor?.username}\n`) +
@@ -65,7 +67,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
 
             embed
                 .setAuthor({ name: `${oldVoiceState.member?.user.username}`, iconURL: `${oldVoiceState.member?.user.displayAvatarURL()}` })
-                .setTitle("User was moved of its voice channel")
+                .setTitle("User was moved from its voice channel")
                 .setColor("DarkGold")
                 .addFields([
                     {
@@ -77,7 +79,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                         name: "Previous channel infos", value: `\n\
                         Name : <#${oldVoiceState.channel?.id}>\n\
                         ID : ${oldVoiceState.channel?.id}\n\
-                        Users count : ${oldVoiceState.channel?.members.size}\n\
+                        connected members count : ${oldVoiceState.channel?.members.size}\n\
                         Category name : ${oldVoiceState.channel?.parent?.name}\n\
                         Category ID : ${oldVoiceState.channel?.parent?.id}`
                     },
@@ -85,7 +87,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                         name: "New channel infos", value: `\n\
                         Name : <#${newVoiceState.channel?.id}>\n\
                         ID : ${newVoiceState.channel?.id}\n\
-                        Users count : ${newVoiceState.channel?.members.size}\n\
+                        connected members count : ${newVoiceState.channel?.members.size}\n\
                         Category name : ${newVoiceState.channel?.parent?.name}\n\
                         Category ID : ${newVoiceState.channel?.parent?.id}`
                     },
@@ -99,7 +101,10 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
         else if (memberDisconnect) //* MEMBER DISCONNECT
         {
 
-            if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 1500)) {
+            console.log(EntryMemberDisconnect)
+            console.log(EntryMemberDisconnect?.createdTimestamp)
+
+            if (EntryMemberDisconnect?.createdTimestamp! < (Date.now() - 5000)) {
 
                 await HandleLog(
                     colors.blue(`EVENT\nUser was disconnected from voice channel\n`) +
@@ -109,7 +114,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                     colors.blue(`Guild ID : `) + colors.white(`${oldVoiceState.guild?.id}\n`) +
                     colors.blue(`Previous channel name : `) + colors.white(`${oldVoiceState.channel?.name}\n`) +
                     colors.blue(`Previous channel ID : `) + colors.white(`${oldVoiceState.channel?.id}\n`) +
-                    colors.blue(`Previous channel users count : `) + colors.white(`${oldVoiceState.channel?.members.size}\n`) +
+                    colors.blue(`Previous channel connected members count : `) + colors.white(`${oldVoiceState.channel?.members.size}\n`) +
                     colors.blue(`Previous category name : `) + colors.white(`${oldVoiceState.channel?.parent?.name}\n`) +
                     colors.blue(`Previous category ID : `) + colors.white(`${oldVoiceState.channel?.parent?.id}\n`) +
                     colors.magenta(`Executor username : `) + colors.white(`${oldVoiceState.member?.user.username}\n`) +
@@ -131,7 +136,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                             name: "Previous channel infos", value: `\n\
                             Name : <#${oldVoiceState.channel?.id}>\n\
                             ID : ${oldVoiceState.channel?.id}\n\
-                            Users count : ${oldVoiceState.channel?.members.size}`
+                            connected members count : ${oldVoiceState.channel?.members.size}`
                         },
                         {
                             name: "Previous category infos", value: `\n\
@@ -146,6 +151,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                     ])
             }
             else {
+                console.log("AUDIUT LOG ENTRY PATH")
                 await HandleLog(
                     colors.blue(`EVENT\nUser was disconnected from voice channel\n`) +
                     colors.blue(`User username : `) + colors.white(`${oldVoiceState.member?.user.username}\n`) +
@@ -154,7 +160,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                     colors.blue(`Guild ID : `) + colors.white(`${oldVoiceState.guild?.id}\n`) +
                     colors.blue(`Previous channel name : `) + colors.white(`${oldVoiceState.channel?.name}\n`) +
                     colors.blue(`Previous channel ID : `) + colors.white(`${oldVoiceState.channel?.id}\n`) +
-                    colors.blue(`Previous channel users count : `) + colors.white(`${oldVoiceState.channel?.members.size}\n`) +
+                    colors.blue(`Previous channel connected members count : `) + colors.white(`${oldVoiceState.channel?.members.size}\n`) +
                     colors.blue(`Previous category name : `) + colors.white(`${oldVoiceState.channel?.parent?.name}\n`) +
                     colors.blue(`Previous category ID : `) + colors.white(`${oldVoiceState.channel?.parent?.id}\n`) +
                     colors.magenta(`Executor username : `) + colors.white(`${EntryMemberDisconnect?.executor!.username}\n`) +
@@ -176,7 +182,7 @@ export default async (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
                             name: "Previous channel infos", value: `\n\
                             Name : <#${oldVoiceState.channel?.name}>\n\
                             ID : ${oldVoiceState.channel?.id}\n\
-                            Users count : ${oldVoiceState.channel?.members.size}`
+                            connected members count : ${oldVoiceState.channel?.members.size}`
                         },
                         {
                             name: "Previous category infos", value: `\n\
