@@ -5,6 +5,8 @@ import { GetHighLogChannel, GetLogChannel, HandleLog } from "../../utils/functio
 
 export default async (message: Message) => {
 
+    if (message.partial || !message.guild) return;
+
     let guild = client!.guilds.cache.get(message.guild!.id)
 
     if (!guild) return
