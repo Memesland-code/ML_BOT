@@ -159,9 +159,9 @@ export async function dbConnection() {
   if (!db) {
     db = await mysql.createConnection({
       host: process.env.DB_HOST,
-      user: "mlbot",
+      user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: "ML_Bot",
+      database: process.env.DB_NAME,
       charset: "utf8mb4",
       supportBigNumbers: true,
       bigNumberStrings: true

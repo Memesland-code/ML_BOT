@@ -1,13 +1,11 @@
 {
   "dependencies": {
-    "colors": "^1.4.0",
-    "discord.js": "^14.26.2",
-    "dotenv": "^16.4.7",
-    "fs": "^0.0.1-security",
-    "mysql2": "^3.14.1",
-    "tsx": "^4.7.1",
-    "typescript": "^5.8.2",
-    "wokcommands": "^2.1.9"
+    "@sapphire/decorators": "^6.2.0",
+    "@sapphire/framework": "^5.5.0",
+    "@sapphire/utilities": "^3.18.2",
+    "discord.js": "^14.27.0",
+    "dotenv": "^16.6.1",
+    "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
   "version": "0.2.0.62.dev",
@@ -17,10 +15,14 @@
   },
   "keywords": [],
   "author": "Memes_land",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@types/mysql": "^2.15.26",
-    "@types/node": "^20.11.19"
+    "@types/node": "^26.1.2",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }
