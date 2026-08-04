@@ -9,12 +9,12 @@
     "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.3.0.64.dev",
+  "version": "0.3.1.65.dev",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
-    "up": "tsx scripts/update-version.ts rev",
-    "up:rev": "tsx scripts/update-version.ts patch",
+    "rev": "tsx scripts/update-version.ts rev",
+    "up:patch": "tsx scripts/update-version.ts patch",
     "up:minor": "tsx scripts/update-version.ts minor",
     "up:major": "tsx scripts/update-version.ts major",
     "release": "tsx scripts/update-version.ts release"
