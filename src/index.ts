@@ -2,6 +2,7 @@ import { SapphireClient } from "@sapphire/framework"
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import pkg from '../package.json'
+import { setClientActivity } from "./utils/activity"
 import { writeLog } from "./utils/logger"
 
 dotenv.config()
@@ -49,6 +50,7 @@ async function main(): Promise<void>
     {
         writeLog(`Client successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`, 'SUCCESS')
         await client.login(process.env.TOKEN)
+        await setClientActivity(client)
     }
     catch (error)
     {
