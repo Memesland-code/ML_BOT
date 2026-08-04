@@ -3,12 +3,13 @@
     "@sapphire/decorators": "^6.2.0",
     "@sapphire/framework": "^5.5.0",
     "@sapphire/utilities": "^3.18.2",
+    "colorette": "^2.0.20",
     "discord.js": "^14.27.0",
     "dotenv": "^16.6.1",
     "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.2.0.63.dev",
+  "version": "0.3.0.64.dev",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
