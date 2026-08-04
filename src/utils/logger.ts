@@ -1,4 +1,4 @@
-import { blue, cyan, gray, green, magenta, red, yellow } from 'colorette'
+import { blue, cyan, gray, green, red, yellow } from 'colorette'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 

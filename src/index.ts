@@ -1,5 +1,4 @@
 import { SapphireClient } from "@sapphire/framework"
-import { green } from 'colorette'
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import pkg from '../package.json'
