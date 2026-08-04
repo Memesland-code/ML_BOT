@@ -1,39 +1,32 @@
 # ML_BOT
-Private Discord bot for Memes_land server
-<br />
-Versionning commit message syntax:<br />
-[msg] - v**x**.**y**.**z**.**r**
-- x : Major version
-- y : Minor version
-- z : Patch version
-- r : Revision number
+Open Source Discord Bot for Memes_land Server
 <br />
 
-Liste des listeners :
-- ChannelCreate
-- ChannelDelete
-- ChannelPinsUpdate
-- ChannelUpdate
-- GuildBanAdd
-- GuildBanRemove
-- GuildMemberAdd
-- GuildMemberRemove
-- GuildMemberUpdate
-- GuildUpdate
-- InteractionCreate
-- MessageDelete
-- MessageUpdate
-- RoleCreate
-- RoleDelete
-- RoleUpdate
-- VoiceStateUpdate
+Listeners List :
+- ~~ChannelCreate~~ - Refactoring
+- ~~ChannelDelete~~ - Refactoring
+- ~~ChannelPinsUpdate~~ - Refactoring
+- ~~ChannelUpdate~~ - Refactoring
+- ~~GuildBanAdd~~ - Refactoring
+- ~~GuildBanRemove~~ - Refactoring
+- ~~GuildMemberAdd~~ - Refactoring
+- ~~GuildMemberRemove~~ - Refactoring
+- ~~GuildMemberUpdate~~ - Refactoring
+- ~~GuildUpdate~~ - Refactoring
+- ~~InteractionCreate~~ - Refactoring
+- ~~MessageDelete~~ - Refactoring
+- ~~MessageUpdate~~ - Refactoring
+- ~~RoleCreate~~ - Refactoring
+- ~~RoleDelete~~ - Refactoring
+- ~~RoleUpdate~~ - Refactoring
+- ~~VoiceStateUpdate~~ - Refactoring
 <br />
 
-Liste des commandes :
+Commands List :
 - Admin
-    - clearCommandeCache (reset le cache commandes du bot)
-    - setMaintenanceState (change le mode de maintenance du bot)
-    - Warn (ajoute / récupère le(s) warn(s) d'un membre)
+    - ~~clearCommandeCache (reset le cache commandes du bot)~~ - Refactoring
+    - ~~setMaintenanceState (change le mode de maintenance du bot)~~ - Refactoring
+    - ~~Warn (ajoute / récupère le(s) warn(s) d'un membre)~~ - Refactoring
 
 - Games
-    - phasmoImposteur (lance le mode de jeu phasmo imposteur)
+    - ~~phasmoImposteur (lance le mode de jeu phasmo imposteur)~~ - Refactoring
