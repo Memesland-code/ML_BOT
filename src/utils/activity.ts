@@ -17,7 +17,7 @@ export async function setClientActivity(client: Client, isMaintenance: boolean =
         {
             client.user?.setStatus('dnd')
             client.user?.setActivity(`⚠️ Under maintenance - v${clientVersion} - by Memes_land`, {
-                type: ActivityType.Playing
+                type: ActivityType.Custom,
             })
         }
         else

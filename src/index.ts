@@ -1,4 +1,4 @@
-import { SapphireClient } from "@sapphire/framework"
+import { LogLevel, SapphireClient } from "@sapphire/framework"
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import pkg from '../package.json'
@@ -36,7 +36,7 @@ const client = new SapphireClient(
         ],
         loadMessageCommandListeners: true,
         logger: {
-            level: 10
+            level: LogLevel.Debug
         }
     }
 )
@@ -48,9 +48,10 @@ async function main(): Promise<void>
 {
     try
     {
-        writeLog(`Client successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`, 'SUCCESS')
+        writeLog('Launching client', 'INFO')
         await client.login(process.env.TOKEN)
-        await setClientActivity(client)
+        writeLog(`Client successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`, 'SUCCESS')
+        setClientActivity(client, true)
     }
     catch (error)
     {
