@@ -1,8 +1,7 @@
 import { LogLevel, SapphireClient } from "@sapphire/framework"
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
-import pkg from '../package.json'
-import { setClientActivity } from "./utils/activity"
+import path from "node:path"
 import { writeLog } from "./utils/logger"
 
 dotenv.config()
@@ -37,12 +36,10 @@ const client = new SapphireClient(
         loadMessageCommandListeners: true,
         logger: {
             level: LogLevel.Debug
-        }
+        },
+        baseUserDirectory: path.join(__dirname)
     }
 )
-
-const versionRegex = /^(\d+)\.(\d+)\.(\d+)\.(\d+)(\.dev)?$/
-const clientVersion = pkg.version.match(versionRegex)
 
 async function main(): Promise<void>
 {
@@ -50,8 +47,6 @@ async function main(): Promise<void>
     {
         writeLog('Launching client', 'INFO')
         await client.login(process.env.TOKEN)
-        writeLog(`Client successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`, 'SUCCESS')
-        setClientActivity(client, true)
     }
     catch (error)
     {

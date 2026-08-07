@@ -1,17 +1,13 @@
 import { ActivityType, Client } from 'discord.js'
-import fs from 'node:fs/promises'
-import path from 'node:path'
 import { writeLog } from './logger'
+import { getClientVersion } from './package'
 
 //* Updates the client presence and status depending on maintenance mode
 export async function setClientActivity(client: Client, isMaintenance: boolean = false): Promise<void>
 {
     try
     {
-        const packagePath = path.join(process.cwd(), 'package.json')
-        const data = await fs.readFile(packagePath, 'utf-8')
-        const packageJson = JSON.parse(data)
-        const clientVersion = packageJson.version || '0.0.0-err'
+        const clientVersion = await getClientVersion()
 
         if (isMaintenance)
         {
