@@ -10,7 +10,7 @@
     "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.3.4.73.dev",
+  "version": "0.3.5.74.dev",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
