@@ -2,6 +2,7 @@ import { LogLevel, SapphireClient } from "@sapphire/framework"
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import path from "node:path"
+import { connectDatabase } from "./utils/db"
 import { writeLog } from "./utils/logger"
 
 dotenv.config()
@@ -35,7 +36,7 @@ const client = new SapphireClient(
         ],
         loadMessageCommandListeners: true,
         logger: {
-            level: LogLevel.Debug
+            level: LogLevel.Info
         },
         baseUserDirectory: path.join(__dirname)
     }
@@ -45,6 +46,7 @@ async function main(): Promise<void>
 {
     try
     {
+        await connectDatabase()
         writeLog('Launching client', 'INFO')
         await client.login(process.env.TOKEN)
     }
