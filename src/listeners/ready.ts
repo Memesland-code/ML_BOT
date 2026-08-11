@@ -1,4 +1,7 @@
 import { Listener } from '@sapphire/framework'
+import { Client } from 'discord.js'
+import { setClientActivity } from '../utils/activity'
+import { getMaintenanceStatus } from '../utils/db'
 import { writeLog } from '../utils/logger'
 import { getClientVersion } from '../utils/package'
 
@@ -12,10 +15,14 @@ export class ReadyListener extends Listener
         })
     }
 
-    public async run(): Promise<void>
+    public async run(client: Client): Promise<void>
     {
         const clientVersion = await getClientVersion()
 
         await writeLog(`Client successfully connected to Discord - running version ${clientVersion}\nConnection time: ${new Date().toLocaleString()}\n`, 'SUCCESS')
+
+        // Applying maintenance status from DB
+        const isMaintenance = await getMaintenanceStatus()
+        await setClientActivity(client, isMaintenance)
     }
 }

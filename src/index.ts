@@ -46,8 +46,11 @@ async function main(): Promise<void>
 {
     try
     {
+        // DB connection
         await connectDatabase()
-        writeLog('Launching client', 'INFO')
+
+        // Discord Connection
+        writeLog('Launching client...', 'INFO')
         await client.login(process.env.TOKEN)
     }
     catch (error)
