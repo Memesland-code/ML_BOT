@@ -1,10 +1,10 @@
 import { Guild, TextChannel } from "discord.js"
 import { getLogChannelFromDB } from './db'
 
-export type logLevel = 'standard' | 'high'
+export type LogLevel = 'standard' | 'high'
 
 // Retrieves the designated TextChannel for logging in a guild
-export async function getGuildLogChannel(guild: Guild, level: logLevel = 'standard')
+export async function getGuildLogChannel(guild: Guild, level: LogLevel = 'standard')
 {
     const channelId = await getLogChannelFromDB(guild.id, level)
     if (!channelId) return null
