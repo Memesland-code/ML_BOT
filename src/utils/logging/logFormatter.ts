@@ -8,7 +8,7 @@ interface EventLogData
     guildName: string
     guildId: string
     severity?: LogSeverity
-    executor?: { name: string, id: string }
+    executor?: { name: string | null, id: string }
     details: Record<string, string | undefined>
 }
 
@@ -40,7 +40,8 @@ export function formatEventLog(data: EventLogData): string
 
     if (data.executor)
     {
-        output += magenta('Executor: ') + white(`${data.executor.name}\n`)
+        const executorName = data.executor.name ?? 'Unknown'
+        output += magenta('Executor: ') + white(`${executorName}\n`)
         output += magenta('ID: ') + white(`${data.executor.id}\n`)
     }
 

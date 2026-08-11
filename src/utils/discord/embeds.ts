@@ -1,9 +1,9 @@
-import { ColorResolvable, EmbedBuilder, User } from "discord.js"
+import { ColorResolvable, EmbedBuilder, PartialUser, User } from "discord.js"
 
 interface LogEmbedOptions
 {
     title: string
-    executor: User | null
+    executor: User | PartialUser | null
     fields: { name: string, value: string }[]
     color?: ColorResolvable
 }
@@ -21,7 +21,7 @@ export function createLogEmbed(options: LogEmbedOptions): EmbedBuilder
     if (options.executor)
     {
         embed.setAuthor({
-            name: options.executor.username,
+            name: options.executor.username ?? 'Unknown User',
             iconURL: options.executor.displayAvatarURL()
         })
     }
