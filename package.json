@@ -10,7 +10,11 @@
     "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.3.8.83.dev",
+  "version": "0.3.8.84.dev",
+  "imports": {
+    "#utils": "./src/utils/index.ts",
+    "#utils/*": "./src/utils/*"
+  },
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
