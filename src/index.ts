@@ -1,9 +1,9 @@
+import { connectDatabase } from "#db/db.js"
+import { writeLog } from "#logging/logger.js"
 import { LogLevel, SapphireClient } from "@sapphire/framework"
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import path from "node:path"
-import { connectDatabase } from "./utils/db"
-import { writeLog } from "./utils/logger"
 
 dotenv.config()
 

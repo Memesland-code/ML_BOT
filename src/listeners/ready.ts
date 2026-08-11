@@ -1,9 +1,9 @@
+import { getMaintenanceStatus } from '#db/db.js'
+import { setClientActivity } from '#discord/activity.js'
+import { writeLog } from '#logging/logger.js'
+import { getClientVersion } from '#logging/package.js'
 import { Listener } from '@sapphire/framework'
 import { Client } from 'discord.js'
-import { setClientActivity } from '../utils/activity'
-import { getMaintenanceStatus } from '../utils/db'
-import { writeLog } from '../utils/logger'
-import { getClientVersion } from '../utils/package'
 
 export class ReadyListener extends Listener
 {

@@ -1,6 +1,6 @@
+import { writeLog } from '#logging/logger.js'
+import { getClientVersion } from '#logging/package.js'
 import { ActivityType, Client } from 'discord.js'
-import { writeLog } from './logger'
-import { getClientVersion } from './package'
 
 //* Updates the client presence and status depending on maintenance mode
 export async function setClientActivity(client: Client, isMaintenance: boolean = false): Promise<void>

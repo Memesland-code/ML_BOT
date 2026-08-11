@@ -1,5 +1,5 @@
+import { writeLog } from '#logging/logger.js'
 import { Listener, ListenerErrorPayload } from '@sapphire/framework'
-import { writeLog } from '../../utils/logger'
 
 export class CoreListenerError extends Listener
 {

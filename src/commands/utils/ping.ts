@@ -1,6 +1,6 @@
+import { writeLog } from "#logging/logger.js"
 import { ApplicationCommandRegistry, Awaitable, Command } from "@sapphire/framework"
 import { ChatInputCommandInteraction } from "discord.js"
-import { writeLog } from "../../utils/logger"
 
 export class PingCommand extends Command
 {

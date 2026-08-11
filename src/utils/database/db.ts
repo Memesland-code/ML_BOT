@@ -1,10 +1,10 @@
+import { LogChannelLevel } from '#discord/logChannels.js'
+import { writeLog } from '#logging/logger.js'
 import 'dotenv/config'
 import mysql from 'mysql2/promise'
-import { LogLevel } from './logChannels'
-import { writeLog } from "./logger"
 
 
-// Creating connection pool
+//* Creating connection pool
 export const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -21,7 +21,7 @@ export const db = mysql.createPool({
 })
 
 
-// Connects to the DB
+//* Connects to the DB
 export async function connectDatabase(): Promise<void>
 {
     try
@@ -103,7 +103,7 @@ export async function setMaintenanceStatus(state: boolean): Promise<boolean>
 
 
 // Gets the guild's log channel depending on the log level
-export async function getLogChannelFromDB(guildId: string, level: LogLevel): Promise<string | null>
+export async function getLogChannelFromDB(guildId: string, level: LogChannelLevel): Promise<string | null>
 {
     try
     {

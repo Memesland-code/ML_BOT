@@ -1,8 +1,8 @@
+import { getMaintenanceStatus, setMaintenanceStatus } from "#db/db.js"
+import { setClientActivity } from "#discord/activity.js"
+import { writeLog } from "#logging/logger.js"
 import { ApplicationCommandRegistry, Command } from "@sapphire/framework"
 import { ChatInputCommandInteraction, PermissionFlagsBits } from "discord.js"
-import { setClientActivity } from "../../utils/activity"
-import { getMaintenanceStatus, setMaintenanceStatus } from "../../utils/db"
-import { writeLog } from "../../utils/logger"
 
 export class MaintenanceCommand extends Command
 {

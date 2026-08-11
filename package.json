@@ -12,8 +12,9 @@
   "name": "ml_bot",
   "version": "0.3.8.84.dev",
   "imports": {
-    "#utils": "./src/utils/index.ts",
-    "#utils/*": "./src/utils/*"
+    "#db/*": "./src/utils/database/*",
+    "#discord/*": "./src/utils/discord/*",
+    "#logging/*": "./src/utils/logging/*"
   },
   "main": "dist/index.js",
   "scripts": {

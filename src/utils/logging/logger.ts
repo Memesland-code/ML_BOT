@@ -1,9 +1,10 @@
 import { blue, cyan, gray, green, red, yellow } from 'colorette'
+import console from 'node:console'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
 const LOGS_DIR = path.join(process.cwd(), 'logs')
-export type LogLevel = 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'SUCCESS'
+export type ConsoleLogLevel = 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'SUCCESS'
 
 
 //* ANSI color codes checker to keep log files clean from unwanted characters
@@ -78,7 +79,7 @@ async function getActiveLogFilePath(): Promise<string>
 
 
 //* Formats a basic single-line log with timestamp and color badge
-function formatSimpleLog(message: string, level: LogLevel): string
+function formatSimpleLog(message: string, level: ConsoleLogLevel): string
 {
     const timestamp = new Date().toLocaleDateString()
     const timeTag = cyan(`[${timestamp}]`)
@@ -108,7 +109,7 @@ function formatSimpleLog(message: string, level: LogLevel): string
 
 
 //* Main logger function: accepts basic messages with level OR custom pre-formatted text blocks
-export async function writeLog(content: string, level?: LogLevel): Promise<void>
+export async function writeLog(content: string, level?: ConsoleLogLevel): Promise<void>
 {
     const formattedConsoleOutput = level ? formatSimpleLog(content, level) : content
 
