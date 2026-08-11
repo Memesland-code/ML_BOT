@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import mysql from 'mysql2/promise'
+import { logLevel } from './logChannels'
 import { writeLog } from "./logger"
 
 
@@ -97,5 +98,31 @@ export async function setMaintenanceStatus(state: boolean): Promise<boolean>
     {
         await writeLog(`Failed to update maintenance status in DB: ${error}`, 'ERROR')
         return state
+    }
+}
+
+
+// Gets the guild's log channel depending on the log level
+export async function getLogChannelFromDB(guildId: string, level: logLevel): Promise<string>
+{
+    try
+    {
+        const levelToGet = level === 'standard' ? 'LogsChannel' : 'HighLogsChannel'
+
+        const rows = await db.query<mysql.RowDataPacket[]>(
+            'SELECT ? FROM ServersInfo WHERE GuildID = ?',
+            [levelToGet, guildId]
+        )
+
+        if (rows.length > 0)
+        {
+
+        }
+
+        return
+    }
+    catch (error)
+    {
+        writeLog(`Failed to get the channel ID from guild ID ${guildId} with log level ${level}: ${error}`, 'ERROR')
     }
 }
