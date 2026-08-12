@@ -14,7 +14,7 @@ export class ChannelPinsUpdateListener extends Listener
         })
     }
 
-    public async run(channel: TextBasedChannel, time: Date): Promise<void>
+    public async run(channel: TextBasedChannel): Promise<void>
     {
         // Restrict checks to guild text channels
         if (channel.type !== ChannelType.GuildText) return

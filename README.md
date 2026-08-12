@@ -3,9 +3,9 @@ Open Source Discord Bot for Memes_land Server
 <br />
 
 Listeners List :
-- ~~ChannelCreate~~ - Refactoring
-- ~~ChannelDelete~~ - Refactoring
-- ~~ChannelPinsUpdate~~ - Refactoring
+- ChannelCreate
+- ChannelDelete
+- ChannelPinsUpdate
 - ~~ChannelUpdate~~ - Refactoring
 - ~~GuildBanAdd~~ - Refactoring
 - ~~GuildBanRemove~~ - Refactoring
