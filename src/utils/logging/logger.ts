@@ -81,7 +81,7 @@ async function getActiveLogFilePath(): Promise<string>
 //* Formats a basic single-line log with timestamp and color badge
 function formatSimpleLog(message: string, level: ConsoleLogLevel): string
 {
-    const timestamp = new Date().toLocaleDateString()
+    const timestamp = new Date().toLocaleString()
     const timeTag = cyan(`[${timestamp}]`)
 
     let levelTag = ''
