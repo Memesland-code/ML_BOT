@@ -25,7 +25,7 @@ Listeners List :
 Commands List :
 - Admin
     - ~~clearCommandeCache (reset le cache commandes du bot)~~ - Refactoring
-    - ~~setMaintenanceState (change le mode de maintenance du bot)~~ - Refactoring
+    - maintenance (change le mode de maintenance du bot)
     - ~~Warn (ajoute / récupère le(s) warn(s) d'un membre)~~ - Refactoring
 
 - Games
