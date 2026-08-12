@@ -27,7 +27,7 @@ export class ChannelDeleteListener extends Listener
 
         const channelTypeName = ChannelType[channel.type] ?? 'Unknown'
 
-        // Format log string
+        // Console log
         const logString = formatEventLog({
             eventName: 'Channel deleted',
             guildName: guild.name,
@@ -45,7 +45,7 @@ export class ChannelDeleteListener extends Listener
 
         await writeLog(logString)
 
-        // Discord Embed log
+        // Discord log
         const logsChannel = await getGuildLogChannel(guild, 'standard')
         if (!logsChannel) return
 

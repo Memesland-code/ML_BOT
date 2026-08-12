@@ -26,7 +26,7 @@ export class ChannelCreateListener extends Listener
 
         const channelTypeName = ChannelType[channel.type] ?? 'Unknown'
 
-        // Format & write log in console
+        // Console log
         const logString = formatEventLog({
             eventName: 'New Channel Created',
             guildName: guild.name,
@@ -44,7 +44,7 @@ export class ChannelCreateListener extends Listener
 
         await writeLog(logString)
 
-        // Create and send Discord Embed log
+        // Discord log
         const logsChannel = await getGuildLogChannel(guild, 'standard')
         if (!logsChannel) return
 
