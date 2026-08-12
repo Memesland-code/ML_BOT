@@ -4,7 +4,7 @@ import { getGuildLogChannel } from "#discord/logChannels.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
 import { Listener } from "@sapphire/framework"
-import { AuditLogEvent, NonThreadGuildBasedChannel } from "discord.js"
+import { AuditLogEvent, ChannelType, NonThreadGuildBasedChannel } from "discord.js"
 
 export class ChannelCreateListener extends Listener
 {
@@ -24,6 +24,8 @@ export class ChannelCreateListener extends Listener
         // Fetch executor from Audit Logs
         const executor = await getAuditLogExecutor(guild, AuditLogEvent.ChannelCreate, channel.id)
 
+        const channelTypeName = ChannelType[channel.type] ?? 'Unknown'
+
         // Format & write log in console
         const logString = formatEventLog({
             eventName: 'New Channel Created',
@@ -34,7 +36,7 @@ export class ChannelCreateListener extends Listener
             details: {
                 'Channel name': channel.name,
                 'Channel ID': channel.id,
-                'Channel type': String(channel.type),
+                'Channel type': channelTypeName,
                 'In category': channel.parent?.name,
                 'Category ID': channel.parent?.id
             }
@@ -52,7 +54,7 @@ export class ChannelCreateListener extends Listener
             executor,
             fields: [{
                 name: "Channel infos",
-                value: `Channel: <#${channel.id}>\nChannel ID: ${channel.id}\nChannel type: ${channel.type}\nIn Category: ${channel.parent?.name ?? 'None'}\nCategory ID: ${channel.parent?.id ?? 'None'}`
+                value: `Channel: <#${channel.id}>\nChannel ID: ${channel.id}\nChannel type: ${channelTypeName}\nIn Category: ${channel.parent?.name ?? 'None'}\nCategory ID: ${channel.parent?.id ?? 'None'}`
             },
             {
                 name: 'Executor',
