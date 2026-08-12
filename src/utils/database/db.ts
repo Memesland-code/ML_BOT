@@ -110,7 +110,7 @@ export async function getLogChannelFromDB(guildId: string, level: LogChannelLeve
         const columnName = level === 'standard' ? 'LogsChannel' : 'HighLogsChannel'
 
         const [rows] = await db.query<mysql.RowDataPacket[]>(
-            `SELECT ${columnName} FROM ServersInfo WHERE GuildID = ? LIMIT 1`,
+            `SELECT ${columnName} FROM ServersInfos WHERE GuildID = ? LIMIT 1`,
             [guildId]
         )
 
