@@ -10,7 +10,8 @@ export class MaintenanceCommand extends Command
     {
         super(context, {
             name: 'maintenance',
-            description: 'Bascule le mode de maintenance du bot'
+            description: 'Bascule le mode de maintenance du bot',
+            preconditions: ['OwnersOnly']
         })
     }
 
