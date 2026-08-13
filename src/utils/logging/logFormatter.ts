@@ -44,6 +44,11 @@ export function formatEventLog(data: EventLogData): string
         output += magenta('Executor: ') + white(`${executorName}\n`)
         output += magenta('ID: ') + white(`${data.executor.id}\n`)
     }
+    else
+    {
+        output += magenta('Executor: ') + white(`Unknown\n`)
+        output += magenta('ID: ') + white(`Unknown\n`)
+    }
 
     output += cyan(`${new Date().toLocaleString()}\n`)
     return output
