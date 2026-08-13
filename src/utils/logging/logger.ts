@@ -46,35 +46,7 @@ async function getActiveLogFilePath(): Promise<string>
     await ensureLogsFolder()
 
     const currentDate = getFormattedDate()
-    const files = await fs.readdir(LOGS_DIR)
-
-    let maxIndex = 0
-    let hasMatch = false
-
-    for (const file of files)
-    {
-        if (!file.endsWith('.txt')) continue
-
-        const fileName = file.slice(0, -4)
-        const parts = fileName.split('-')
-
-        if (parts.length == 4)
-        {
-            const fileDate = `${parts[0]}-${parts[1]}-${parts[2]}`
-            if (fileDate === currentDate)
-            {
-                hasMatch = true
-                const index = parseInt(parts[3], 10)
-                if (!isNaN(index) && index > maxIndex)
-                {
-                    maxIndex = index
-                }
-            }
-        }
-    }
-
-    const currentIndex = hasMatch ? maxIndex : 1
-    return path.join(LOGS_DIR, `${currentDate}-${currentIndex}.txt`)
+    return path.join(LOGS_DIR, `${currentDate}.txt`)
 }
 
 
