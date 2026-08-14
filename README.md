@@ -6,14 +6,14 @@ Listeners List :
 - ChannelCreate
 - ChannelDelete
 - ChannelPinsUpdate
-- ~~ChannelUpdate~~ - Refactoring
-- ~~GuildBanAdd~~ - Refactoring
-- ~~GuildBanRemove~~ - Refactoring
-- ~~GuildMemberAdd~~ - Refactoring
-- ~~GuildMemberRemove~~ - Refactoring
-- ~~GuildMemberUpdate~~ - Refactoring
-- ~~GuildUpdate~~ - Refactoring
-- ~~InteractionCreate~~ - Refactoring
+- ChannelUpdate
+- GuildBanAdd
+- GuildBanRemove
+- GuildMemberAdd
+- GuildMemberRemove
+- GuildMemberUpdate
+- GuildUpdate
+- InteractionCreate
 - ~~MessageDelete~~ - Refactoring
 - ~~MessageUpdate~~ - Refactoring
 - ~~RoleCreate~~ - Refactoring
