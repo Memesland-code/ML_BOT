@@ -7,7 +7,7 @@ interface LogEmbedOptions
     description?: string
     executor?: User | PartialUser | null
     author?: { name: string, iconURL?: string }
-    fields?: { name: string, value: string }[]
+    fields?: { name: string, value: string, inline?: boolean }[]
 }
 
 
