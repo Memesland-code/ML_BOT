@@ -14,7 +14,8 @@ Listeners List :
 - GuildMemberUpdate
 - GuildUpdate
 - InteractionCreate
-- ~~MessageDelete~~ - Refactoring
+- MessageDelete
+- MessageDeleteBulk
 - ~~MessageUpdate~~ - Refactoring
 - ~~RoleCreate~~ - Refactoring
 - ~~RoleDelete~~ - Refactoring
