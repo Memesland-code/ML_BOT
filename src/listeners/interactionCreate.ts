@@ -63,16 +63,16 @@ export class InteractionCreateListener extends Listener
                 {
                     name: 'Location details',
                     value: [
-                        `User: <@${user.id}> (${user.id})`,
-                        `Channel: <#${interaction.channelId}> (${interaction.channelId})`,
-                        `Category: ${categoryName} (${categoryId})`
+                        `**User:** <@${user.id}> (${user.id})`,
+                        `**Channel:** <#${interaction.channelId}> (${interaction.channelId})`,
+                        `**Category:** ${categoryName} (${categoryId})`
                     ].join('\n')
                 },
                 {
                     name: 'Interaction info',
                     value: [
-                        `Type: ${interactionDetails.type}`,
-                        `ID / Name: \`${interactionDetails.identifier}\``
+                        `**Type:** ${interactionDetails.type}`,
+                        `**ID / Name:** \`${interactionDetails.identifier}\``
                     ].join('\n')
                 },
                 {
