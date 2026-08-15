@@ -21,7 +21,13 @@ export class MessageUpdateListener extends Listener
         if (!author || author.bot || !newMessage.guild) return
         if (oldMessage.pinned !== newMessage.pinned) return
 
-        if (oldMessage.content === newMessage.content && oldMessage.attachments.size === newMessage.attachments.size)
+        const oldContentRaw = oldMessage.partial ? null : oldMessage.content
+        const newContentRaw = newMessage.content
+
+        const oldAttachmentsSize = oldMessage.attachments?.size ?? 0
+        const newAttachmentsSize = newMessage.attachments?.size ?? 0
+
+        if (oldContentRaw !== null && oldContentRaw === newContentRaw && oldAttachmentsSize === newAttachmentsSize)
         {
             return
         }
@@ -29,8 +35,8 @@ export class MessageUpdateListener extends Listener
         const guild = newMessage.guild
         const channel = newMessage.channel as TextChannel
 
-        const oldAttachments = oldMessage.attachments.map(att => att.proxyURL)
-        const newAttachments = newMessage.attachments.map(att => att.proxyURL)
+        const oldAttachments = oldMessage.attachments ? Array.from(oldMessage.attachments.values()).map(att => att.proxyURL) : []
+        const newAttachments = newMessage.attachments ? Array.from(newMessage.attachments.values()).map(att => att.proxyURL) : []
 
         const isAttachmentStillThere = oldMessage.attachments.size !== newMessage.attachments.size
             ? (oldAttachments.length > 0 ? oldAttachments.join('\n') : 'No attachments previously')
@@ -40,15 +46,15 @@ export class MessageUpdateListener extends Listener
             ? newAttachments.join('\n')
             : 'No attachment'
 
-        const formatContent = (content: string | null) =>
+        const formatContent = (content: string | null, isPartial: boolean) =>
         {
-            if (!content) return "Couldn't fetch previous message content: Not in cache"
+            if (isPartial || !content) return "Couldn't fetch previous message content: Not in cache"
             if (content.length > 1000) return `${content.slice(0, 990)}...\n[Truncated: Exceeded field limit]`
             return content
         }
 
-        const oldContent = formatContent(oldMessage.content)
-        const newContent = formatContent(newMessage.content)
+        const oldContent = formatContent(oldMessage.content, oldMessage.partial)
+        const newContent = formatContent(newMessage.content, newMessage.partial)
 
         // Console log
         const logString = formatEventLog({
