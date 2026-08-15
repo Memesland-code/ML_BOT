@@ -10,7 +10,7 @@
     "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.3.19.110.dev",
+  "version": "0.3.20.111.dev",
   "imports": {
     "#db/*": "./src/utils/database/*",
     "#discord/*": "./src/utils/discord/*",
