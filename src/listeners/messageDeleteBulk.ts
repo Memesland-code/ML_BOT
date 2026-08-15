@@ -32,14 +32,14 @@ export class MessageDeleteBulkListener extends Listener
             `Channel: #${channel.name} (${channel.id})`,
             `Total deleted: ${totalCount} (${cachedMessages.size} cached, ${uncachedCount} uncached)`,
             `Executor: ${executor ? `${executor.username} (${executor.id})` : 'Unknown'}`,
-            `Date: ${new Date().toISOString()}`,
+            `Date: ${new Date().toLocaleString()}`,
             `=======================================\n`
         ]
 
         cachedMessages.forEach((msg) =>
         {
             const authorTag = msg.author ? `${msg.author.username} (${msg.author.id})` : 'Unknown author'
-            const timestamp = msg.createdAt ? msg.createdAt.toISOString() : 'Unknown date'
+            const timestamp = msg.createdAt ? msg.createdAt.toLocaleString() : 'Unknown date'
             const content = msg.content || '[No text content / attachments or embeds only]'
 
             transcriptLines.push(`[${timestamp}] ${authorTag}: ${content}`)

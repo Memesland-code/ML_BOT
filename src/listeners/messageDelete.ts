@@ -56,7 +56,7 @@ export class MessageDeleteListener extends Listener
                 Channel: `${channel.name} (${channel.id})`,
                 Content: rawContent || 'None',
                 Attachments: `${message.attachments.size} attachment(s)`,
-                'Sent at': message.createdAt.toISOString()
+                'Sent at': message.createdAt.toLocaleString()
             }
         })
 

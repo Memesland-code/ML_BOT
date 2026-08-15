@@ -67,7 +67,7 @@ export class MessageUpdateListener extends Listener
                 Channel: `#${channel.name} (${channel.id})`,
                 'Old Content': oldMessage.content || '[Uncached / Empty]',
                 'New Content': newMessage.content || '[Empty]',
-                'Sent At': oldMessage.createdAt ? oldMessage.createdAt.toISOString() : 'Unknown'
+                'Sent At': oldMessage.createdAt ? oldMessage.createdAt.toLocaleString() : 'Unknown'
             }
         })
 
