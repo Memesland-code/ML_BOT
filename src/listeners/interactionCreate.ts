@@ -76,8 +76,8 @@ export class InteractionCreateListener extends Listener
                     ].join('\n')
                 },
                 {
-                    name: 'Payload / Arguments',
-                    value: `\`\`\`${hasPayload}\n${interactionDetails.summary}\n\`\`\``
+                    name: 'Full payload',
+                    value: `\`\`\`${hasPayload}\n${interactionDetails.identifier} ${interactionDetails.summary}\n\`\`\``
                 }
             ]
         })
