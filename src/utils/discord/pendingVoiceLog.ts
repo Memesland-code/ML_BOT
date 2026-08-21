@@ -1,4 +1,4 @@
-import { User } from "discord.js"
+import { GuildAuditLogsEntry, User } from "discord.js"
 
 export interface PendingVoiceLog
 {
@@ -14,3 +14,5 @@ export interface PendingVoiceLog
 
 // Key is guildID:userID
 export const pendingVoiceLog = new Map<string, PendingVoiceLog>()
+
+export const recentAuditLogs = new Map<string, GuildAuditLogsEntry>()

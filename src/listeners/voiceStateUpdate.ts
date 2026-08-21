@@ -1,11 +1,11 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
-import { pendingVoiceLog, PendingVoiceLog } from "#discord/pendingVoiceLog.js"
+import { pendingVoiceLog, PendingVoiceLog, recentAuditLogs } from "#discord/pendingVoiceLog.js"
 import { fetchRecentAuditLogs } from "#logging/FetchRecentAuditLogs.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
 import { Listener } from "@sapphire/framework"
-import { AuditLogEvent, Guild, User, VoiceState } from "discord.js"
+import { AuditLogEvent, Guild, GuildAuditLogsEntry, User, VoiceState } from "discord.js"
 
 export async function flushVoiceLog(guild: Guild, data: Omit<PendingVoiceLog, 'timeout' | 'guildId' | 'userId'>, executor: User): Promise<void>
 {
@@ -292,26 +292,52 @@ export class VoiceStateUpdateListener extends Listener
                 ? AuditLogEvent.MemberDisconnect
                 : AuditLogEvent.MemberUpdate
 
+        const targetChannelId = newState.channelId ?? oldState.channelId ?? undefined
+
+        let matchedEntry: GuildAuditLogsEntry | null = null
+
+        //* Check recent memory
+        for (const entry of recentAuditLogs.values())
+        { 
+            if (entry.action !== auditLogType) continue
+
+            // Check for right member
+            if (entry.targetId && entry.targetId !== user.id) continue
+
+            // Check for right channel
+            const extra = entry.extra as { channel?: { id: string } } | undefined
+            if (auditLogType === AuditLogEvent.MemberMove && targetChannelId && extra?.channel) {
+                if (extra.channel.id !== targetChannelId) continue
+            }
+
+            // Check for mute/deaf
+            if (auditLogType === AuditLogEvent.MemberUpdate && entry.changes) {
+                const hasVoiceMod = entry.changes.some(c => c.key === 'mute' || c.key === 'deaf')
+                if (!hasVoiceMod) continue
+            }
+
+            // If everything passed, entry matched successfully
+            matchedEntry = entry
+            break
+        }
+
+        if (matchedEntry?.executor)
+        { 
+            const executor = matchedEntry.executor.partial
+                ? await guild.client.users.fetch(matchedEntry.executor.id)
+                : (matchedEntry.executor as User)
+
+            await flushVoiceLog(guild, logPayload, executor)
+            return
+        }
+
+
+        //* Put in waiting list in case log comes late
         const timeout = setTimeout(async () =>
         {
             pendingVoiceLog.delete(key)
 
-            const targetChannelId = newState.channelId ?? oldState.channelId ?? undefined
-
-            // Check if an entry was already updated to avoid relying on auditLogCreate listener
-            const auditEntry = await fetchRecentAuditLogs(guild, auditLogType, user.id, targetChannelId)
-
-            let executor: User = user
-
-            // If recent audit log, executor is a mod | Else it's a self action
-            if (auditEntry?.executor)
-            {
-                executor = auditEntry.executor.partial
-                    ? await guild.client.users.fetch(auditEntry.executor.id)
-                    : (auditEntry.executor as User)
-            }
-
-            await flushVoiceLog(guild, logPayload, executor)
+            await flushVoiceLog(guild, logPayload, user)
         }, 3000)
 
         pendingVoiceLog.set(key, {
