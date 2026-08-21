@@ -36,7 +36,7 @@ export class GuildAuditLogEntryCreateListener extends Listener
 
         //* Storing into buffer (allows to manage late-coming voiceStateUpdate)
         // Unique key to avoid overwriting logs
-        const cacheKey = `${ entry.id }-${ Date.now() }`
+        const cacheKey = `${entry.id}-${Date.now()}`
         recentAuditLogs.set(cacheKey, entry)
 
         // Auto delete key after 3s

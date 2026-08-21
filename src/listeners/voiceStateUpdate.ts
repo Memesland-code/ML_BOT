@@ -1,11 +1,10 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
-import { pendingVoiceLog, PendingVoiceLog, recentAuditLogs } from "#discord/pendingVoiceLog.js"
-import { fetchRecentAuditLogs } from "#logging/FetchRecentAuditLogs.js"
+import { checkIncrementedAuditLog, pendingVoiceLog, PendingVoiceLog, recentAuditLogs } from "#discord/pendingVoiceLog.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
 import { Listener } from "@sapphire/framework"
-import { AuditLogEvent, Guild, GuildAuditLogsEntry, User, VoiceState } from "discord.js"
+import { APIEmbedField, AuditLogEvent, Guild, GuildAuditLogsEntry, User, VoiceState } from "discord.js"
 
 export async function flushVoiceLog(guild: Guild, data: Omit<PendingVoiceLog, 'timeout' | 'guildId' | 'userId'>, executor: User): Promise<void>
 {
@@ -173,10 +172,10 @@ export class VoiceStateUpdateListener extends Listener
 
 
         //* Fields formatting
-        const fields = [
+        const fields: APIEmbedField[] = [
             {
                 name: 'User infos',
-                value: `User: <@${user.id}>\nID: ${user.id}`
+                value: `User: <@${user.id}>\nID: ${user.id}`,
             }
         ]
 
@@ -235,19 +234,27 @@ export class VoiceStateUpdateListener extends Listener
             fields.push(
                 {
                     name: 'Previous channel',
-                    value: `<#${oldState.channel.id}> (${oldState.channel.id}\nCategory: ${oldCategoryName})`
+                    value: `<#${oldState.channel.id}> (${oldState.channel.id}\nCategory: ${oldCategoryName})`,
+                    inline: true
                 },
                 {
                     name: 'New channel',
-                    value: `<#${newState.channel.id}> (${newState.channel.id}\nCategory: ${newCategoryName})`
+                    value: `<#${newState.channel.id}> (${newState.channel.id}\nCategory: ${newCategoryName})`,
+                    inline: true
+                },
+                {
+                    name: '\u200b',
+                    value: '\u200b',
                 },
                 {
                     name: 'Previous channel members',
-                    value: `Connected Members: \`${oldState.channel.members.size}\`\n${oldMembersList}`
+                    value: `Connected Members: \`${oldState.channel.members.size}\`\n${oldMembersList}`,
+                    inline: true
                 },
                 {
                     name: 'New channel members',
-                    value: `Connected Members: \`${newState.channel.members.size}\`\n${newMembersList}`
+                    value: `Connected Members: \`${newState.channel.members.size}\`\n${newMembersList}`,
+                    inline: true
                 }
             )
 
@@ -337,7 +344,18 @@ export class VoiceStateUpdateListener extends Listener
         {
             pendingVoiceLog.delete(key)
 
-            await flushVoiceLog(guild, logPayload, user)
+            const targetChannelId = newState.channelId ?? oldState.channelId ?? undefined
+            const incrementedEntry = await checkIncrementedAuditLog(guild, auditLogType, user.id, targetChannelId)
+
+            let executor: User = user
+
+            if (incrementedEntry?.executor) {
+                executor = incrementedEntry.executor.partial
+                    ? await guild.client.users.fetch(incrementedEntry.executor.id)
+                    : (incrementedEntry.executor as User)
+            }
+
+            await flushVoiceLog(guild, logPayload, executor)
         }, 3000)
 
         pendingVoiceLog.set(key, {

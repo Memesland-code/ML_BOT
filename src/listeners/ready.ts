@@ -1,5 +1,6 @@
 import { getMaintenanceStatus } from '#db/db.js'
 import { setClientActivity } from '#discord/activity.js'
+import { primeAuditLogCache } from '#discord/pendingVoiceLog.js'
 import { writeLog } from '#logging/logger.js'
 import { getClientVersion } from '#logging/package.js'
 import { Listener } from '@sapphire/framework'
@@ -24,5 +25,9 @@ export class ReadyListener extends Listener
         // Applying maintenance status from DB
         const isMaintenance = await getMaintenanceStatus()
         await setClientActivity(client, isMaintenance)
+
+        client.guilds.cache.forEach(guild => {
+            primeAuditLogCache(guild)
+        });
     }
 }
