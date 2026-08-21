@@ -2,3 +2,5 @@
 .env
 **/logs
 src-temp/
+dist/
+.vscode/

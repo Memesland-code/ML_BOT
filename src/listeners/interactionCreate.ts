@@ -2,7 +2,7 @@ import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
-import { Identifiers, Listener } from "@sapphire/framework"
+import { Listener } from "@sapphire/framework"
 import { CommandInteractionOption, Interaction } from "discord.js"
 
 export class InteractionCreateListener extends Listener
