@@ -83,7 +83,7 @@ export class VoiceStateUpdateListener extends Listener
         const newServerMute = newState.serverMute ?? false
         if (oldServerMute !== newServerMute)
         {
-            stateChanges.push(`Server Mute: ${oldServerMute ? 'Yes' : 'No'} ➔ ${newServerMute ? 'Yes' : 'No'}`)
+            stateChanges.push(`🎙️ Server Mute: ${oldServerMute ? 'Yes' : 'No'} ➔ ${newServerMute ? 'Yes' : 'No'}`)
             detailsObj['Server Mute'] = `${oldServerMute} -> ${newServerMute}`
             isModerationAction = true
         }
@@ -93,7 +93,7 @@ export class VoiceStateUpdateListener extends Listener
         const newServerDeaf = newState.serverDeaf ?? false
         if (oldServerDeaf !== newServerDeaf)
         {
-            stateChanges.push(`Server Deafen: ${oldServerDeaf ? 'Yes' : 'No'} ➔ ${newServerDeaf ? 'Yes' : 'No'}`)
+            stateChanges.push(`🎧 Server Deafen: ${oldServerDeaf ? 'Yes' : 'No'} ➔ ${newServerDeaf ? 'Yes' : 'No'}`)
             detailsObj['Server Deafen'] = `${oldServerDeaf} -> ${newServerDeaf}`
             isModerationAction = true
         }
@@ -103,7 +103,7 @@ export class VoiceStateUpdateListener extends Listener
         const newSelfMute = newState.selfMute ?? false
         if (oldSelfMute !== newSelfMute)
         {
-            stateChanges.push(`Self Mute: ${oldSelfMute ? 'Muted' : 'Unmuted'} ➔ ${newSelfMute ? 'Muted' : 'Unmuted'}`)
+            stateChanges.push(`🎙️ Self Mute: ${oldSelfMute ? 'Muted' : 'Unmuted'} ➔ ${newSelfMute ? 'Muted' : 'Unmuted'}`)
             detailsObj['Self Mute'] = `${oldSelfMute} -> ${newSelfMute}`
         }
 
@@ -112,7 +112,7 @@ export class VoiceStateUpdateListener extends Listener
         const newSelfDeaf = newState.selfDeaf ?? false
         if (oldSelfDeaf !== newSelfDeaf)
         {
-            stateChanges.push(`Self Deafen: ${oldSelfDeaf ? 'Deafened' : 'Undeafened'} ➔ ${newSelfDeaf ? 'Deafened' : 'Undeafened'}`)
+            stateChanges.push(`🎧 Self Deafen: ${oldSelfDeaf ? 'Deafened' : 'Undeafened'} ➔ ${newSelfDeaf ? 'Deafened' : 'Undeafened'}`)
             detailsObj['Self Deafen'] = `${oldSelfDeaf} -> ${newSelfDeaf}`
         }
 
@@ -121,7 +121,7 @@ export class VoiceStateUpdateListener extends Listener
         const newSelfVideo = newState.selfVideo ?? false
         if (oldSelfVideo !== newSelfVideo)
         {
-            stateChanges.push(`Camera: ${newSelfVideo ? 'Turned On' : 'Turned Off'}`)
+            stateChanges.push(`📷 Camera: ${newSelfVideo ? 'Turned On' : 'Turned Off'}`)
             detailsObj['Camera'] = `${oldSelfVideo} -> ${newSelfVideo}`
         }
 
@@ -130,7 +130,7 @@ export class VoiceStateUpdateListener extends Listener
         const newStreaming = newState.streaming ?? false
         if (oldStreaming !== newStreaming)
         {
-            stateChanges.push(`Stream: ${newStreaming ? 'Started Streaming' : 'Stopped Streaming'}`)
+            stateChanges.push(`📺 Stream: ${newStreaming ? 'Started Streaming' : 'Stopped Streaming'}`)
             detailsObj['Streaming'] = `${oldStreaming} -> ${newStreaming}`
         }
 
