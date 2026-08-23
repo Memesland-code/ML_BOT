@@ -16,11 +16,11 @@ Listeners List :
 - InteractionCreate
 - MessageDelete
 - MessageDeleteBulk
-- ~~MessageUpdate~~ - Refactoring
-- ~~RoleCreate~~ - Refactoring
-- ~~RoleDelete~~ - Refactoring
-- ~~RoleUpdate~~ - Refactoring
-- ~~VoiceStateUpdate~~ - Refactoring
+- MessageUpdate
+- RoleCreate
+- RoleDelete
+- RoleUpdate
+- VoiceStateUpdate
 <br />
 
 Commands List :
