@@ -1,11 +1,25 @@
 import { connectDatabase } from "#db/db.js"
 import { writeLog } from "#logging/logger.js"
-import { LogLevel, SapphireClient } from "@sapphire/framework"
+import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from "@sapphire/framework"
 import { GatewayIntentBits, Partials } from "discord.js"
 import dotenv from 'dotenv'
 import path from "node:path"
 
 dotenv.config()
+
+// Force overwrite on mismatch between bot's cache and Discord's cache
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite)
+
+// Assign guilds to test servers
+const guildIdsEnv = process.env.GUILD_ID
+
+if (guildIdsEnv)
+{ 
+    const testGuilds = guildIdsEnv.split(',').map(id => id.trim())
+    ApplicationCommandRegistries.setDefaultGuildIds(testGuilds)
+
+    writeLog(`[SETUP] ${testGuilds.length} serveurs de test définis`, 'INFO')
+}
 
 const client = new SapphireClient(
     {
