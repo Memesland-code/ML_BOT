@@ -128,3 +128,9 @@ export async function getLogChannelFromDB(guildId: string, level: LogChannelLeve
         return null
     }
 }
+
+export async function ExecuteQuery(query: string, values?: any[]): Promise<any>
+{ 
+    const [rows] = await db.query(query, values)
+    return rows
+}
