@@ -7,6 +7,7 @@ Listeners List :
 - ChannelDelete
 - ChannelPinsUpdate
 - ChannelUpdate
+- GuildAuditLogEntryCreate
 - GuildBanAdd
 - GuildBanRemove
 - GuildMemberAdd
@@ -17,6 +18,7 @@ Listeners List :
 - MessageDelete
 - MessageDeleteBulk
 - MessageUpdate
+- ready
 - RoleCreate
 - RoleDelete
 - RoleUpdate
@@ -25,9 +27,8 @@ Listeners List :
 
 Commands List :
 - Admin
-    - ~~clearCommandeCache (reset le cache commandes du bot)~~ - Refactoring
     - maintenance (change le mode de maintenance du bot)
-    - ~~Warn (ajoute / récupère le(s) warn(s) d'un membre)~~ - Refactoring
+    - Warn (ajoute / récupère le(s) warn(s) d'un membre)
 
 - Games
     - ~~phasmoImposteur (lance le mode de jeu phasmo imposteur)~~ - Refactoring
