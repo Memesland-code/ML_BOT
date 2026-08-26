@@ -27,24 +27,24 @@ switch (bumpType)
 {
     case 'rev':
         revision += 1
-        newVersion = `${major}.${minor}.${patch}.${revision}.dev`
+        newVersion = `${major}.${minor}.${patch}-${revision}.dev`
         break
 
     case 'release':
-        newVersion = `${major}.${minor}.${patch}.${revision}`
+        newVersion = `${major}.${minor}.${patch}-${revision}`
         break
 
     case 'patch':
         patch += 1
         revision += 1
-        newVersion = `${major}.${minor}.${patch}.${revision}.dev`
+        newVersion = `${major}.${minor}.${patch}-${revision}.dev`
         break
 
     case 'minor':
         minor += 1
         patch = 0
         revision += 1
-        newVersion = `${major}.${minor}.${patch}.${revision}.dev`
+        newVersion = `${major}.${minor}.${patch}-${revision}.dev`
         break
 
     case 'major':
@@ -52,7 +52,7 @@ switch (bumpType)
         minor = 0
         patch = 0
         revision += 1
-        newVersion = `${major}.${minor}.${patch}.${revision}.dev`
+        newVersion = `${major}.${minor}.${patch}-${revision}.dev`
         break
 
     default:
