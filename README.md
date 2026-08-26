@@ -1,19 +1,13 @@
 # ML_BOT
-Private Discord bot for Memes_land server
-<br />
-Versionning commit message syntax:<br />
-[msg] - v**x**.**y**.**z**.**r**
-- x : Major version
-- y : Minor version
-- z : Patch version
-- r : Revision number
+Open Source Discord Bot for Memes_land Server
 <br />
 
-Liste des listeners :
+Listeners List :
 - ChannelCreate
 - ChannelDelete
 - ChannelPinsUpdate
 - ChannelUpdate
+- GuildAuditLogEntryCreate
 - GuildBanAdd
 - GuildBanRemove
 - GuildMemberAdd
@@ -22,18 +16,19 @@ Liste des listeners :
 - GuildUpdate
 - InteractionCreate
 - MessageDelete
+- MessageDeleteBulk
 - MessageUpdate
+- ready
 - RoleCreate
 - RoleDelete
 - RoleUpdate
 - VoiceStateUpdate
 <br />
 
-Liste des commandes :
+Commands List :
 - Admin
-    - clearCommandeCache (reset le cache commandes du bot)
-    - setMaintenanceState (change le mode de maintenance du bot)
+    - maintenance (change le mode de maintenance du bot)
     - Warn (ajoute / récupère le(s) warn(s) d'un membre)
 
 - Games
-    - phasmoImposteur (lance le mode de jeu phasmo imposteur)
+    - ~~phasmoImposteur (lance le mode de jeu phasmo imposteur)~~ - Refactoring

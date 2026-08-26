@@ -1,26 +1,49 @@
 {
   "dependencies": {
-    "colors": "^1.4.0",
-    "discord.js": "^14.26.2",
-    "dotenv": "^16.4.7",
-    "fs": "^0.0.1-security",
-    "mysql2": "^3.14.1",
-    "tsx": "^4.7.1",
-    "typescript": "^5.8.2",
-    "wokcommands": "^2.1.9"
+    "@sapphire/decorators": "^6.2.0",
+    "@sapphire/discord.js-utilities": "^7.3.3",
+    "@sapphire/framework": "^5.5.0",
+    "@sapphire/utilities": "^3.18.2",
+    "colorette": "^2.0.20",
+    "discord.js": "^14.27.0",
+    "dotenv": "^16.6.1",
+    "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.2.0.62.dev",
+  "version": "0.3.27.128.dev",
+  "imports": {
+    "#db/*": {
+      "development": "./src/utils/database/*",
+      "default": "./dist/utils/database/*"
+    },
+    "#discord/*": {
+      "development": "./src/utils/discord/*",
+      "default": "./dist/utils/discord/*"
+    },
+    "#logging/*": {
+      "development": "./src/utils/logging/*",
+      "default": "./dist/utils/logging/*"
+    }
+  },
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch ./src/index.ts"
+    "dev": "tsx watch --conditions=development ./src/index.ts",
+    "rev": "tsx scripts/update-version.ts rev",
+    "patch": "tsx scripts/update-version.ts patch",
+    "minor": "tsx scripts/update-version.ts minor",
+    "major": "tsx scripts/update-version.ts major",
+    "release": "tsx scripts/update-version.ts release"
   },
   "keywords": [],
   "author": "Memes_land",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@types/mysql": "^2.15.26",
-    "@types/node": "^20.11.19"
+    "@types/node": "^26.1.2",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }

@@ -1,0 +1,133 @@
+import { LogChannelLevel } from '#discord/logChannels.js'
+import { writeLog } from '#logging/logger.js'
+import 'dotenv/config'
+import mysql from 'mysql2/promise'
+
+
+//* Creating connection pool
+export const db = mysql.createPool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    connectTimeout: 10000,
+    charset: 'utf8mb4',
+    supportBigNumbers: true,
+    bigNumberStrings: true
+})
+
+
+//* Connects to the DB
+export async function connectDatabase(): Promise<void>
+{
+    try
+    {
+        const connection = await db.getConnection()
+        await connection.ping()
+        connection.release()
+        await writeLog('Successfully connected to database', 'SUCCESS')
+    }
+    catch (error: any)
+    {
+        // Check if the error is an AggregateError (array of underlying errors)
+        if (error && Array.isArray(error.errors) && error.errors.length > 0)
+        {
+            for (const subError of error.errors)
+            {
+                await writeLog(
+                    `MySQL Connection Error Detail: [${subError.code || 'UNKNOWN'}] ${subError.message}`,
+                    'ERROR'
+                )
+            }
+        }
+        else
+        {
+            await writeLog(
+                `Failed to connect to MySQL database: [${error.code || 'UNKNOWN'}] ${error.message || error}`,
+                'ERROR'
+            )
+        }
+    }
+}
+
+
+// Gets the current maintenance state
+export async function getMaintenanceStatus(): Promise<boolean>
+{
+    try
+    {
+        const query = 'SELECT Value FROM Admin LIMIT 1'
+
+        const results = await ExecuteQuery(query) as any[]
+
+        if (!results || results.length === 0) return false
+
+        const maintenanceValue = results[0].Value
+
+        return maintenanceValue === 1
+    }
+    catch (error)
+    {
+        await writeLog(`Failed to fetch maintenance status from DB: ${error}`, "ERROR")
+        return false
+    }
+}
+
+
+// Sets the maintenance status
+export async function setMaintenanceStatus(state: boolean): Promise<boolean>
+{
+    try
+    {
+        const numericValue = state ? 1 : 0
+
+        const query = 'UPDATE Admin SET Value = ? WHERE KeyName = ?'
+
+        ExecuteQuery(query, [numericValue, 'MaintenanceState'])
+
+        return state
+    }
+    catch (error)
+    {
+        await writeLog(`Failed to update maintenance status in DB: ${error}`, 'ERROR')
+        return state
+    }
+}
+
+
+// Gets the guild's log channel depending on the log level
+export async function getLogChannelFromDB(guildId: string, level: LogChannelLevel): Promise<string | null>
+{
+    try
+    {
+        const columnName = level === 'standard' ? 'LogsChannel' : 'HighLogsChannel'
+
+        const [rows] = await db.query<mysql.RowDataPacket[]>(
+            `SELECT ${columnName} FROM ServersInfos WHERE GuildID = ? LIMIT 1`,
+            [guildId]
+        )
+
+        if (rows.length > 0)
+        {
+            const channelId = rows[0][columnName] as string | undefined
+            return channelId || null
+        }
+
+        return null
+    }
+    catch (error)
+    {
+        writeLog(`Failed to get log channel from DB for guild ${guildId} (${level}): ${error}`, 'ERROR')
+        return null
+    }
+}
+
+export async function ExecuteQuery(query: string, values?: any[]): Promise<any>
+{ 
+    const [rows] = await db.query(query, values)
+    return rows
+}
