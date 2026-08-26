@@ -5,7 +5,7 @@ import pkg from "../package.json"
 
 const packagePath = path.resolve(__dirname, "../package.json")
 
-const versionRegex = /^(\d+)\.(\d+)\.(\d+)\.(\d+)(\.dev)?$/
+const versionRegex = /^(\d+)\.(\d+)\.(\d+)\-(\d+)(\.dev)?$/
 const match = pkg.version.match(versionRegex)
 
 if (!match)
