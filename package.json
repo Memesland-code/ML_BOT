@@ -12,13 +12,22 @@
   "name": "ml_bot",
   "version": "0.3.27.128.dev",
   "imports": {
-    "#db/*": "./src/utils/database/*",
-    "#discord/*": "./src/utils/discord/*",
-    "#logging/*": "./src/utils/logging/*"
+    "#db/*": {
+      "development": "./src/utils/database/*",
+      "default": "./dist/utils/database/*"
+    },
+    "#discord/*": {
+      "development": "./src/utils/discord/*",
+      "default": "./dist/utils/discord/*"
+    },
+    "#logging/*": {
+      "development": "./src/utils/logging/*",
+      "default": "./dist/utils/logging/*"
+    }
   },
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch ./src/index.ts",
+    "dev": "tsx watch --conditions=development ./src/index.ts",
     "rev": "tsx scripts/update-version.ts rev",
     "patch": "tsx scripts/update-version.ts patch",
     "minor": "tsx scripts/update-version.ts minor",

@@ -66,7 +66,7 @@ export async function getMaintenanceStatus(): Promise<boolean>
 
         if (!results || results.length === 0) return false
 
-        const maintenanceValue = results[0].MaintenanceState
+        const maintenanceValue = results[0].Value
 
         return maintenanceValue === 1
     }

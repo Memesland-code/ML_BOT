@@ -1,5 +1,5 @@
 import { Precondition } from "@sapphire/framework"
-import { ChatInputCommandInteraction, ContextMenuCommandInteraction, GuildMember, Message, PermissionFlagsBits, User } from "discord.js"
+import { ChatInputCommandInteraction, ContextMenuCommandInteraction, GuildMember, Message, PermissionFlagsBits } from "discord.js"
 
 export class ModeratorsOnlyPrecondition extends Precondition
 {
