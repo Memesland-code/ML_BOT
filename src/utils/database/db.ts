@@ -60,17 +60,15 @@ export async function getMaintenanceStatus(): Promise<boolean>
 {
     try
     {
-        const [rows] = await db.query<mysql.RowDataPacket[]>(
-            `SELECT Value FROM Admin WHERE KeyName = ? LIMIT 1;`,
-            ['MaintenanceState']
-        )
+        const query = 'SELECT Value FROM Admin LIMIT 1'
 
-        if (rows.length > 0)
-        {
-            return Number(rows[0].Value) === 1
-        }
+        const results = await ExecuteQuery(query) as any[]
 
-        return false
+        if (!results || results.length === 0) return false
+
+        const maintenanceValue = results[0].MaintenanceState
+
+        return maintenanceValue === 1
     }
     catch (error)
     {
@@ -87,10 +85,9 @@ export async function setMaintenanceStatus(state: boolean): Promise<boolean>
     {
         const numericValue = state ? 1 : 0
 
-        await db.query(
-            'UPDATE Admin SET Value = ? WHERE KeyName = ?',
-            [numericValue, 'MaintenanceState']
-        )
+        const query = 'UPDATE Admin SET Value = ? WHERE KeyName = ?'
+
+        ExecuteQuery(query, [numericValue, 'MaintenanceState'])
 
         return state
     }

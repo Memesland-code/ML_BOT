@@ -1,7 +1,6 @@
-import { db } from "#db/db.js"
+import { getMaintenanceStatus } from "#db/db.js"
 import { AllFlowsPrecondition } from "@sapphire/framework"
 import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from "discord.js"
-import { RowDataPacket } from "mysql2"
 
 const owners = process.env.OWNER_IDS ? process.env.OWNER_IDS.split(',').map(id => id.trim()) : []
 
@@ -32,17 +31,14 @@ export class GlobalMaintenancePrecondition extends AllFlowsPrecondition
 
     private async checkMaintenance(userId: string)
     { 
-        const [rows] = await db.query<AdminRow[]>(`SELECT Value FROM Admin WHERE KeyName = 'MaintenanceState';`)
+        const isMaintenance = await getMaintenanceStatus()
 
-        if (rows[0].Value === 0) return this.ok()
-
-        const isBotAdmin = owners.includes(userId)
-        if (isBotAdmin) return this.ok()
+        if (isMaintenance)
+        { 
+            const isBotAdmin = owners.includes(userId)
+            if (isBotAdmin) return this.ok()
+        }
 
         return this.error({message: '🛠️ Le bot est actuellement en cours de maintenance. Les commandes sont temporairement indisponibles, merci de patienter.'})
     }
-}
-
-interface AdminRow extends RowDataPacket {
-    Value: number
 }
