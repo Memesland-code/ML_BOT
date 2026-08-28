@@ -31,4 +31,4 @@ Commands List :
     - Warn (ajoute / récupère le(s) warn(s) d'un membre)
 
 - Games
-    - ~~phasmoImposteur (lance le mode de jeu phasmo imposteur)~~ - Refactoring
+    - phasmoImposteur (lance le mode de jeu phasmo imposteur)
