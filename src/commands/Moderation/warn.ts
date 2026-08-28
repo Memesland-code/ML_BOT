@@ -21,59 +21,61 @@ export class WarnCommand extends Command
     public override registerApplicationCommands(registry: Command.Registry)
     { 
         registry.registerChatInputCommand((builder) => 
-        builder.setName(this.name).setDescription(this.description)
+            builder
+                .setName(this.name)
+                .setDescription(this.description)
 
-            // Subcommand Add
-            .addSubcommand((subcommand) => 
-                subcommand
-                    .setName('add')
-                    .setDescription('Warn un membre et le stocke dans la base de données')
-                    .addUserOption((option) =>
-                        option
-                            .setName('member')
-                            .setDescription('Le membre à avertir')
-                            .setRequired(true)
-                     )
-                    .addStringOption((option) =>
-                        option
-                            .setName('reason')
-                            .setDescription('La raison de l\'avertissement')
-                            .setRequired(true)
-                    )
-            )
+                // Subcommand Add
+                .addSubcommand((subcommand) => 
+                    subcommand
+                        .setName('add')
+                        .setDescription('Warn un membre et le stocke dans la base de données')
+                        .addUserOption((option) =>
+                            option
+                                .setName('member')
+                                .setDescription('Le membre à avertir')
+                                .setRequired(true)
+                        )
+                        .addStringOption((option) =>
+                            option
+                                .setName('reason')
+                                .setDescription('La raison de l\'avertissement')
+                                .setRequired(true)
+                        )
+                )
 
-            // Subcommand List
-            .addSubcommand((subcommand) => 
-                subcommand
-                    .setName('list')
-                    .setDescription('Affiche la liste des warns d\'un membre')
-                    .addUserOption((option) => 
-                        option
-                            .setName('member')
-                            .setDescription('Le membre pour lequel lister les warns')
-                            .setRequired(true)
-                    )
-            )
+                // Subcommand List
+                .addSubcommand((subcommand) => 
+                    subcommand
+                        .setName('list')
+                        .setDescription('Affiche la liste des warns d\'un membre')
+                        .addUserOption((option) => 
+                            option
+                                .setName('member')
+                                .setDescription('Le membre pour lequel lister les warns')
+                                .setRequired(true)
+                        )
+                )
 
-            // Subcommand Remove
-            .addSubcommand((subcommand) =>
-                subcommand
-                    .setName('remove')
-                    .setDescription('Retire le warn d\'un membre')
-                    .addIntegerOption((option) =>
-                    option
-                        .setName('id')
-                        .setDescription('ID de l\'avertissement à retirer')
-                        .setRequired(true)
-                    )
-                    .addStringOption((option) =>
+                // Subcommand Remove
+                .addSubcommand((subcommand) =>
+                    subcommand
+                        .setName('remove')
+                        .setDescription('Retire le warn d\'un membre')
+                        .addIntegerOption((option) =>
                         option
-                            .setName('reason')
-                            .setDescription('La raison de retrait du warn')
+                            .setName('id')
+                            .setDescription('ID de l\'avertissement à retirer')
                             .setRequired(true)
+                        )
+                        .addStringOption((option) =>
+                            option
+                                .setName('reason')
+                                .setDescription('La raison de retrait du warn')
+                                .setRequired(true)
 
-                    )
-            )
+                        )
+                )
         )
     }
 

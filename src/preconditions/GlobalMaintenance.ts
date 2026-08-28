@@ -37,8 +37,10 @@ export class GlobalMaintenancePrecondition extends AllFlowsPrecondition
         { 
             const isBotAdmin = owners.includes(userId)
             if (isBotAdmin) return this.ok()
+
+            return this.error({message: '🛠️ Le bot est actuellement en cours de maintenance. Les commandes sont temporairement indisponibles, merci de patienter.'})
         }
 
-        return this.error({message: '🛠️ Le bot est actuellement en cours de maintenance. Les commandes sont temporairement indisponibles, merci de patienter.'})
+        return this.ok()
     }
 }
