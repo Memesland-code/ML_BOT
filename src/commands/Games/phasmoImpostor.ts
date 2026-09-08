@@ -39,7 +39,8 @@ const rulesReminderEmbed = new EmbedBuilder()
         {
             name: "Règlement - Avant la partie",
             value: `
-            Seul l'équipement de base est accepté + lampes puissantes et briquets (**A REVOIR - autoriser peut-être TOUS les équipements mais en T1 (sauf lampes)**)
+            Seul l'équipement T1 est accepté, en quantité illimité (sauf lampes autorisé en T3)
+            L'équipement de tête est __interdit__
             `
         },
         { name: '\u200b', value: '\u200b', },
