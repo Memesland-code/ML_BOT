@@ -24,6 +24,9 @@ export class InteractionCreateListener extends Listener
         //? Check for Message type components
         if (!interaction.isMessageComponent()) return
 
+        const isSupportedComponent = interaction.isButton() || interaction.isStringSelectMenu()
+        if (!isSupportedComponent) return
+
         const [namespace] = interaction.customId.split(':')
 
         switch (namespace)
