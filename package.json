@@ -23,6 +23,10 @@
     "#logging/*": {
       "development": "./src/utils/logging/*",
       "default": "./dist/utils/logging/*"
+    },
+    "#handlers/*": {
+      "development": "./src/handlers/*",
+      "default": "./dist/handlers/*"
     }
   },
   "main": "dist/index.js",
