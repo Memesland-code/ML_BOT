@@ -1,8 +1,6 @@
 import { ExecuteQuery } from "#db/db.js"
 import { writeLog } from "#logging/logger.js"
-import { container, err } from "@sapphire/framework"
 import { ModalSubmitInteraction } from "discord.js"
-import { format } from "node:path"
 
 export async function handleEventCreateModal(interaction: ModalSubmitInteraction)
 { 
