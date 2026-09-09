@@ -147,3 +147,6 @@ DELETE FROM events WHERE event_date < NOW() - INTERVAL 1 DAY;
 ```
 
 _(Thanks to `ON DELETE CASCADE`, all linked rows in `event_participants` are deleted automatically)._
+
+
+<sub><sup>09/09/2026</sup></sub>
