@@ -1,5 +1,6 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
+import { handleEventCreateModal } from "#handlers/eventCreateModal"
 import { handleRoleInteraction } from "#handlers/roleMenuHandler"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
@@ -21,9 +22,24 @@ export class InteractionCreateListener extends Listener
         this.logInteraction(interaction)
 
 
-        //? Check for Message type components
+
+        //? Event create handler
+        if (interaction.isModalSubmit())
+        { 
+            if (interaction.customId.startsWith('event_create_modal:'))
+            { 
+                await handleEventCreateModal(interaction)
+            }
+        }
+
+        
+
+        //? Remove Message component checks from now
         if (!interaction.isMessageComponent()) return
 
+
+
+        //? Role menu handler
         const isSupportedComponent = interaction.isButton() || interaction.isStringSelectMenu()
         if (!isSupportedComponent) return
 
@@ -39,6 +55,14 @@ export class InteractionCreateListener extends Listener
                 break
         }
     }
+
+
+
+
+
+    //* ========== Logging ==========
+
+
 
 
 
