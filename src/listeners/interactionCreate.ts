@@ -1,5 +1,6 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
+import { handleRoleInteraction } from "#handlers/roleMenuHandler"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
 import { Listener } from "@sapphire/framework"
@@ -16,6 +17,30 @@ export class InteractionCreateListener extends Listener
 
     public async run(interaction: Interaction): Promise<void>
     {
+        //? Basic logging function
+        this.logInteraction(interaction)
+
+
+        //? Check for Message type components
+        if (!interaction.isMessageComponent()) return
+
+        const [namespace] = interaction.customId.split(':')
+
+        switch (namespace)
+        { 
+            case 'role':
+                await handleRoleInteraction(interaction)
+                break
+            //TODO case: 'ticket'
+            default:
+                break
+        }
+    }
+
+
+
+    private async logInteraction(interaction: Interaction)
+    { 
         // Ignore non-guild interactions or autocomplete interactions (prevent log spam)
         if (!interaction.inGuild() || interaction.isAutocomplete()) return
 
@@ -158,6 +183,7 @@ export class InteractionCreateListener extends Listener
             summary: `Type ID: ${interaction.type}`
         }
     }
+
 
 
     private formatOptions(options: readonly CommandInteractionOption[]): string
