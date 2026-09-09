@@ -1,5 +1,6 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
+import { handleEventCreateModal } from "#handlers/eventCreateModal.js"
 import { handleRoleInteraction } from "#handlers/roleMenuHandler.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
