@@ -30,5 +30,9 @@ Commands List :
     - maintenance (change le mode de maintenance du bot)
     - Warn (ajoute / récupère le(s) warn(s) d'un membre)
 
+- Utils
+    - ping (Vérifie le ping du bot et de l'API Discord)
+    - roleMenu (Système d'assignation de rôle par menu)
+
 - Games
     - phasmoImposteur (lance le mode de jeu phasmo imposteur)
