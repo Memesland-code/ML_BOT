@@ -9,7 +9,7 @@ export class EventCommand extends Command
             ...options,
             name: 'event',
             description: 'Gestion des événements',
-            preconditions: ['GuildOnly', 'ModeratorsOnly'],
+            preconditions: ['GuildOnly', 'ModeratorsOnly', 'IsUnderDevelopment'],
         })
     }
 
@@ -81,9 +81,9 @@ export class EventCommand extends Command
 
         const playersInput = new TextInputBuilder({
             customId: 'event_players',
-            label: 'Joueurs minimum et maximum pouvant s\'inscrire au format `Min/Max` ou simplement `Min`',
+            label: 'Nombre de joueurs Min/Max OU Min',
             style: TextInputStyle.Short,
-            placeholder: 'ex: 4/8 ou juste 4',
+            placeholder: 'Format: Min/Max OU Min | ex. 4/8 ou 5',
             required: false
         });
 

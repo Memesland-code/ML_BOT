@@ -1,10 +1,10 @@
 import { ExecuteQuery } from "#db/db.js"
 import { writeLog } from "#logging/logger.js"
-import { ModalSubmitInteraction } from "discord.js"
+import { MessageFlags, ModalSubmitInteraction } from "discord.js"
 
 export async function handleEventCreateModal(interaction: ModalSubmitInteraction)
 { 
-    await interaction.deferReply({ flags: "Ephemeral" })
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
     // Extract payload from customId (event_create_modal:roleIds:coOrgIds)
     const [, rawRoleIds, rawCoOrgIds] = interaction.customId.split(':')
@@ -14,20 +14,20 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
     // Extract inputs from modal
     const title = interaction.fields.getTextInputValue('event_title')
     const rawDate = interaction.fields.getTextInputValue('event_date')
-    const description = interaction.fields.getTextInputValue('event_description')
+    const description = interaction.fields.getTextInputValue('event_description').trim() || null
     const playersCounts = interaction.fields.getTextInputValue('event_players')
 
     // Parse date (DD/MM/YYYY HH:mm -> YYYY-MM-DD HH:mm:ss)
     const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})$/
     const match = rawDate.match(dateRegex)
 
-    if (!match) return interaction.editReply("❌ **Format de date invalide.** Veuillez utiliser le format `JJ/MM/AAAA HH:mm` (ex: `15/09/2026 21:00`)")
+    if (!match) return interaction.editReply("❌ **Format de date invalide.** Veuillez utiliser le format `JJ/MM/AAAA HH:mm` (ex: `15/09/2026 21:00`).")
 
     const [, day, month, year, hours, minutes] = match
     const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:00`
     const eventDateObj = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00`)
 
-    if (isNaN(eventDateObj.getTime()) || eventDateObj < new Date()) return interaction.editReply("❌ **Date invalide.** La date saisie est soit inexistante, soit déjà passée")
+    if (isNaN(eventDateObj.getTime()) || eventDateObj < new Date()) return interaction.editReply("❌ **Date invalide.** La date saisie est soit inexistante, soit déjà passée.")
 
 
 
@@ -37,16 +37,30 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
 
     if (playersCounts)
     {
-        if (playersCounts.includes('/'))
+        const cleanPlayers = playersCounts.trim()
+
+        if (cleanPlayers.includes('/'))
         {
-            const [minStr, maxStr] = playersCounts.split('/')
-            minPlayers = parseInt(minStr.trim(), 10) || 0
-            maxPlayers = parseInt(maxStr.trim(), 10) || null
+            const parts = cleanPlayers.split('/')
+            const parsedMin = parseInt(parts[0].trim(), 10)
+            const parsedMax = parseInt(parts[1].trim(), 10)
+
+            if (isNaN(parsedMin) || isNaN(parsedMax)) return interaction.editReply("❌ **Nombre de joueurs invalide.** Veuillez entrer des nombres valides (ex: 4/8 ou 6).")
+
+            minPlayers = parsedMin
+            maxPlayers = parsedMax
         }
         else
         {
-            minPlayers = parseInt(playersCounts.trim(), 10)
+            const parsedMin = parseInt(cleanPlayers, 10)
+            if (isNaN(parsedMin)) return interaction.editReply("❌ **Nombre de joueurs invalide.** Veuillez entrer des nombres valides (ex: 4/8 ou 6).")
+
+            minPlayers = parsedMin
         }
+
+        if (minPlayers < 0 || (maxPlayers !== null && maxPlayers < 1)) return interaction.editReply("❌ **Nombre de joueurs invalide.** Le nombre de joueurs doit être positif.")
+
+        if (maxPlayers !== null && minPlayers > maxPlayers) return interaction.editReply("❌ **Nombre de joueurs invalide.** Le nombre Min ne peut pas être supérieur à Max.")
     }
 
 
@@ -54,7 +68,7 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
     try
     {
         // Database insertion
-        const [result]: any = await ExecuteQuery(
+        const result: any = await ExecuteQuery(
             `INSERT INTO events (
                 message_id, channel_id, guild_id, organizer_id, 
                 co_organizer_ids, title, description, event_date, 
