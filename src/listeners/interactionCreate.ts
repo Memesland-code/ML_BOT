@@ -1,6 +1,7 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
 import { handleEventCreateModal } from "#handlers/eventCreateModal.js"
+import { handleCoOrgSelect, handlePublishEvent, handleRoleSelect } from "#handlers/eventSetupHandlerPhase2.js"
 import { handleRoleInteraction } from "#handlers/roleMenuHandler.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
@@ -23,34 +24,68 @@ export class InteractionCreateListener extends Listener
 
 
 
-        //? Event create handler
+        //? Modals routing
         if (interaction.isModalSubmit())
         { 
             if (interaction.customId.startsWith('event_create_modal:'))
             { 
                 await handleEventCreateModal(interaction)
             }
+
+            return
         }
 
         
 
-        //? Remove Message component checks from now
+        //? Stop execution if not a messaga component
         if (!interaction.isMessageComponent()) return
 
 
 
-        //? Role menu handler
-        const isSupportedComponent = interaction.isButton() || interaction.isStringSelectMenu()
-        if (!isSupportedComponent) return
-
+        //? Component routing based on namespace
         const [namespace] = interaction.customId.split(':')
 
         switch (namespace)
         { 
-            case 'role':
-                await handleRoleInteraction(interaction)
+            //? Phase 2 events setup
+            case 'event_setup_roles':
+                if (interaction.isRoleSelectMenu()) await handleRoleSelect(interaction)
                 break
-            //TODO case: 'ticket'
+
+            case 'event_setup_coorgs':
+                if (interaction.isUserSelectMenu()) await handleCoOrgSelect(interaction)
+                break
+
+            case 'event_setup_publish':
+                if (interaction.isButton()) await handlePublishEvent(interaction)
+                break
+
+
+            //? Events buttons
+            case 'attending':
+                //TODO
+                break
+
+            case 'unsure':
+                //TODO
+                break
+
+            case 'declined':
+                //TODO
+                break
+
+
+            //? Role menu events
+            case 'role':
+                if (interaction.isButton() || interaction.isStringSelectMenu()) await handleRoleInteraction(interaction)
+                break
+
+
+            //? Tickets creation
+            case 'ticket':
+                //TODO
+
+                
             default:
                 break
         }

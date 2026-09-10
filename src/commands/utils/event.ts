@@ -1,5 +1,5 @@
 import { Command } from "@sapphire/framework"
-import { ActionRowBuilder, GuildMember, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js"
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js"
 
 export class EventCommand extends Command
 {
@@ -23,21 +23,17 @@ export class EventCommand extends Command
                     cmd
                         .setName('create')
                         .setDescription('Créer un nouvel événement')
-                        .addRoleOption((o) =>
+                        .addBooleanOption((o) =>
                             o
-                                .setName('required_roles')
-                                .setDescription('Rôle(s) filtrés pour participer à l\'événement')
-                                .setRequired(false)
-                    )
-                        .addUserOption((o) =>
-                            o
-                                .setName('co_organizers')
-                                .setDescription('Co-organisateur(s) de l\'événement')
+                                .setName('show_debug')
+                                .setDescription('Afficher publiquement les rôles requis et co-organisateurs sur l\'événement')
                                 .setRequired(false)
                         )
                 )
         )
     }
+
+
 
     public async chatInputRun(interaction: Command.ChatInputCommandInteraction)
     { 
@@ -46,12 +42,13 @@ export class EventCommand extends Command
         if (subCommand === 'create') await this.handleCreateEvent(interaction)
     }
 
+
+
     private async handleCreateEvent(interaction: Command.ChatInputCommandInteraction): Promise<void>
     { 
-        const requiredRoles = interaction.options.getRole('required_roles')
-        const coOrganizers = interaction.options.getMember('co_organizers') as GuildMember
+        const showDebug = interaction.options.getBoolean('show_debug') ?? false
 
-        const modalCustomId = `event_create_modal:${requiredRoles?.id ?? 'none'}:${coOrganizers?.id ?? 'none'}`
+        const modalCustomId = `event_create_modal:${showDebug}`
 
         const titleInput = new TextInputBuilder({
             customId: 'event_title',
@@ -89,7 +86,7 @@ export class EventCommand extends Command
 
         const modal = new ModalBuilder({
             customId: modalCustomId,
-            title: 'Créer un événement',
+            title: 'Créer un événement (1/2)',
             components: [
                 new ActionRowBuilder<TextInputBuilder>().addComponents(titleInput),
                 new ActionRowBuilder<TextInputBuilder>().addComponents(dateInput),

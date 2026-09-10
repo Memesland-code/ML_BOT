@@ -1,19 +1,13 @@
 import { ExecuteQuery } from "#db/db.js"
-import { buildEventMessage } from "#discord/eventEmbedBuilder.js"
 import { writeLog } from "#logging/logger.js"
-import { MessageFlags, ModalSubmitInteraction, TextChannel } from "discord.js"
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, ModalSubmitInteraction, RoleSelectMenuBuilder, UserSelectMenuBuilder } from "discord.js"
 
 export async function handleEventCreateModal(interaction: ModalSubmitInteraction)
 { 
     await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
-    // Extract payload from customId (event_create_modal:roleIds:coOrgIds)
-    const [, rawRoleIds, rawCoOrgIds] = interaction.customId.split(':')
-    const parsedRoleIds = rawRoleIds !== 'none' ? [rawRoleIds] : null
-    const parsedCoOrgIds = rawCoOrgIds !== 'none' ? [rawCoOrgIds] : null
-
-    const allowedRoleIds = parsedRoleIds ? JSON.stringify(parsedRoleIds) : null
-    const CoOrganizerIds = parsedCoOrgIds ? JSON.stringify(parsedCoOrgIds) : null
+    const [, rawShowDebug] = interaction.customId.split(":")
+    const showDebug = rawShowDebug === 'true'
 
     // Extract inputs from modal
     const title = interaction.fields.getTextInputValue('event_title')
@@ -76,54 +70,57 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
             `INSERT INTO events (
                 message_id, channel_id, guild_id, organizer_id, 
                 co_organizer_ids, title, description, event_date, 
-                min_players, max_players, allow_latecomers, allowed_role_ids, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                min_players, max_players, allow_latecomers, allowed_role_ids, status, show_debug
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 'PENDING', //? Temporary placeholder until Embed is sent
                 interaction.channelId,
                 interaction.guildId,
                 interaction.user.id,
-                CoOrganizerIds,
+                null,
                 title,
                 description,
                 formattedDate,
                 minPlayers,
                 maxPlayers,
                 true,
-                allowedRoleIds,
-                'ACTIVE'
+                null,
+                'ACTIVE',
+                showDebug
             ]
         )
 
         const eventId = result.insertId
 
-        const messagePayload = buildEventMessage({
-            id: eventId,
-            title,
-            description,
-            eventDate: eventDateObj,
-            organizerId: interaction.user.id,
-            organizerName: interaction.user.displayName,
-            coOrganizerIds: parsedCoOrgIds,
-            allowedRoleIds: parsedRoleIds,
-            minPlayers,
-            maxPlayers,
-            allowLatecomers: true,
-            status: 'ACTIVE'
-        }, [])
+
+        //? Build Phase 2/2 - Ephemeral Setup Select Menus (for roles filter and co-organizers)
+        const roleSelect = new RoleSelectMenuBuilder()
+            .setCustomId(`event_setup_roles:${eventId}`)
+            .setPlaceholder('🔒 Rôles autorisés (Optionnel)')
+            .setMinValues(0)
+            .setMaxValues(10);
+
+        const userSelect = new UserSelectMenuBuilder()
+            .setCustomId(`event_setup_coorgs:${eventId}`)
+            .setPlaceholder('🖊️ Co-organisateurs (Optionnel)')
+            .setMinValues(0)
+            .setMaxValues(10);
+
+        const publishBtn = new ButtonBuilder()
+            .setCustomId(`event_setup_publish:${eventId}`)
+            .setLabel("Publier l'événement")
+            .setStyle(ButtonStyle.Success)
+            .setEmoji('🚀');
 
 
-        //* Post embed
-        const channel = interaction.channel as TextChannel
-        const sentMessage = await channel.send(messagePayload)
+        const row1 = new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(roleSelect)
+        const row2 = new ActionRowBuilder<UserSelectMenuBuilder>().addComponents(userSelect)
+        const row3 = new ActionRowBuilder<ButtonBuilder>().addComponents(publishBtn)
 
-        //* Update message_id in DB
-        await ExecuteQuery(
-            `UPDATE events SET message_id = ? WHERE id = ?`,
-            [sentMessage.id, eventId]
-        )
-
-        await interaction.editReply({ content: `✅ Événement #${eventId} « ${title} » créé avec succès !` })
+        await interaction.editReply({
+            content: `🛠️ **Configuration de l'événement (2/2)**\nChoisissez les rôles autorisés et les co-organisateurs ci-dessous si nécessaire avant de cliquer sur **Publier l'événement**.`,
+            components: [row1, row2, row3]
+        })
     }
     catch (error)
     { 

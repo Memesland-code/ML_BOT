@@ -14,6 +14,7 @@ export interface EventData
     maxPlayers: number | null
     allowLatecomers: boolean
     status: 'ACTIVE' | 'CLOSED' | 'CANCELLED'
+    showDebug: boolean
 }
 
 export interface ParticipantData {
@@ -28,7 +29,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
 { 
     //* Group participants
     const attending = participants.filter(p => p.status === 'PRESENT')
-    const tentative = participants.filter(p => p.status === 'MAYBE')
+    const unsure = participants.filter(p => p.status === 'MAYBE')
     const declined = participants.filter(p => p.status === 'ABSENT')
     const waitlist = participants.filter(p => p.status === 'WAITING_LIST')
 
@@ -95,31 +96,41 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
         .setColor(color)
         .setTitle(`📄 ${event.title}`)
 
-    if (event.description)
-    { 
-        embed.setDescription(`📝 **Description :**\n${event.description}`)
-    }
 
+    embed.setDescription(`\u200b\n📝 **Description :**\n${event.description ? event.description : '_Aucune description fournie._'}`)
+
+    
     let infoValue = `• 📅 **Date & Heure :** ${formattedDate}\n\n`
     infoValue += `• 👥 **Joueurs Min/Max :** ${playersStr}\n\n`
     infoValue += `• 🚪 **Arrivées tardives :** ${event.allowLatecomers ? '🟢 Autorisées' : '🔴 Non autorisées'}`
 
+    embed.addFields({ name: '\u200b', value: '\u200e' })
+
     embed.addFields({ name: '📌 Informations', value: infoValue, inline: false })
 
 
-    // Conditionnal fields: Co-organizers & Roles
-    if (event.coOrganizerIds && event.coOrganizerIds.length > 0)
+    // Conditionnal fields: Co-organizers & Roles (Requires showDebug === true)
+    if (event.showDebug)
     { 
-        embed.addFields({ name: '\u200b', value: '\u200e' })
+        const hasCoOrgs = event.coOrganizerIds && event.coOrganizerIds.length > 0
+        const hasRoles = event.allowedRoleIds && event.allowedRoleIds.length > 0
 
-        const coOrgsStr = event.coOrganizerIds.map(id => `<@${id}>`).join(', ')
-        embed.addFields({ name: '🖊️ Co-organisateurs', value: coOrgsStr, inline: true })
-    }
+        if (hasCoOrgs || hasRoles)
+        { 
+            embed.addFields({ name: '\u200b', value: '\u200e' })
 
-    if (event.allowedRoleIds && event.allowedRoleIds.length > 0)
-    { 
-        const rolesStr = event.allowedRoleIds.map(id => `<@&${id}>`).join(', ')
-        embed.addFields({ name: '🔒 Rôle(s) requis', value: rolesStr, inline: true })
+            if (hasCoOrgs)
+            { 
+                const coOrgsStr = event.coOrganizerIds!.map(id => `<@${id}>`).join(', ')
+                embed.addFields({ name: '🖊️ Co-organisateurs', value: coOrgsStr, inline: true })
+            }
+
+            if (hasRoles)
+            { 
+                const rolesStr = event.allowedRoleIds!.map(id => `<@&${id}>`).join(' ou ')
+                embed.addFields({ name: '🔒 Rôle(s) requis', value: rolesStr, inline: true })
+            }
+        }
     }
 
 
@@ -129,15 +140,15 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
     // Participants Fields
     embed.addFields(
         { name: `🟢 Présents (${attending.length})`, value: formatUserList(attending), inline: false },
-        { name: `🟡 Incertains (${tentative.length})`, value: formatUserList(tentative), inline: false },
+        { name: `🟡 Incertains (${unsure.length})`, value: formatUserList(unsure), inline: false },
         { name: `🔴 Absents (${declined.length})`, value: formatUserList(declined), inline: false },
         {name: `⌛ Liste d'attente (${waitlist.length})`, value: formatUserList(waitlist), inline: false}
     )
 
-    const organizerLabel = event.organizerName ?? `${event.organizerId}`
+    const organizerName = event.organizerName ?? `${event.organizerId}`
     const formattedUpdate = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' à')
 
-    embed.setFooter({ text: `Organisé par ${organizerLabel} • Mis à jour le ${formattedUpdate}` })
+    embed.setFooter({ text: `Organisé par ${organizerName} • Mis à jour le ${formattedUpdate}` })
 
 
 
@@ -153,7 +164,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
             .setDisabled(isDisabled),
 
         new ButtonBuilder()
-            .setCustomId(`event:tentative:${event.id}`)
+            .setCustomId(`event:unsure:${event.id}`)
             .setLabel('Incertain')
             .setStyle(ButtonStyle.Primary)
             .setEmoji('🟡')
