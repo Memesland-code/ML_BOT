@@ -19,7 +19,7 @@ export interface EventData
 
 export interface ParticipantData {
     userId: string
-    status: 'PRESENT' | 'MAYBE' | 'ABSENT' | 'WAITING_LIST'
+    status: 'PRESENT' | 'UNSURE' | 'ABSENT' | 'WAITING_LIST'
     note: string | null
 }
 
@@ -29,8 +29,8 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
 { 
     //* Group participants
     const attending = participants.filter(p => p.status === 'PRESENT')
-    const unsure = participants.filter(p => p.status === 'MAYBE')
-    const declined = participants.filter(p => p.status === 'ABSENT')
+    const unsure = participants.filter(p => p.status === 'UNSURE')
+    const absent = participants.filter(p => p.status === 'ABSENT')
     const waitlist = participants.filter(p => p.status === 'WAITING_LIST')
 
 
@@ -84,7 +84,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
 
         return list.map(p => 
         {
-            const noteStr = p.note ? ` — *"${p.note}"*` : ''
+            const noteStr = p.note ? ` — *${p.note}*` : ''
             return `• <@${p.userId}>${noteStr}`
         }).join('\n')
     }
@@ -99,7 +99,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
 
     embed.setDescription(`\u200b\n📝 **Description :**\n${event.description ? event.description : '_Aucune description fournie._'}`)
 
-    
+
     let infoValue = `• 📅 **Date & Heure :** ${formattedDate}\n\n`
     infoValue += `• 👥 **Joueurs Min/Max :** ${playersStr}\n\n`
     infoValue += `• 🚪 **Arrivées tardives :** ${event.allowLatecomers ? '🟢 Autorisées' : '🔴 Non autorisées'}`
@@ -141,7 +141,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
     embed.addFields(
         { name: `🟢 Présents (${attending.length})`, value: formatUserList(attending), inline: false },
         { name: `🟡 Incertains (${unsure.length})`, value: formatUserList(unsure), inline: false },
-        { name: `🔴 Absents (${declined.length})`, value: formatUserList(declined), inline: false },
+        { name: `🔴 Absents (${absent.length})`, value: formatUserList(absent), inline: false },
         {name: `⌛ Liste d'attente (${waitlist.length})`, value: formatUserList(waitlist), inline: false}
     )
 
@@ -171,7 +171,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
             .setDisabled(isDisabled),
 
         new ButtonBuilder()
-            .setCustomId(`event:declined:${event.id}`)
+            .setCustomId(`event:absent:${event.id}`)
             .setLabel('Absent')
             .setStyle(ButtonStyle.Primary)
             .setEmoji('🔴')

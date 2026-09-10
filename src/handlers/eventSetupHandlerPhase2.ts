@@ -1,7 +1,7 @@
 import { ExecuteQuery } from "#db/db.js"
-import { buildEventMessage } from "#discord/eventEmbedBuilder.js"
+import { buildEventMessage } from "#discord/eventInfoBuilder.js"
 import { writeLog } from "#logging/logger.js"
-import { ButtonInteraction, MessageFlags, RoleSelectMenuInteraction, TextChannel, UserSelectMenuInteraction } from "discord.js"
+import { ButtonInteraction, RoleSelectMenuInteraction, TextChannel, UserSelectMenuInteraction } from "discord.js"
 
 /**
  ** Update allowed role IDs in DB when RoleSelectMenu is submitted
@@ -56,7 +56,7 @@ export async function handleCoOrgSelect(interaction: UserSelectMenuInteraction)
  */
 export async function handlePublishEvent(interaction: ButtonInteraction)
 { 
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral })
+    await interaction.deferUpdate()
     const eventId = interaction.customId.split(":")[1]
 
     try
@@ -115,11 +115,8 @@ export async function handlePublishEvent(interaction: ButtonInteraction)
             [sentMessage.id, eventId]
         )
 
-        //* Delete ephemeral setup message
-        await interaction.message.delete().catch(() => { })
 
-
-        await interaction.editReply({ content: `✅ Événement #${eventId} « ${event.title} » publié avec succès !` })
+        await interaction.editReply({ content: `✅ Événement #${eventId} « ${event.title} » publié avec succès !`, components: [] })
     }
     catch (error)
     {
