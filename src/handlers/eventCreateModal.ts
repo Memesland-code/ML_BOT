@@ -1,6 +1,7 @@
 import { ExecuteQuery } from "#db/db.js"
+import { buildEventMessage } from "#discord/eventEmbedBuilder.js"
 import { writeLog } from "#logging/logger.js"
-import { MessageFlags, ModalSubmitInteraction } from "discord.js"
+import { MessageFlags, ModalSubmitInteraction, TextChannel } from "discord.js"
 
 export async function handleEventCreateModal(interaction: ModalSubmitInteraction)
 { 
@@ -8,8 +9,11 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
 
     // Extract payload from customId (event_create_modal:roleIds:coOrgIds)
     const [, rawRoleIds, rawCoOrgIds] = interaction.customId.split(':')
-    const allowedRoleIds = rawRoleIds !== 'none' ? JSON.stringify([rawRoleIds]) : null
-    const coOrganizerIds = rawCoOrgIds !== 'none' ? JSON.stringify([rawCoOrgIds]) : null
+    const parsedRoleIds = rawRoleIds !== 'none' ? [rawRoleIds] : null
+    const parsedCoOrgIds = rawCoOrgIds !== 'none' ? [rawCoOrgIds] : null
+
+    const allowedRoleIds = parsedRoleIds ? JSON.stringify(parsedRoleIds) : null
+    const CoOrganizerIds = parsedCoOrgIds ? JSON.stringify(parsedCoOrgIds) : null
 
     // Extract inputs from modal
     const title = interaction.fields.getTextInputValue('event_title')
@@ -79,7 +83,7 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
                 interaction.channelId,
                 interaction.guildId,
                 interaction.user.id,
-                coOrganizerIds,
+                CoOrganizerIds,
                 title,
                 description,
                 formattedDate,
@@ -93,7 +97,32 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
 
         const eventId = result.insertId
 
-        await interaction.editReply({ content: `✅ Événement #${eventId} créé en base de données avec succès` })
+        const messagePayload = buildEventMessage({
+            id: eventId,
+            title,
+            description,
+            eventDate: eventDateObj,
+            organizerId: interaction.user.id,
+            coOrganizerIds: parsedCoOrgIds,
+            allowedRoleIds: parsedRoleIds,
+            minPlayers,
+            maxPlayers,
+            allowLatecomers: true,
+            status: 'ACTIVE'
+        }, [])
+
+
+        //* Post embed
+        const channel = interaction.channel as TextChannel
+        const sentMessage = await channel.send(messagePayload)
+
+        //* Update message_id in DB
+        await ExecuteQuery(
+            `UPDATE events SET message_id = ? WHERE id = ?`,
+            [sentMessage.id, eventId]
+        )
+
+        await interaction.editReply({ content: `✅ Événement #${eventId} « ${title} » créé avec succès !` })
     }
     catch (error)
     { 
