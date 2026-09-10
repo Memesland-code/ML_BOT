@@ -1,5 +1,5 @@
 import { Command } from "@sapphire/framework"
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js"
+import { LabelBuilder, ModalBuilder, TextInputStyle } from "discord.js"
 
 export class EventCommand extends Command
 {
@@ -50,50 +50,70 @@ export class EventCommand extends Command
 
         const modalCustomId = `event_create_modal:${showDebug}`
 
-        const titleInput = new TextInputBuilder({
-            customId: 'event_title',
-            label: 'Titre de l\'événement',
-            style: TextInputStyle.Short,
-            placeholder: 'ex: Soirée sur Garry\'s Mod',
-            required: true,
-            maxLength: 255
-        });
 
-        const dateInput = new TextInputBuilder({
-            customId: 'event_date',
-            label: 'Date et Heure au format `DD/MM/YYYY HH:mm`',
-            style: TextInputStyle.Short,
-            placeholder: 'ex: 15/09/2026 21:00',
-            required: true,
-            maxLength: 16
-        });
+        const titleLabel = new LabelBuilder()
+            .setLabel("Titre de l'événement")
+            .setTextInputComponent((comp) =>
+                comp
+                    .setCustomId('event_title')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder("ex: Soirée sur Garry's Mod")
+                    .setRequired(true)
+                    .setMaxLength(255)
+            )
 
-        const descInput = new TextInputBuilder({
-            customId: 'event_description',
-            label: 'Description / Détails',
-            style: TextInputStyle.Paragraph,
-            placeholder: 'Détails de l\'événement, prérequis, etc.',
-            required: false
-        });
 
-        const playersInput = new TextInputBuilder({
-            customId: 'event_players',
-            label: 'Nombre de joueurs Min/Max OU Min',
-            style: TextInputStyle.Short,
-            placeholder: 'Format: Min/Max OU Min | ex. 4/8 ou 5',
-            required: false
-        });
+        const dateLabel = new LabelBuilder()
+            .setLabel("Date et Heure au format DD/MM/YYYY HH:mm")
+            .setTextInputComponent((comp) =>
+                comp
+                    .setCustomId('event_date')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder("ex: 15/09/2026 21:00")
+                    .setRequired(true)
+                    .setMaxLength(16)
+            )
 
-        const modal = new ModalBuilder({
-            customId: modalCustomId,
-            title: 'Créer un événement (1/2)',
-            components: [
-                new ActionRowBuilder<TextInputBuilder>().addComponents(titleInput),
-                new ActionRowBuilder<TextInputBuilder>().addComponents(dateInput),
-                new ActionRowBuilder<TextInputBuilder>().addComponents(descInput),
-                new ActionRowBuilder<TextInputBuilder>().addComponents(playersInput)
-            ]
-        });
+
+        const descriptionLabel = new LabelBuilder()
+            .setLabel("Description / Détails")
+            .setTextInputComponent((comp) =>
+                comp
+                    .setCustomId('event_description')
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setPlaceholder("Détails de l'événement, prérequis, etc.")
+                    .setRequired(false)
+            )
+
+
+        const playersLabel = new LabelBuilder()
+            .setLabel("Nombre de joueurs Min/Max OU Min")
+            .setTextInputComponent((comp) =>
+                comp
+                    .setCustomId('event_players')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder("Format: Min/Max OU Min | ex. 4/8 ou 5")
+                    .setRequired(false)
+            )
+
+
+        const latecomersLabel = new LabelBuilder()
+            .setLabel("Autoriser les arrivées tardives ?")
+            .setRadioGroupComponent((radioGroup) =>
+                radioGroup
+                    .setCustomId('event_latecomers')
+                    .addOptions([
+                        { label: '🟢 Autoriser', value: 'true', default: true },
+                        { label: '🔴 Ne pas autoriser', value: 'false' }
+                    ])
+            .setRequired(true)
+            )
+
+
+        const modal = new ModalBuilder()
+            .setCustomId(modalCustomId)
+            .setTitle('Créer un événement (1/2)')
+            .addLabelComponents(titleLabel, dateLabel, descriptionLabel, playersLabel, latecomersLabel)
 
         await interaction.showModal(modal);
     }

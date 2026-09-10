@@ -1,7 +1,7 @@
 import { ExecuteQuery } from "#db/db.js"
 import { buildEventMessage } from "#discord/eventInfoBuilder.js"
 import { writeLog } from "#logging/logger.js"
-import { ButtonInteraction, LabelBuilder, MessageFlags, ModalBuilder, ModalSubmitInteraction, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js"
+import { ButtonInteraction, LabelBuilder, MessageFlags, ModalBuilder, ModalSubmitInteraction, TextChannel, TextInputStyle } from "discord.js"
 
 type ParticipationStatus = 'PRESENT' | 'UNSURE' | 'ABSENT'
 
@@ -68,18 +68,18 @@ export async function handleParticipationButtonClick(interaction: ButtonInteract
         )
 
 
-        const noteInput = new TextInputBuilder()
-            .setCustomId('participant_note')
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder('ex: arrivée vers 21h15, en retard, part à 23h00...')
-            .setValue(existingNote)
-            .setRequired(false)
-            .setMaxLength(255)
-
 
         const noteLabel = new LabelBuilder()
             .setLabel('Note / Remarque (Optionnel)')
-            .setTextInputComponent(noteInput)
+            .setTextInputComponent((comp) =>
+                comp
+                    .setCustomId('participant_note')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder('ex: arrivée vers 21h15, en retard, part à 23h00...')
+                    .setValue(existingNote)
+                    .setRequired(false)
+                    .setMaxLength(255)
+            )
 
 
         const statusLabels: Record<ParticipationStatus, string> = {

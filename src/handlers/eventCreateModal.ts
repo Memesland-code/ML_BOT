@@ -14,6 +14,7 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
     const rawDate = interaction.fields.getTextInputValue('event_date')
     const description = interaction.fields.getTextInputValue('event_description').trim() || null
     const playersCounts = interaction.fields.getTextInputValue('event_players')
+    const allowLatecomers = interaction.fields.getRadioGroup('event_latecomers') === 'true'
 
     // Parse date (DD/MM/YYYY HH:mm -> YYYY-MM-DD HH:mm:ss)
     const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})$/
@@ -83,7 +84,7 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
                 formattedDate,
                 minPlayers,
                 maxPlayers,
-                true,
+                allowLatecomers,
                 null,
                 'ACTIVE',
                 showDebug
