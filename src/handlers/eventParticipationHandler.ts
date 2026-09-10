@@ -136,7 +136,7 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
         if (targetStatus === 'PRESENT' && event.max_players !== null)
         { 
             const countRows: any = await ExecuteQuery(
-                `SELECT COUNT(*) AS total FROM event_participants WHERE event_id = ? AND status = 'PRESENT' AND user_id = ?`,
+                `SELECT COUNT(*) AS total FROM event_participants WHERE event_id = ? AND status = 'PRESENT' AND user_id != ?`,
                 [eventId, userId]
             )
 
