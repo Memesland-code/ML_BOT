@@ -1,5 +1,8 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
+import { handleEventCreateModal } from "#handlers/eventCreateModal.js"
+import { handleParticipationButtonClick, handleParticipationModalSubmit } from "#handlers/eventParticipationHandler.js"
+import { handleCoOrgSelect, handlePublishEvent, handleRoleSelect } from "#handlers/eventSetupHandlerPhase2.js"
 import { handleRoleInteraction } from "#handlers/roleMenuHandler.js"
 import { formatEventLog } from "#logging/logFormatter.js"
 import { writeLog } from "#logging/logger.js"
@@ -21,24 +24,84 @@ export class InteractionCreateListener extends Listener
         this.logInteraction(interaction)
 
 
-        //? Check for Message type components
+
+        //? Modals routing
+        if (interaction.isModalSubmit())
+        { 
+            if (interaction.customId.startsWith('event_create_modal:'))
+            { 
+                await handleEventCreateModal(interaction)
+            }
+
+            if (interaction.customId.startsWith('event_submit_presence:'))
+            { 
+                await handleParticipationModalSubmit(interaction)
+            }
+
+            return
+        }
+
+        
+
+        //? Stop execution if not a messaga component
         if (!interaction.isMessageComponent()) return
 
-        const isSupportedComponent = interaction.isButton() || interaction.isStringSelectMenu()
-        if (!isSupportedComponent) return
 
-        const [namespace] = interaction.customId.split(':')
+
+        //? Component routing based on namespace
+        const [namespace, action] = interaction.customId.split(':')
 
         switch (namespace)
         { 
+            //? Phase 2 events setup
+            case 'event_setup_roles':
+                if (interaction.isRoleSelectMenu()) await handleRoleSelect(interaction)
+                return
+
+            case 'event_setup_coorgs':
+                if (interaction.isUserSelectMenu()) await handleCoOrgSelect(interaction)
+                return
+
+            case 'event_setup_publish':
+                if (interaction.isButton()) await handlePublishEvent(interaction)
+                return
+
+
+            //? Events buttons
+            case 'event':
+                if (interaction.isButton())
+                { 
+                    if (action === 'attending') await handleParticipationButtonClick(interaction, 'PRESENT')
+                    else if (action === 'unsure') await handleParticipationButtonClick(interaction, 'UNSURE')
+                    else if (action === 'absent') await handleParticipationButtonClick(interaction, 'ABSENT')
+                    //TODO else if (action === 'manage') await handleManageEvent(interaction)
+                }
+                return
+
+
+            //? Role menu events
             case 'role':
-                await handleRoleInteraction(interaction)
-                break
-            //TODO case: 'ticket'
+                if (interaction.isButton() || interaction.isStringSelectMenu()) await handleRoleInteraction(interaction)
+                return
+
+
+            //? Tickets creation
+            case 'ticket':
+                //TODO
+
+                
             default:
-                break
+                return
         }
     }
+
+
+
+
+
+    //* ========== Logging ==========
+
+
 
 
 
