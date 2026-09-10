@@ -103,6 +103,7 @@ export async function handleEventCreateModal(interaction: ModalSubmitInteraction
             description,
             eventDate: eventDateObj,
             organizerId: interaction.user.id,
+            organizerName: interaction.user.displayName,
             coOrganizerIds: parsedCoOrgIds,
             allowedRoleIds: parsedRoleIds,
             minPlayers,

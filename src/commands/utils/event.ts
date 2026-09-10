@@ -29,7 +29,7 @@ export class EventCommand extends Command
                                 .setDescription('Rôle(s) filtrés pour participer à l\'événement')
                                 .setRequired(false)
                     )
-                        .addRoleOption((o) =>
+                        .addUserOption((o) =>
                             o
                                 .setName('co_organizers')
                                 .setDescription('Co-organisateur(s) de l\'événement')
@@ -99,10 +99,5 @@ export class EventCommand extends Command
         });
 
         await interaction.showModal(modal);
-
-        /*
-        TODO check for error on command sent
-        TODO Check next steps: https://github.com/Memesland-code/ML_BOT/issues/19
-        */
     }
 }
