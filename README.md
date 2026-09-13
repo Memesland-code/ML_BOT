@@ -33,7 +33,7 @@ Commands List :
 - Utils
     - ping - Check bot server & Discord API ping
     - roleMenu - Self assignable role menu
-    - event (Create a new event, see doc at [docs\features\event-organizer.md](./docs\features\event-organizer.md))
+    - event (Create a new event, see doc at [docs/features/event-organizer.md](./docs/features/event-organizer.md))
 
 - Games
     - phasmoImposteur - Launches Phasmophobia impostor game mode
