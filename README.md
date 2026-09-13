@@ -27,12 +27,13 @@ Listeners List :
 
 Commands List :
 - Admin
-    - maintenance (change le mode de maintenance du bot)
-    - Warn (ajoute / récupère le(s) warn(s) d'un membre)
+    - maintenance - Changes bot's maintenance state
+    - Warn Warn system
 
 - Utils
-    - ping (Vérifie le ping du bot et de l'API Discord)
-    - roleMenu (Système d'assignation de rôle par menu)
+    - ping - Check bot server & Discord API ping
+    - roleMenu - Self assignable role menu
+    - event (Create a new event, see doc at [docs\features\event-organizer.md](./docs\features\event-organizer.md))
 
 - Games
-    - phasmoImposteur (lance le mode de jeu phasmo imposteur)
+    - phasmoImposteur - Launches Phasmophobia impostor game mode
