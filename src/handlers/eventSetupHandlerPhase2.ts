@@ -93,7 +93,7 @@ export async function handlePublishEvent(interaction: ButtonInteraction)
             description: event.description,
             eventDate: new Date(event.event_date),
             organizerId: event.organizer_id,
-            organizerName: interaction.user.displayName,
+            organizerName: interaction.user.username,
             coOrganizerIds: coOrgIds,
             allowedRoleIds: roleIds,
             minPlayers: event.min_players,

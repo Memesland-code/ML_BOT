@@ -1,6 +1,7 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
 import { handleEventCreateModal } from "#handlers/eventCreateModal.js"
+import { handleEditDetailsButtonClick, handleEditModalSubmit, handleEditSetupButtonClick, handleManageButtonClick } from "#handlers/eventManageHandler.js"
 import { handleParticipationButtonClick, handleParticipationModalSubmit } from "#handlers/eventParticipationHandler.js"
 import { handleCoOrgSelect, handlePublishEvent, handleRoleSelect } from "#handlers/eventSetupHandlerPhase2.js"
 import { handleRoleInteraction } from "#handlers/roleMenuHandler.js"
@@ -31,14 +32,20 @@ export class InteractionCreateListener extends Listener
             if (interaction.customId.startsWith('event_create_modal:'))
             { 
                 await handleEventCreateModal(interaction)
+                return
             }
 
             if (interaction.customId.startsWith('event_submit_presence:'))
             { 
                 await handleParticipationModalSubmit(interaction)
+                return
             }
 
-            return
+            if (interaction.customId.startsWith('event_edit_modal:'))
+            { 
+                await handleEditModalSubmit(interaction)
+                return
+            }
         }
 
         
@@ -74,8 +81,18 @@ export class InteractionCreateListener extends Listener
                     if (action === 'attending') await handleParticipationButtonClick(interaction, 'PRESENT')
                     else if (action === 'unsure') await handleParticipationButtonClick(interaction, 'UNSURE')
                     else if (action === 'absent') await handleParticipationButtonClick(interaction, 'ABSENT')
-                    //TODO else if (action === 'manage') await handleManageEvent(interaction)
+                    else if (action === 'manage') await handleManageButtonClick(interaction)
                 }
+                return
+
+
+            case 'event_manage_edit_details':
+                if (interaction.isButton()) await handleEditDetailsButtonClick(interaction)
+                return
+
+
+            case 'event_manage_edit_setup':
+                if (interaction.isButton()) await handleEditSetupButtonClick(interaction)
                 return
 
 

@@ -1,3 +1,4 @@
+import { handleAdminManageCommand } from "#handlers/eventManageHandler.js"
 import { Command } from "@sapphire/framework"
 import { LabelBuilder, ModalBuilder, TextInputStyle } from "discord.js"
 
@@ -30,6 +31,52 @@ export class EventCommand extends Command
                                 .setRequired(false)
                         )
                 )
+                .addSubcommand((cmd) =>
+                    cmd
+                        .setName('manage')
+                        .setDescription("Gérer manuellement la participation d'un joueur à un événement")
+                        .addIntegerOption((o) =>
+                            o
+                                .setName('even_id')
+                                .setDescription("ID de l'événement")
+                                .setRequired(true)
+                        )
+                        .addUserOption((o) =>
+                            o
+                                .setName('user')
+                                .setDescription("Le membre concerné")
+                                .setRequired(true)
+                        )
+                        .addStringOption((o) =>
+                            o
+                                .setName('status')
+                                .setDescription("Le status à lui attribuer")
+                                .setRequired(false)
+                                .addChoices(
+                                    { name: '🟢 Présent', value: 'PRESENT' },
+                                    { name: '🟡 Pas sûr', value: 'UNSURE' },
+                                    { name: '🔴 Absent', value: 'ABSENT' }
+                                )
+                        )
+                        .addBooleanOption((o) =>
+                            o
+                                .setName('remove_user')
+                                .setDescription("Retirer complètement le membre de la liste de l'événement ?")
+                                .setRequired(false)
+                        )
+                        .addStringOption((o) =>
+                            o
+                                .setName('note')
+                                .setDescription("Note ou remarque à lui ajouter")
+                                .setRequired(false)
+                        )
+                        .addBooleanOption((o) =>
+                            o
+                                .setName('bypass_capacity')
+                                .setDescription("Forcer le statut même si l'événement est complet ?")
+                                .setRequired(false)
+                        )
+                )
         )
     }
 
@@ -40,6 +87,7 @@ export class EventCommand extends Command
         const subCommand = interaction.options.getSubcommand()
 
         if (subCommand === 'create') await this.handleCreateEvent(interaction)
+        if (subCommand === 'manage') await handleAdminManageCommand(interaction)
     }
 
 

@@ -39,7 +39,7 @@ export async function handleParticipationButtonClick(interaction: ButtonInteract
                     ? member.roles.some((roleId: string) => allowedRoles.includes(roleId))
                     : (member as any)?.roles?.cache?.some((r: any) => allowedRoles.includes(r.id))
 
-                if (!hasRequiredRole) return interaction.editReply("🚫 **Accès refusé.** Vous ne possédez pas l'un des rôles requis pour vous inscrire à cet événement.")
+                if (!hasRequiredRole) return interaction.reply({ content: "🚫 **Accès refusé.** Vous ne possédez pas l'un des rôles requis pour vous inscrire à cet événement.", flags: MessageFlags.Ephemeral })
             }
         }
 
@@ -204,6 +204,9 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
         const coOrgIds = typeof event.co_organizer_ids === 'string' ? JSON.parse(event.co_organizer_ids) : event.co_organizer_ids
         const roleIds = typeof event.allowed_role_ids === 'string' ? JSON.parse(event.allowed_role_ids) : event.allowed_role_ids
 
+        const organizer = await interaction.client.users.fetch(event.organizer_id).catch(() => null)
+        const organizerName = organizer?.username
+
 
         //* Rebuild Embed payload
         const messagePayload = buildEventMessage({
@@ -212,7 +215,7 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
             description: event.description,
             eventDate: new Date(event.event_date),
             organizerId: event.organizer_id,
-            organizerName: event.organizer_name ?? event.organizer_id,
+            organizerName: organizerName ?? event.organizer_id,
             coOrganizerIds: coOrgIds,
             allowedRoleIds: roleIds,
             minPlayers: event.min_players,

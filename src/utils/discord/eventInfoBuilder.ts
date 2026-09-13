@@ -148,7 +148,7 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
     const organizerName = event.organizerName ?? `${event.organizerId}`
     const formattedUpdate = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' à')
 
-    embed.setFooter({ text: `Organisé par ${organizerName} • Mis à jour le ${formattedUpdate}` })
+    embed.setFooter({ text: `Event #${event.id} organisé par ${organizerName} • Mis à jour le ${formattedUpdate}` })
 
 
 
