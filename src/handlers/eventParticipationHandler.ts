@@ -130,8 +130,14 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
 
         const event = eventRows[0]
 
+        const previousStatusRows: any = await ExecuteQuery(
+            `SELECT status FROM event_participants WHERE event_id = ? AND user_id = ?`,
+            [eventId, userId]
+        )
+        const previousStatus: string | null = previousStatusRows.length > 0 ? previousStatusRows[0].status : null
+
         //* Determine final status regarding max_players (Waitlist management)
-        let finalStatus: 'PRESENT' | 'UNSURE' | 'ABSENT' | 'WAITING_LIST' = targetStatus
+        let dbStatus: 'PRESENT' | 'UNSURE' | 'ABSENT' | 'WAITING_LIST' = targetStatus
 
         if (targetStatus === 'PRESENT' && event.max_players !== null)
         { 
@@ -144,7 +150,7 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
 
             if (currentPresenceCount >= event.max_players)
             { 
-                finalStatus = "WAITING_LIST"
+                dbStatus = "WAITING_LIST"
             }
         }
 
@@ -154,8 +160,39 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
             `INSERT INTO event_participants (event_id, user_id, status, note, joined_at)
             VALUES (?, ?, ?, ?, NOW())
             ON DUPLICATE KEY UPDATE status = VALUES(status), note = VALUES(note), updated_at = NOW()`,
-            [eventId, userId, finalStatus, note]
+            [eventId, userId, dbStatus, note]
         )
+
+        const fredSpot = previousStatus === 'PRESENT' && (dbStatus === 'ABSENT' || dbStatus === 'UNSURE')
+
+        if (fredSpot && event.max_players !== null)
+        { 
+            const waitlistRows: any = await ExecuteQuery(
+                `SELECT user_id FROM event_participants WHERE event_id = ? AND status = 'WAITING_LIST' ORDER BY joined_at ASC LIMIT 1`,
+                [eventId]
+            )
+
+            if (waitlistRows.length > 0)
+            { 
+                const promotedUserId = waitlistRows[0].user_id
+
+                await ExecuteQuery(
+                    `UPDATE event_participants SET status = 'PRESENT', updated_at = NOW() WHERE event_id = ? AND user_id = ?`,
+                    [eventId, promotedUserId]
+                )
+
+                const promotedUser = await interaction.client.users.fetch(promotedUserId).catch(() => null)
+
+                if (promotedUser)
+                { 
+                    await promotedUser.send(
+                        `🎉 **Une place s'est libérée !**\nVous avez été promu automatiquement de la liste d'attente vers les **Présents** pour l'événement **${event.title}**`
+                    ).catch(() =>
+                        writeLog(`[EventParticipationHandler] Could not send promotion DM to user ${promotedUserId}`, 'WARN')
+                    )
+                }
+            }
+        }
 
 
         //* Fetch updated participants list for Embed rebuilding
@@ -197,7 +234,7 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
 
 
         //* Confirms interaction feedback
-        if (finalStatus === 'WAITING_LIST')
+        if (dbStatus === 'WAITING_LIST')
         {
             await interaction.editReply("⌛ **L'événement est complet.** Vous avez été placé en liste d'attente.")
         }
