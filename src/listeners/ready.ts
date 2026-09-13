@@ -1,7 +1,7 @@
 import { getMaintenanceStatus } from '#db/db.js'
 import { setClientActivity } from '#discord/activity.js'
 import { primeAuditLogCache } from '#discord/pendingVoiceLog.js'
-import { initEventCleanupJob } from '#jobs/eventCleanupJob'
+import { initEventCleanupJob } from '#jobs/eventCleanupJob.js'
 import { writeLog } from '#logging/logger.js'
 import { getClientVersion } from '#logging/package.js'
 import { Listener } from '@sapphire/framework'
