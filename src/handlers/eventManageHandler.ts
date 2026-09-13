@@ -1,6 +1,6 @@
 import { ExecuteQuery } from "#db/db.js"
 import { writeLog } from "#logging/logger.js"
-import { demoteWaitlistLIFO, isAuthorized, parseEventDate, parseJsonArray, parsePlayersCount, promoteWaitlistFIFO, sendAdminUpdateDM, updateEventMessage } from "#utils/eventHelpers"
+import { demoteWaitlistLIFO, isAuthorized, parseEventDate, parseJsonArray, parsePlayersCount, promoteWaitlistFIFO, sendAdminUpdateDM, updateEventMessage } from "#utils/eventHelpers.js"
 import { ActionRowBuilder, APIRadioGroupOption, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, LabelBuilder, MessageFlags, ModalBuilder, ModalSubmitInteraction, RadioGroupOptionBuilder, RestOrArray, RoleSelectMenuBuilder, TextInputStyle, UserSelectMenuBuilder } from "discord.js"
 
 

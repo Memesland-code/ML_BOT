@@ -1,6 +1,6 @@
 import { ExecuteQuery } from "#db/db.js"
 import { writeLog } from "#logging/logger.js"
-import { parseJsonArray, promoteWaitlistFIFO, updateEventMessage } from "#utils/eventHelpers"
+import { parseJsonArray, promoteWaitlistFIFO, updateEventMessage } from "#utils/eventHelpers.js"
 import { ButtonInteraction, LabelBuilder, MessageFlags, ModalBuilder, ModalSubmitInteraction, TextInputStyle } from "discord.js"
 
 type ParticipationStatus = 'PRESENT' | 'UNSURE' | 'ABSENT'
