@@ -8,6 +8,7 @@ export interface EventData
     eventDate: Date
     organizerId: string
     organizerName?: string
+    updatedBy?: string | null
     coOrganizerIds: string[] | null
     allowedRoleIds: string[] | null
     minPlayers: number
@@ -146,9 +147,10 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
     )
 
     const organizerName = event.organizerName ?? `${event.organizerId}`
+    const updatedByStr = event.updatedBy ? ` • Modifié par ${event.updatedBy}` : ''
     const formattedUpdate = new Date().toLocaleString()
 
-    embed.setFooter({ text: `Event #${event.id} organisé par ${organizerName} • Mis à jour le ${formattedUpdate}` })
+    embed.setFooter({ text: `Event #${event.id} organisé par ${organizerName}${updatedByStr} le ${formattedUpdate}` })
 
 
 

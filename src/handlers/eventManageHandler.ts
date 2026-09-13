@@ -1,6 +1,6 @@
 import { ExecuteQuery } from "#db/db.js"
 import { writeLog } from "#logging/logger.js"
-import { isAuthorized, parseEventDate, parseJsonArray, parsePlayersCount, promoteWaitlistFIFO, updateEventMessage } from "#utils/eventHelpers"
+import { demoteWaitlistLIFO, isAuthorized, parseEventDate, parseJsonArray, parsePlayersCount, promoteWaitlistFIFO, sendAdminUpdateDM, updateEventMessage } from "#utils/eventHelpers"
 import { ActionRowBuilder, APIRadioGroupOption, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, LabelBuilder, MessageFlags, ModalBuilder, ModalSubmitInteraction, RadioGroupOptionBuilder, RestOrArray, RoleSelectMenuBuilder, TextInputStyle, UserSelectMenuBuilder } from "discord.js"
 
 
@@ -165,6 +165,7 @@ export async function handleEditModalSubmit(interaction: ModalSubmitInteraction)
     await interaction.deferReply({ flags: MessageFlags.Ephemeral })
     const eventId = Number(interaction.customId.split(":")[1])
 
+    const title = interaction.fields.getTextInputValue('event_title')
     const formattedDate = parseEventDate(interaction.fields.getTextInputValue('event_date'))
     const players = parsePlayersCount(interaction.fields.getTextInputValue('event_players'))
     const allowLatecomers = interaction.fields.getRadioGroup('event_latecomers') === 'true'
@@ -176,13 +177,44 @@ export async function handleEditModalSubmit(interaction: ModalSubmitInteraction)
 
     try {
         await ExecuteQuery(`UPDATE events SET title = ?, description = ?, event_date = ?, min_players = ?, max_players = ?, allow_latecomers = ? WHERE id = ?`, 
-            [interaction.fields.getTextInputValue('event_title'), interaction.fields.getTextInputValue('event_description').trim() || null, formattedDate, players.min, players.max, allowLatecomers, eventId])
-        
-        await updateEventMessage(eventId, interaction.client)
+            [title, interaction.fields.getTextInputValue('event_description').trim() || null, formattedDate, players.min, players.max, allowLatecomers, eventId])
+
+
+        if (players.max !== null)
+        { 
+            const countRows: any = await ExecuteQuery(
+                `SELECT COUNT(*) AS total FROM event_participants WHERE event_id = ? AND status = 'PRESENT'`,
+                [eventId]
+            )
+            const currentCount = Number(countRows[0].total)
+
+            if (currentCount > players.max)
+            {
+                await demoteWaitlistLIFO(eventId, players.max, title, interaction.client)
+            }
+            else if (currentCount < players.max)
+            {
+                const availableSpots = players.max - currentCount
+                await promoteWaitlistFIFO(eventId, title, interaction.client, availableSpots)
+            }
+            else
+            { 
+                const countRows: any = await ExecuteQuery(
+                    `SELECT COUNT(*) AS total FROM event_participants WHERE event_id = ? AND status = 'WAITING_LIST'`,
+                    [eventId]
+                )
+                const waitlistCount = Number(countRows[0].total)
+
+                if (waitlistCount > 0) await promoteWaitlistFIFO(eventId, title, interaction.client, waitlistCount)
+            }
+        }
+            
+        await updateEventMessage(eventId, interaction.client, false, interaction.user.username)
         await interaction.editReply(`✅ Les détails de l'événement #${eventId} ont été mis à jour avec succès !`)
     }
     catch (error)
     {
+        writeLog(`[HandleEditModalSubmit] An error occured while sending edit Modal: ${error}`, 'ERROR')
         await interaction.editReply("❌ Une erreur est survenue pendant le traitement du formulaire.")
     }
 }
@@ -230,7 +262,7 @@ export async function handleToggleLockButtonClick(interaction: ButtonInteraction
 
     const newStatus = rows[0].status === 'CLOSED' ? 'ACTIVE' : 'CLOSED'
     await ExecuteQuery(`UPDATE events SET status = ? WHERE id = ?`, [newStatus, eventId])
-    await updateEventMessage(eventId, interaction.client)
+    await updateEventMessage(eventId, interaction.client, false, interaction.user.username)
     await interaction.editReply({ content: `🔒 **Inscriptions ${newStatus === 'CLOSED' ? 'fermées' : 'rouvertes'} !**`, components: [] })
 }
 
@@ -248,7 +280,7 @@ export async function handleCancelEventButtonClick(interaction: ButtonInteractio
     if (!rows || rows.length === 0) return
 
     await ExecuteQuery(`UPDATE events SET status = 'CANCELLED' WHERE id = ?`, [eventId])
-    await updateEventMessage(eventId, interaction.client)
+    await updateEventMessage(eventId, interaction.client, false, interaction.user.username)
 
     const participants: any = await ExecuteQuery(`SELECT user_id FROM event_participants WHERE event_id = ? AND status != 'ABSENT'`, [eventId])
     for (const p of participants) {
@@ -286,9 +318,13 @@ export async function handleAdminManageCommand(interaction: ChatInputCommandInte
         const previousStatusRows: any = await ExecuteQuery(`SELECT status FROM event_participants WHERE event_id = ? AND user_id = ?`, [eventId, targetUser.id])
         const previousStatus = previousStatusRows.length > 0 ? previousStatusRows[0].status : null
 
+        let finalStatus: 'PRESENT' | 'UNSURE' | 'ABSENT' | 'WAITING_LIST' | 'REMOVED'
+
         if (removeUser) {
             await ExecuteQuery(`DELETE FROM event_participants WHERE event_id = ? AND user_id = ?`, [eventId, targetUser.id])
-            if (previousStatus === 'PRESENT' && event.max_players !== null) await promoteWaitlistFIFO(eventId, event.title, interaction.client)
+            finalStatus = 'REMOVED'
+
+            if (previousStatus === 'PRESENT') await promoteWaitlistFIFO(eventId, event.title, interaction.client, 1)
         }
         else
         { 
@@ -297,15 +333,24 @@ export async function handleAdminManageCommand(interaction: ChatInputCommandInte
             { 
                 const countRows: any = await ExecuteQuery(`SELECT COUNT(*) AS total FROM event_participants WHERE event_id = ? AND status = 'PRESENT' AND user_id != ?`, [eventId, targetUser.id])
 
-                if (countRows[0].total >= event.max_players) dbStatus = 'WAITING_LIST'
+                if (Number(countRows[0].total) >= event.max_players) dbStatus = 'WAITING_LIST'
             }
             await ExecuteQuery(
                 `INSERT INTO event_participants (event_id, user_id, status, note, joined_at) VALUES (?, ?, ?, ?, NOW()) ON DUPLICATE KEY UPDATE status = VALUES(status), note = VALUES(note), updated_at = NOW()`,
                 [eventId, targetUser.id, dbStatus, note]
             )
+
+            finalStatus = dbStatus
+
+            if (previousStatus === 'PRESENT' && (dbStatus === 'ABSENT' || dbStatus === 'UNSURE' || dbStatus === 'WAITING_LIST'))
+            { 
+                await promoteWaitlistFIFO(eventId, event.title, interaction.client, 1)
+            }
         }
 
-        await updateEventMessage(eventId, interaction.client)
+        await sendAdminUpdateDM(targetUser, event.title, interaction.user.username, finalStatus, note)
+
+        await updateEventMessage(eventId, interaction.client, false, interaction.user.username)
 
         await interaction.editReply(`✅ **${removeUser ? `<@${targetUser.id}> a été retiré de l'événement` : `Statut de <@${targetUser.id}> mis à jour`}** avec succès !`)
     }

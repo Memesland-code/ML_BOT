@@ -135,7 +135,7 @@ export async function handleParticipationModalSubmit(interaction: ModalSubmitInt
         }
 
 
-        await updateEventMessage(eventId, interaction.client)
+        await updateEventMessage(eventId, interaction.client, false, interaction.user.username)
 
         await interaction.editReply(dbStatus === 'WAITING_LIST' ? "⌛ **Placé en liste d'attente.**" : "✅ **Statut mis à jour !**")
     }
