@@ -10,7 +10,7 @@
     "mysql2": "^3.23.2"
   },
   "name": "ml_bot",
-  "version": "0.6.0-156",
+  "version": "0.6.0-157.dev",
   "imports": {
     "#db/*": {
       "development": "./src/utils/database/*",
@@ -31,6 +31,10 @@
     "#utils/*": {
       "development": "./src/utils/*",
       "default": "./dist/utils/*"
+    },
+    "#jobs/*": {
+      "development": "./src/jobs/*",
+      "default": "./dist/jobs/*"
     }
   },
   "main": "dist/index.js",
