@@ -67,7 +67,6 @@ export async function handleManageButtonClick(interaction: ButtonInteraction)
             .setCustomId(`event_manage_cancel:${eventId}`)
             .setLabel('Annuler l\'événement')
             .setStyle(ButtonStyle.Danger)
-            .setEmoji('❌')
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
             editDetailsBtn,
@@ -112,8 +111,8 @@ export async function handleEditDetailsButtonClick(interaction: ButtonInteractio
 
 
         let playersStr = ''
-        if (event.min_players > 0 && event.max_players !== null) playersStr = `${event.min_players}/${event.max_players}`
-        else if (event.min_players > 0) playersStr = `${event.min_players}`
+        if (event.min_players >= 0 && event.max_players !== null) playersStr = `${event.min_players}/${event.max_players}`
+        else if (event.min_players >= 0) playersStr = `${event.min_players}`
 
 
 
@@ -391,7 +390,7 @@ export async function handleAdminManageCommand(interaction: ChatInputCommandInte
     const eventId = interaction.options.getInteger('event_id', true)
     const targetUser = interaction.options.getUser('user', true)
     const removeUser = interaction.options.getBoolean('remove_user') ?? false
-    const targetStatus = interaction.options.getString('status', true) as 'PRESENT' | 'UNSURE' | 'ABSENT'
+    const targetStatus = interaction.options.getString('status') as 'PRESENT' | 'UNSURE' | 'ABSENT'
     const note = interaction.options.getString('note')?.trim() || null
     const bypassCapacity = interaction.options.getBoolean('bypass_capacity') ?? false
 
@@ -546,5 +545,148 @@ export async function handleAdminManageCommand(interaction: ChatInputCommandInte
     {
         writeLog(`[eventManageHandler] Error executing admin manage command for event #${eventId}: ${error}`, 'ERROR')
         await interaction.editReply("❌ Une erreur est survenue lors de la gestion du membre.")
+    }
+}
+
+
+
+/**
+ ** Triggered when clicking Close or Open registration
+ ** Toggles event status between 'ACTIVE' and 'CLOSED'
+ */
+export async function handleToggleLockButtonClick(interaction: ButtonInteraction)
+{ 
+    await interaction.deferUpdate()
+    const eventId = interaction.customId.split(":")[1]
+
+    try
+    { 
+        const rows: any = await ExecuteQuery(`SELECT * FROM events WHERE id = ?`, [eventId])
+        if (!rows || rows.length === 0) return
+
+        const event = rows[0]
+
+        // Toggle status
+        const newStatus = event.status === 'CLOSED' ? 'ACTIVE' : 'CLOSED'
+
+        await ExecuteQuery(`UPDATE events SET status = ? WHERE id = ?`, [newStatus, eventId])
+
+        // Refresh public embed
+        const participants: any = await ExecuteQuery(
+            `SELECT user_id AS userId, status, note FROM event_participants WHERE event_id = ? ORDER BY joined_at ASC`,
+            [eventId]
+        )
+
+        const coOrgIds = typeof event.co_organizer_ids === 'string' ? JSON.parse(event.co_organizer_ids) : event.co_organizer_ids
+        const roleIds = typeof event.allowed_role_ids === 'string' ? JSON.parse(event.allowed_role_ids) : event.allowed_role_ids
+
+        const messagePayload = buildEventMessage({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            eventDate: new Date(event.event_date),
+            organizerId: event.organizer_id,
+            organizerName: event.organizer_name ?? event.organizer_id,
+            coOrganizerIds: coOrgIds,
+            allowedRoleIds: roleIds,
+            minPlayers: event.min_players,
+            maxPlayers: event.max_players,
+            allowLatecomers: Boolean(event.allow_latecomers),
+            status: newStatus,
+            showDebug: Boolean(event.show_debug)
+        }, participants)
+
+        const channel = interaction.channel as TextChannel
+        if (event.message_id && channel)
+        {
+            const originalMessage = await channel.messages.fetch(event.message_id).catch(() => null)
+            if (originalMessage) await originalMessage.edit(messagePayload)
+        }
+
+        const actionText = newStatus === 'CLOSED' ? 'fermées' : 'rouvertes'
+        await interaction.editReply({
+            content: `🔒 **Les inscriptions ont été ${actionText} avec succès !**`,
+            components: []
+        })
+    }
+    catch (error)
+    {
+        writeLog(`[eventManageHandler] Error toggling lock for event #${eventId}: ${error}`, 'ERROR')
+    }
+}
+
+
+
+/**
+ ** Triggered when clicking Canncel event
+ ** Changes status to 'CANCELLED', disables public buttons and notifies participants
+ */
+export async function handleCancelEventButtonClick(interaction: ButtonInteraction)
+{
+    await interaction.deferUpdate()
+    const eventId = interaction.customId.split(':')[1]
+
+    try
+    {
+        const rows: any = await ExecuteQuery(`SELECT * FROM events WHERE id = ?`, [eventId])
+        if (!rows || rows.length === 0) return
+
+        const event = rows[0]
+
+        // Update status to CANCELLED in DB
+        await ExecuteQuery(`UPDATE events SET status = 'CANCELLED' WHERE id = ?`, [eventId])
+
+        // Fetch participants to notify them
+        const participants: any = await ExecuteQuery(
+            `SELECT user_id AS userId, status, note FROM event_participants WHERE event_id = ? ORDER BY joined_at ASC`,
+            [eventId]
+        )
+
+        // Refresh public embed (buildEventMessage will apply red color and disable buttons)
+        const coOrgIds = typeof event.co_organizer_ids === 'string' ? JSON.parse(event.co_organizer_ids) : event.co_organizer_ids
+        const roleIds = typeof event.allowed_role_ids === 'string' ? JSON.parse(event.allowed_role_ids) : event.allowed_role_ids
+
+        const messagePayload = buildEventMessage({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            eventDate: new Date(event.event_date),
+            organizerId: event.organizer_id,
+            organizerName: event.organizer_name ?? event.organizer_id,
+            coOrganizerIds: coOrgIds,
+            allowedRoleIds: roleIds,
+            minPlayers: event.min_players,
+            maxPlayers: event.max_players,
+            allowLatecomers: Boolean(event.allow_latecomers),
+            status: 'CANCELLED',
+            showDebug: Boolean(event.show_debug)
+        }, participants)
+
+        const channel = interaction.channel as TextChannel
+        if (event.message_id && channel)
+        {
+            const originalMessage = await channel.messages.fetch(event.message_id).catch(() => null)
+            if (originalMessage) await originalMessage.edit(messagePayload)
+        }
+
+        // Send DM notification to all non-absent participants
+        const activeParticipants = participants.filter((p: any) => p.status !== 'ABSENT')
+        for (const p of activeParticipants)
+        {
+            const user = await interaction.client.users.fetch(p.userId).catch(() => null)
+            if (user)
+            {
+                await user.send(`🚨 **Événement Annulé**\nL'événement **${event.title}** auquel vous étiez inscrit a été annulé par ${interaction.user.username}.`).catch(() => null)
+            }
+        }
+
+        await interaction.editReply({
+            content: `🛑 **L'événement « ${event.title} » a été annulé et les participants ont été notifiés.**`,
+            components: []
+        })
+    }
+    catch (error)
+    {
+        writeLog(`[eventManageHandler] Error cancelling event #${eventId}: ${error}`, 'ERROR')
     }
 }

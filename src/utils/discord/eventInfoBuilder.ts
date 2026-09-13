@@ -66,11 +66,11 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
     // Players capacity string (Min / Max)
     let playersStr = 'Pas de prérequis'
 
-    if (event.minPlayers > 0 && event.maxPlayers !== null)
+    if (event.minPlayers >= 0 && event.maxPlayers !== null)
     {
         playersStr = `Entre ${event.minPlayers} & ${event.maxPlayers}`
     }
-    else if (event.minPlayers > 0)
+    else if (event.minPlayers >= 0)
     {
         playersStr = `${event.minPlayers} minimum`
     }
@@ -142,11 +142,11 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
         { name: `🟢 Présents (${attending.length})`, value: formatUserList(attending), inline: false },
         { name: `🟡 Incertains (${unsure.length})`, value: formatUserList(unsure), inline: false },
         { name: `🔴 Absents (${absent.length})`, value: formatUserList(absent), inline: false },
-        {name: `⌛ Liste d'attente (${waitlist.length})`, value: formatUserList(waitlist), inline: false}
+        { name: `⌛ Liste d'attente (${waitlist.length})`, value: formatUserList(waitlist), inline: false }
     )
 
     const organizerName = event.organizerName ?? `${event.organizerId}`
-    const formattedUpdate = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' à')
+    const formattedUpdate = new Date().toLocaleString()
 
     embed.setFooter({ text: `Event #${event.id} organisé par ${organizerName} • Mis à jour le ${formattedUpdate}` })
 

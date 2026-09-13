@@ -37,7 +37,7 @@ export class EventCommand extends Command
                         .setDescription("Gérer manuellement la participation d'un joueur à un événement")
                         .addIntegerOption((o) =>
                             o
-                                .setName('even_id')
+                                .setName('event_id')
                                 .setDescription("ID de l'événement")
                                 .setRequired(true)
                         )
@@ -50,7 +50,7 @@ export class EventCommand extends Command
                         .addStringOption((o) =>
                             o
                                 .setName('status')
-                                .setDescription("Le status à lui attribuer")
+                                .setDescription("Le statut à lui attribuer")
                                 .setRequired(false)
                                 .addChoices(
                                     { name: '🟢 Présent', value: 'PRESENT' },

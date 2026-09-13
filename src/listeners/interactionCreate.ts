@@ -1,7 +1,7 @@
 import { createLogEmbed } from "#discord/embeds.js"
 import { getGuildLogChannel } from "#discord/logChannels.js"
 import { handleEventCreateModal } from "#handlers/eventCreateModal.js"
-import { handleEditDetailsButtonClick, handleEditModalSubmit, handleEditSetupButtonClick, handleManageButtonClick } from "#handlers/eventManageHandler.js"
+import { handleCancelEventButtonClick, handleEditDetailsButtonClick, handleEditModalSubmit, handleEditSetupButtonClick, handleManageButtonClick, handleToggleLockButtonClick } from "#handlers/eventManageHandler.js"
 import { handleParticipationButtonClick, handleParticipationModalSubmit } from "#handlers/eventParticipationHandler.js"
 import { handleCoOrgSelect, handlePublishEvent, handleRoleSelect } from "#handlers/eventSetupHandlerPhase2.js"
 import { handleRoleInteraction } from "#handlers/roleMenuHandler.js"
@@ -93,6 +93,16 @@ export class InteractionCreateListener extends Listener
 
             case 'event_manage_edit_setup':
                 if (interaction.isButton()) await handleEditSetupButtonClick(interaction)
+                return
+
+
+            case 'event_manage_toggle_lock':
+                if (interaction.isButton()) await handleToggleLockButtonClick(interaction)
+                return
+
+
+            case 'event_manage_cancel':
+                if (interaction.isButton()) await handleCancelEventButtonClick(interaction)
                 return
 
 
