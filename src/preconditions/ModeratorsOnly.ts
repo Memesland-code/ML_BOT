@@ -22,7 +22,7 @@ export class ModeratorsOnlyPrecondition extends Precondition
     {
         if (member && member.permissions.has(PermissionFlagsBits.ModerateMembers)) return this.ok()
 
-        return this.error({ message: '❌ Cette commande est réservée aux membresd de la modération' })
+        return this.error({ message: '❌ Cette commande est réservée aux membres de la modération' })
     }
 }
 

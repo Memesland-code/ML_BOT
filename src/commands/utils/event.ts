@@ -10,7 +10,7 @@ export class EventCommand extends Command
             ...options,
             name: 'event',
             description: 'Gestion des événements',
-            preconditions: ['GuildOnly', 'ModeratorsOnly', 'IsUnderDevelopment'],
+            preconditions: ['GuildOnly', 'ModeratorsOnly'],
         })
     }
 
