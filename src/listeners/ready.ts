@@ -1,6 +1,7 @@
 import { getMaintenanceStatus } from '#db/db.js'
 import { setClientActivity } from '#discord/activity.js'
 import { primeAuditLogCache } from '#discord/pendingVoiceLog.js'
+import { initEventCleanupJob } from '#jobs/eventCleanupJob'
 import { writeLog } from '#logging/logger.js'
 import { getClientVersion } from '#logging/package.js'
 import { Listener } from '@sapphire/framework'
@@ -29,5 +30,7 @@ export class ReadyListener extends Listener
         client.guilds.cache.forEach(guild => {
             primeAuditLogCache(guild)
         });
+
+        initEventCleanupJob()
     }
 }
