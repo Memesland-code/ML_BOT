@@ -322,7 +322,10 @@ export async function handleAdminManageCommand(interaction: ChatInputCommandInte
 
         let finalStatus: 'PRESENT' | 'UNSURE' | 'ABSENT' | 'WAITING_LIST' | 'REMOVED'
 
-        if (removeUser) {
+        if (removeUser)
+        {
+            if (!previousStatus) return interaction.editReply(`⚠️ **<@${targetUser.id}>** n'est pas inscrit à cet événement. Impossible de le retirer.`)
+            
             await ExecuteQuery(`DELETE FROM event_participants WHERE event_id = ? AND user_id = ?`, [eventId, targetUser.id])
             finalStatus = 'REMOVED'
 
