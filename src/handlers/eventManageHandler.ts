@@ -16,7 +16,7 @@ export async function handleManageButtonClick(interaction: ButtonInteraction)
         const rows: any = await ExecuteQuery(`SELECT * FROM events WHERE id = ?`, [eventId])
         if (!rows || rows.length === 0) return interaction.reply({ content: "❌ **Événement introuvable.**", flags: MessageFlags.Ephemeral })
 
-        if (!(await isAuthorized(interaction, rows[0]))) return interaction.reply({ content: "🚫 **Accès refusé.**", flags: MessageFlags.Ephemeral })
+        if (!(await isAuthorized(interaction, rows[0]))) return interaction.reply({ content: "🚫 **Accès refusé.** Vous ne faites pas parti des membres pouvant modifier cet événement.", flags: MessageFlags.Ephemeral })
 
         const isClosed = rows[0].status === 'CLOSED'
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -310,10 +310,12 @@ export async function handleAdminManageCommand(interaction: ChatInputCommandInte
 
     try {
         const eventRows: any = await ExecuteQuery(`SELECT * FROM events WHERE id = ?`, [eventId])
-        if (!eventRows || eventRows.length === 0) return interaction.editReply("❌ **Événement introuvable.**")
+        if (!eventRows || eventRows.length === 0) return interaction.editReply("❌ **Événement introuvable.** L'événement #${eventId} n'existe pas sur ce serveur")
         
         const event = eventRows[0]
-        if (!(await isAuthorized(interaction as any, event))) return interaction.editReply("🚫 **Accès refusé.**")
+        if (!(await isAuthorized(interaction as any, event))) return interaction.editReply("🚫 **Accès refusé.** Vous ne faites pas parti des membres pouvant modifier cet événement.**")
+
+        if (event.guild_id && event.guild_id !== interaction.guildId) return interaction.editReply(`❌ **Événement introuvable.** L'événement #${eventId} n'existe pas sur ce serveur`)
 
         const previousStatusRows: any = await ExecuteQuery(`SELECT status FROM event_participants WHERE event_id = ? AND user_id = ?`, [eventId, targetUser.id])
         const previousStatus = previousStatusRows.length > 0 ? previousStatusRows[0].status : null
