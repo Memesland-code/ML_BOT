@@ -26,7 +26,7 @@ export async function runEventCleanup(): Promise<void>
 
 
 /**
- ** Calculates milliseconds remaining unntil the next 06:00 AM target time
+ ** Calculates milliseconds remaining until the next 06:00 AM target time
  */
 function getMsUntilNextSixAM(): number
 { 
@@ -62,5 +62,5 @@ export function initEventCleanupJob(): void
     }, msUntilFirstRun);
 
     const nextRunDate = new Date(Date.now() + msUntilFirstRun).toLocaleString()
-    writeLog(`[EventCleanupJob] Maintenance job scheduled (Next fixed run at 06:00 AM on ${nextRunDate}).`, 'INFO')
+    writeLog(`[EventCleanupJob] Maintenance job scheduled (Next fixed run on ${nextRunDate}).`, 'INFO')
 }
