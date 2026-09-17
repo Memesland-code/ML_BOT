@@ -140,10 +140,10 @@ export function buildEventMessage(event: EventData, participants: ParticipantDat
 
     // Participants Fields
     embed.addFields(
-        { name: `🟢 Présents (${attending.length})`, value: formatUserList(attending), inline: false },
-        { name: `🟡 Incertains (${unsure.length})`, value: formatUserList(unsure), inline: false },
-        { name: `🔴 Absents (${absent.length})`, value: formatUserList(absent), inline: false },
-        { name: `⌛ Liste d'attente (${waitlist.length})`, value: formatUserList(waitlist), inline: false }
+        { name: `🟢 Présents (${attending.length})`, value: formatUserList(attending) + "\n", inline: false },
+        { name: `🟡 Incertains (${unsure.length})`, value: formatUserList(unsure) + "\n", inline: false },
+        { name: `🔴 Absents (${absent.length})`, value: formatUserList(absent) + "\n", inline: false },
+        { name: `⌛ Liste d'attente (${waitlist.length})`, value: formatUserList(waitlist) + "\n", inline: false }
     )
 
     const organizerName = event.organizerName ?? `${event.organizerId}`
