@@ -209,7 +209,7 @@ export async function handleEditModalSubmit(interaction: ModalSubmitInteraction)
             }
         }
             
-        await updateEventMessage(eventId, interaction.client, false, interaction.user.username)
+        await updateEventMessage(eventId, interaction.client)
         await interaction.editReply(`✅ Les détails de l'événement #${eventId} ont été mis à jour avec succès !`)
     }
     catch (error)
